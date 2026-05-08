@@ -1,0 +1,10 @@
+* @Vakulaaa
+
+/apps/api/** @Vakulaaa
+/apps/web/** @Vakulaaa
+/apps/bff/** @Vakulaaa
+/packages/shared-types/** @Vakulaaa
+/packages/ui/** @Vakulaaa
+/infra/** @Vakulaaa
+/.github/workflows/** @Vakulaaa
+/docs/** @Vakulaaa
