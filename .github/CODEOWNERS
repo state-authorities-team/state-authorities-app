@@ -1,10 +1,10 @@
 * @Vakulaaa
 
-/apps/api/** @Vakulaaa
-/apps/web/** @Vakulaaa
-/apps/bff/** @Vakulaaa
-/packages/shared-types/** @Vakulaaa
-/packages/ui/** @Vakulaaa
+/apps/api/** @state-authorities-team/backend
+/apps/web/** @state-authorities-team/frontend
+/apps/bff/** @state-authorities-team/backend @state-authorities-team/frontend
+/packages/shared-types/** @state-authorities-team/backend @state-authorities-team/frontend
+/packages/ui/** @state-authorities-team/frontend @Stas-Steshenko
 /infra/** @Vakulaaa
 /.github/workflows/** @Vakulaaa
-/docs/** @Vakulaaa
+/docs/** @state-authorities-team/pm
