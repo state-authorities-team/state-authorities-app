@@ -22,7 +22,18 @@ We use **Biome** as our all-in-one tool for linting, formatting, and organizing 
 
 > **Important:** To ensure the best development experience, please install the VS Code extension and enable "Format on Save" in your editor settings.
 
+---
 
+## 🗄️ Database: Prisma
+
+We use **Prisma** as our Next-generation Node.js and TypeScript ORM. It ensures type-safety when interacting with the database and simplifies schema management.
+
+* **Official Documentation:** [Prisma.io Docs](https://www.prisma.io/docs)
+* **VS Code Extension:** [Prisma for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma)
+
+> **Important:** Please install the Prisma extension to enable syntax highlighting, automated formatting for `.prisma` files, and powerful IntelliSense for schema modeling.
+
+---
 
 ## 🚀 Quick Start
 
@@ -36,6 +47,13 @@ Create a `.env` file in the `/backend` directory (copy from the template):
 cp .env.example .env
 ```
 `Set PORT to 3000`
+
+SET **DATABASE_URL**: 
+- You need to have database called **state_authorities** or change it in the URL
+- Replace with your **username** and **password**
+- Set port(default is **5432**)
+
+Example: `postgresql://<user>:<password>@localhost:<port>/state_authorities`
 ### 2. Install Dependencies
 
 ```bash
@@ -50,6 +68,8 @@ npm run dev
 
 The server will be running at: `http://localhost:3000`
 
+Use `http://localhost:3000/api/agencies` endpoint to get a list of all agencies (we don't have any agencies at the moment).
+
 ---
 
 ## 📜 Available Scripts
@@ -61,12 +81,13 @@ The server will be running at: `http://localhost:3000`
 | `npm run start` | Runs the compiled project from the `dist/` directory. |
 | `npm run lint` | Checks the code for linting and formatting issues using Biome. |
 | `npm run lint:fix` | Automatically fixes linting errors and formats the code via Biome. |
+| `npm run format` | Automatically formats the code via Biome.
 
 ---
 
 ## 📐 Code Convention
 
-We use **Biome** to enforce a unified coding style. These rules are strictly enforced via Git hooks to ensure high code quality.
+We use **Biome** to enforce a unified coding style. Use `npm run lint` and `npm run format` before commit.
 
 ### 1. General Principles
 
@@ -84,6 +105,7 @@ We use **Biome** to enforce a unified coding style. These rules are strictly enf
 ### 3. Database Guidelines (Prisma)
 
 * Always run `npx prisma migrate dev` after modifying `schema.prisma`.
+* Always run `npx prisma generate` after modifying `schema.prisma`.
 * Avoid raw SQL queries unless the required operation cannot be achieved via Prisma's API.
 
 ### 4. Git Flow
