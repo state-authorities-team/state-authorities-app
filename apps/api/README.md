@@ -59,12 +59,17 @@ Example: `postgresql://<user>:<password>@localhost:<port>/state_authorities`
 ```bash
 npm install
 ```
+### 3. Generate prisma client
 
-### 3. Launch the Application
+```bash
+npx prisma generate
+```
+### 4. Launch the Application
 
 ```bash
 npm run dev
 ```
+> You also can use `npx prisma studio` to open an open-source, visual database editor that provides a graphical user interface (GUI) to explore, manage, and edit data within Prisma projects.
 
 The server will be running at: `http://localhost:3000`
 
