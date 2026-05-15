@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model AgencyType {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String @unique
+
+  agencies Agency[]
+
+  @@map("agency_types")
+}
+
+model Agency {
+  id          Int      @id @default(autoincrement())
+  name        String
+  shortName   String?  @map("short_name")
+  typeId      Int      @map("type_id")
+  headName    String?  @map("head_name")
+  headTitle   String?  @map("head_title")
+  description String?
+  address     String?
+  phone       String?
+  email       String?
+  website     String?
+  region      String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  agencyType AgencyType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+
+  @@map("agencies")
+}
