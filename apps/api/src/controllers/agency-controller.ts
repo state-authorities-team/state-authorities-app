@@ -1,23 +1,30 @@
 import type { Request, Response } from "express";
 import * as agencyService from "../services/agency-service.js";
 
-export const getAll = async (_req: Request, res: Response) => {
+export const getAll = async (req: Request, res: Response) => {
   try {
-    const data = await agencyService.getAll();
+    const { type, search } = req.query;
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+
+    const result = await agencyService.getAll({
+      type: type as string | undefined,
+      search: search as string | undefined,
+      page,
+      limit,
+    });
+
     res.status(200).json({
       success: true,
-      codeStatus: 200,
-      data: data,
+      count: result.count,
+      total: result.total,
+      totalPages: result.totalPages,
+      currentPage: result.currentPage,
+      data: result.data,
     });
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.log(`${err.message}`);
-    }
-    res.status(500).json({
-      success: false,
-      codeStatus: 500,
-      message: "Internal server error",
-    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, statusCode: 500, errors: ["Internal server error"] });
   }
 };
 
