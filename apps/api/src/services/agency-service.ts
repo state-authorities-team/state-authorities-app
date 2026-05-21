@@ -44,13 +44,44 @@ export const getAll = async (params: {
 };
 
 export const create = async (data: Prisma.AgencyUncheckedCreateInput) => {
+  const agencyType = await prisma.agencyType.findUnique({
+    where: { id: Number(data.typeId) },
+  });
+  if (!agencyType) {
+    throw new Error(`AgencyType with id ${data.typeId} not found`);
+  }
+
+  const agency = await prisma.agency.findUnique({
+    where: { id: Number(data.id) },
+  });
+  if (agency) {
+    throw new Error(`Agency with id ${data.id} already exists`);
+  }
+
   return prisma.agency.create({ data, include: { agencyType: true } });
 };
 
 export const update = async (id: number, data: Prisma.AgencyUncheckedUpdateInput) => {
+  const agencyType = await prisma.agencyType.findUnique({
+    where: { id: Number(data.typeId) },
+  });
+  if (!agencyType) {
+    throw new Error(`AgencyType with id ${data.typeId} not found`);
+  }
+
+  const existing = await prisma.agency.findUnique({ where: { id } });
+  if (!existing) {
+    throw new Error(`Agency with id ${id} not found`);
+  }
+
   return prisma.agency.update({ where: { id }, data, include: { agencyType: true } });
 };
 
 export const remove = async (id: number) => {
+  const existing = await prisma.agency.findUnique({ where: { id } });
+  if (!existing) {
+    throw new Error(`Agency with id ${id} not found`);
+  }
+
   return prisma.agency.delete({ where: { id } });
 };

@@ -13,7 +13,8 @@ export const getAll = async (_req: Request, res: Response) => {
       data,
     });
   } catch (err) {
-    console.error(err);
+    const e = err as Error;
+    console.error(`${new Date().toISOString()} : ${e.name} ${e.message}`);
     res.status(500).json({
       success: false,
       statusCode: 500,
