@@ -1,12 +1,14 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response, ErrorRequestHandler } from "express";
 import ApiError from "../errors/ApiError.js";
 
-const errorHandler = (
+const errorHandler: ErrorRequestHandler = (
   err: unknown,
   _req: Request,
   res: Response,
   _next: NextFunction,
 ) => {
+  const e = err as Error;
+  console.error(`${new Date().toISOString()} : ${e.name} ${e.message}`);
   if (err instanceof ApiError) {
     return res.status(err.statusCode).json({
       success: false,
