@@ -1,0 +1,42 @@
+.siteFooter {
+	margin-top: 48px;
+	padding: 28px 0;
+	background: #ffffff;
+	border-top: 1px solid #dddddd;
+}
+
+.footerGrid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 28px;
+}
+
+.footerLogo {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 700;
+}
+
+.footerLogo svg {
+	color: #777777;
+	flex-shrink: 0;
+}
+
+.footerLogo:hover {
+	color: #111111;
+}
+
+.footerLogo:hover svg {
+	color: #111111;
+}
+
+.siteFooter p {
+	color: #555555;
+}
+
+@media (max-width: 768px) {
+	.footerGrid {
+		grid-template-columns: 1fr;
+	}
+}
