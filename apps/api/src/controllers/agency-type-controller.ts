@@ -1,24 +1,15 @@
 import type { Request, Response } from "express";
+import asyncHandler from "../middlewares/asyncHandler.js";
 import * as agencyTypeService from "../services/agency-type-service.js";
 
-export const getAll = async (_req: Request, res: Response) => {
-  try {
-    const data = await agencyTypeService.getAll();
-    res.status(200).json({
-      success: true,
-      count: data.length,
-      total: data.length,
-      totalPages: 1,
-      currentPage: 1,
-      data,
-    });
-  } catch (err) {
-    const e = err as Error;
-    console.error(`${new Date().toISOString()} : ${e.name} ${e.message}`);
-    res.status(500).json({
-      success: false,
-      statusCode: 500,
-      errors: ["Internal server error"],
-    });
-  }
-};
+export const getAll = asyncHandler(async (_req: Request, res: Response) => {
+  const data = await agencyTypeService.getAll();
+  res.status(200).json({
+    success: true,
+    count: data.length,
+    total: data.length,
+    totalPages: 1,
+    currentPage: 1,
+    data,
+  });
+});
