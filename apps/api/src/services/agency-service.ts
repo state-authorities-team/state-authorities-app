@@ -1,5 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "../configs/db-config.js";
+import ApiError from "../errors/ApiError.js";
 
 export const getAll = async (params: {
   type?: string;
@@ -43,35 +44,48 @@ export const getAll = async (params: {
   };
 };
 
+export const getById = async (id: number) => {
+  const agency = await prisma.agency.findUnique({
+    where: { id },
+    include: { agencyType: true },
+  });
+  if (!agency) {
+    throw ApiError.notFound(`Agency with id ${id} not found`);
+  }
+  return agency;
+};
+
 export const create = async (data: Prisma.AgencyUncheckedCreateInput) => {
   const agencyType = await prisma.agencyType.findUnique({
     where: { id: Number(data.typeId) },
   });
   if (!agencyType) {
-    throw new Error(`AgencyType with id ${data.typeId} not found`);
+    throw ApiError.notFound(`AgencyType with id ${data.typeId} not found`);
   }
 
   const agency = await prisma.agency.findUnique({
     where: { id: Number(data.id) },
   });
   if (agency) {
-    throw new Error(`Agency with id ${data.id} already exists`);
+    throw ApiError.conflict(`Agency with id ${data.id} already exists`);
   }
 
   return prisma.agency.create({ data, include: { agencyType: true } });
 };
 
 export const update = async (id: number, data: Prisma.AgencyUncheckedUpdateInput) => {
-  const agencyType = await prisma.agencyType.findUnique({
-    where: { id: Number(data.typeId) },
-  });
-  if (!agencyType) {
-    throw new Error(`AgencyType with id ${data.typeId} not found`);
+  if (data.typeId !== undefined) {
+    const agencyType = await prisma.agencyType.findUnique({
+      where: { id: Number(data.typeId) },
+    });
+    if (!agencyType) {
+      throw ApiError.notFound(`AgencyType with id ${data.typeId} not found`);
+    }
   }
 
   const existing = await prisma.agency.findUnique({ where: { id } });
   if (!existing) {
-    throw new Error(`Agency with id ${id} not found`);
+    throw ApiError.notFound(`Agency with id ${id} not found`);
   }
 
   return prisma.agency.update({ where: { id }, data, include: { agencyType: true } });
@@ -80,7 +94,7 @@ export const update = async (id: number, data: Prisma.AgencyUncheckedUpdateInput
 export const remove = async (id: number) => {
   const existing = await prisma.agency.findUnique({ where: { id } });
   if (!existing) {
-    throw new Error(`Agency with id ${id} not found`);
+    throw ApiError.notFound(`Agency with id ${id} not found`);
   }
 
   return prisma.agency.delete({ where: { id } });

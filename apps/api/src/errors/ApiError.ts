@@ -22,6 +22,10 @@ export default class ApiError extends Error {
     return new ApiError(403, message, errors);
   }
 
+  static conflict(message = "Conflict", errors: unknown = null) {
+    return new ApiError(409, message, errors);
+  }
+
   static notFound(message = "Not found", errors: unknown = null) {
     return new ApiError(404, message, errors);
   }
