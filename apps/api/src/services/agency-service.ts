@@ -44,6 +44,17 @@ export const getAll = async (params: {
   };
 };
 
+export const getById = async (id: number) => {
+  const agency = await prisma.agency.findUnique({
+    where: { id },
+    include: { agencyType: true },
+  });
+  if (!agency) {
+    throw ApiError.notFound(`Agency with id ${id} not found`);
+  }
+  return agency;
+};
+
 export const create = async (data: Prisma.AgencyUncheckedCreateInput) => {
   const agencyType = await prisma.agencyType.findUnique({
     where: { id: Number(data.typeId) },
