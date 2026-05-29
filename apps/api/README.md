@@ -39,12 +39,13 @@ We use **Prisma** as our Next-generation Node.js and TypeScript ORM. It ensures 
 
 ### Agencies
 
-| Method | Route             | Description      |
-| ------ | ----------------- | ---------------- |
+| Method | Route             | Description      | Errors   |
+| ------ | ----------------- | ---------------- | -------- |
 | GET    | /api/agencies     | Get all agencies |
-| POST   | /api/agencies     | Create agency    |
-| PUT    | /api/agencies/:id | Update agency    |
-| DELETE | /api/agencies/:id | Delete agency    |
+| POST   | /api/agencies     | Create agency    | 400, 404 |
+| PUT    | /api/agencies/:id | Update agency    | 400, 404 |
+| DELETE | /api/agencies/:id | Delete agency    | 404      |
+| GET    | /api/agencies/:id | Get agency by id | 400, 404 |
 
 #### 🔍 Query Parameters
 
@@ -57,6 +58,7 @@ We use **Prisma** as our Next-generation Node.js and TypeScript ORM. It ensures 
 
 Example:
 `GET /api/agencies?page=1&limit=5&type=ministry&search=ministry`
+
 ### Agency-types
 
 | Method | Route             | Description      |
@@ -66,32 +68,38 @@ Example:
 ## Responses
 
 ### Bad response
+
 ```json
 {
-    "success": false,
-    "statusCode": 500,
-    "message": "Internal error message",
-    "errors": []  /// for validation errors
+  "success": false,
+  "statusCode": 500,
+  "message": "Internal error message",
+  "errors": [] /// for validation errors
 }
 ```
+
 ### Get all response
+
 ```json
 {
-      "success": true,
-      "count": 10,
-      "total": 10,
-      "totalPages": 1,
-      "currentPage": 1,
-      "data": [],
+  "success": true,
+  "count": 10,
+  "total": 10,
+  "totalPages": 1,
+  "currentPage": 1,
+  "data": []
 }
 ```
+
 ### Success response
+
 ```json
 {
-      "success": true,
-      "data": "some agencie instance here or null if deletion",
+  "success": true,
+  "data": "some agencie instance here or null if deletion"
 }
 ```
+
 ## 🚀 Quick Start
 
 ### 1. Environment Setup
