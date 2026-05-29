@@ -73,3 +73,20 @@ export const remove = asyncHandler(async (req: Request, res: Response) => {
   await agencyService.remove(id);
   res.status(200).json({ success: true, data: null });
 });
+
+export const importFromCsv = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.file) {
+    throw ApiError.badRequest("File was not upload");
+  }
+  if (req.file.mimetype !== "text/csv") {
+    throw ApiError.badRequest("Only CSV files are allowed");
+  }
+
+  const result = await agencyService.importAgencyFromCsv(req.file.buffer);
+
+  res.status(200).json({
+    success: true,
+    message: "CSV file was processed successfully",
+    data: result,
+  });
+});
