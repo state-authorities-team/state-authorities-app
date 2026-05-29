@@ -1,6 +1,8 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "../configs/db-config.js";
 import ApiError from "../errors/ApiError.js";
+import { type CreateAgencySchema, createAgencySchema } from "../schemas/agency.schema.js";
+import { parseAndValidate } from "../utils/csv-parser.js";
 
 export const getAll = async (params: {
   type?: string;
@@ -88,7 +90,11 @@ export const update = async (id: number, data: Prisma.AgencyUncheckedUpdateInput
     throw ApiError.notFound(`Agency with id ${id} not found`);
   }
 
-  return prisma.agency.update({ where: { id }, data, include: { agencyType: true } });
+  return prisma.agency.update({
+    where: { id },
+    data,
+    include: { agencyType: true },
+  });
 };
 
 export const remove = async (id: number) => {
@@ -98,4 +104,35 @@ export const remove = async (id: number) => {
   }
 
   return prisma.agency.delete({ where: { id } });
+};
+
+export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
+  const { validRecords, skippedRows, totalRows } = await parseAndValidate<CreateAgencySchema>(
+    fileBuffer,
+    createAgencySchema,
+    (row) => {
+      const cleanedRow = Object.fromEntries(
+        Object.entries(row).map(([key, value]) => [
+          key,
+          value.trim() === "" ? undefined : value.trim(),
+        ]),
+      );
+
+      return {
+        ...cleanedRow,
+        typeId: cleanedRow.typeId ? Number(cleanedRow.typeId) : undefined,
+      };
+    },
+  );
+  if (validRecords.length > 0) {
+    await prisma.agency.createMany({
+      data: validRecords,
+      skipDuplicates: true,
+    });
+  }
+  return {
+    totalRows,
+    imported: validRecords.length,
+    skipped: skippedRows,
+  };
 };
