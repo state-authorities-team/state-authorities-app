@@ -25,6 +25,16 @@ export const getAll = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
+export const getById = asyncHandler(async (req: Request, res: Response) => {
+  const id = parseInt(<string>req.params.id, 10);
+  if (Number.isNaN(id)) {
+    throw ApiError.badRequest("Invalid id");
+  }
+
+  const agency = await agencyService.getById(id);
+  res.status(200).json({ success: true, data: agency });
+});
+
 export const create = asyncHandler(async (req: Request, res: Response) => {
   const { name, typeId } = req.body;
   const errors: string[] = [];
