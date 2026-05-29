@@ -39,13 +39,14 @@ We use **Prisma** as our Next-generation Node.js and TypeScript ORM. It ensures 
 
 ### Agencies
 
-| Method | Route             | Description      | Errors   |
-| ------ | ----------------- | ---------------- | -------- |
-| GET    | /api/agencies     | Get all agencies |
-| POST   | /api/agencies     | Create agency    | 400, 404 |
-| PUT    | /api/agencies/:id | Update agency    | 400, 404 |
-| DELETE | /api/agencies/:id | Delete agency    | 404      |
-| GET    | /api/agencies/:id | Get agency by id | 400, 404 |
+| Method | Route                    | Description                   | Errors   |
+| ------ | ------------------------ | ----------------------------- | -------- |
+| GET    | /api/agencies            | Get all agencies              |
+| POST   | /api/agencies            | Create agency                 | 400, 404 |
+| PUT    | /api/agencies/:id        | Update agency                 | 400, 404 |
+| DELETE | /api/agencies/:id        | Delete agency                 | 404      |
+| GET    | /api/agencies/:id        | Get agency by id              | 400, 404 |
+| POST   | /api/agencies/import-csv | Import agencies from CSV file | 400      |
 
 #### 🔍 Query Parameters
 
@@ -97,6 +98,37 @@ Example:
 {
   "success": true,
   "data": "some agencie instance here or null if deletion"
+}
+```
+
+## CSV file for Agencies example
+
+| Column name | Correct type | Value in CSV file |
+| ----------- | ------------ | ----------------- |
+| name        | string       | Required          |
+| shortName   | string       | Optional          |
+| typeId      | number       | Required          |
+| headName    | string       | Optional          |
+| headTitle   | string       | Optional          |
+| description | string       | Optional          |
+| address     | string       | Optional          |
+| email       | string       | Optional          |
+| website     | string       | Optional          |
+| region      | string       | Optional          |
+
+**If parsed Agency instance from CSV file fails validation it will not be added in database**
+
+### Successful response
+
+```json
+{
+  "success": true,
+  "message": "CSV file was processed successfully",
+  "data": {
+    "totalRows": 3,
+    "imported": 1,
+    "skipped": 2
+  }
 }
 ```
 
