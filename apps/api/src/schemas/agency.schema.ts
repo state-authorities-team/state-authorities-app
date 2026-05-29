@@ -30,3 +30,5 @@ export const createAgencySchema = z.object({
 });
 
 export const updateAgencySchema = createAgencySchema.partial();
+
+export type CreateAgencySchema = z.infer<typeof createAgencySchema>;
