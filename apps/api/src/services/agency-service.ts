@@ -2,14 +2,10 @@ import type { Prisma } from "@prisma/client";
 import prisma from "../configs/db-config.js";
 import ApiError from "../errors/ApiError.js";
 import { type CreateAgencySchema, createAgencySchema } from "../schemas/agency.schema.js";
+import type { getAgencyQuery } from "../types/get-agency-query.js";
 import { parseAndValidate } from "../utils/csv-parser.js";
 
-export const getAll = async (params: {
-  type?: string;
-  search?: string;
-  page: number;
-  limit: number;
-}) => {
+export const getAll = async (params: getAgencyQuery) => {
   const { type, search, page, limit } = params;
   const skip = (page - 1) * limit;
 

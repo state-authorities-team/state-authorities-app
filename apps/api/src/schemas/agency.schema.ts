@@ -31,4 +31,11 @@ export const createAgencySchema = z.object({
 
 export const updateAgencySchema = createAgencySchema.partial();
 
+export const getAgencyQuerySchema = z.object({
+  type: z.string().optional(),
+  search: z.string().optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+});
+
 export type CreateAgencySchema = z.infer<typeof createAgencySchema>;
