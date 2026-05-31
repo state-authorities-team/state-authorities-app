@@ -2,73 +2,44 @@ import type { Request, Response } from "express";
 import ApiError from "../errors/ApiError.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import * as agencyService from "../services/agency-service.js";
+import type { getAgencyQuery } from "../types/get-agency-query.js";
 
-export const getAll = asyncHandler(async (req: Request, res: Response) => {
-  const { type, search } = req.query;
-  const page = Math.max(1, parseInt(req.query.page as string, 10) || 1);
-  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string, 10) || 20));
+export const getAll = asyncHandler(
+  async (_req: Request, res: Response<unknown, { validatedQuery: getAgencyQuery }>) => {
+    const result = await agencyService.getAll(res.locals.validatedQuery);
 
-  const result = await agencyService.getAll({
-    type: type as string | undefined,
-    search: search as string | undefined,
-    page,
-    limit,
-  });
-
-  res.status(200).json({
-    success: true,
-    count: result.count,
-    total: result.total,
-    totalPages: result.totalPages,
-    currentPage: result.currentPage,
-    data: result.data,
-  });
-});
+    res.status(200).json({
+      success: true,
+      count: result.count,
+      total: result.total,
+      totalPages: result.totalPages,
+      currentPage: result.currentPage,
+      data: result.data,
+    });
+  },
+);
 
 export const getById = asyncHandler(async (req: Request, res: Response) => {
-  const id = parseInt(<string>req.params.id, 10);
-  if (Number.isNaN(id)) {
-    throw ApiError.badRequest("Invalid id");
-  }
+  const id = Number(req.params.id);
 
   const agency = await agencyService.getById(id);
   res.status(200).json({ success: true, data: agency });
 });
 
 export const create = asyncHandler(async (req: Request, res: Response) => {
-  const { name, typeId } = req.body;
-  const errors: string[] = [];
-
-  if (!name) {
-    errors.push("name is required");
-  }
-  if (!typeId) {
-    errors.push("typeId is required");
-  }
-
-  if (errors.length) {
-    throw ApiError.badRequest("Validation failed", errors);
-  }
-
   const agency = await agencyService.create(req.body);
   res.status(201).json({ success: true, data: agency });
 });
 
 export const update = asyncHandler(async (req: Request, res: Response) => {
-  const id = parseInt(<string>req.params.id, 10);
-  if (Number.isNaN(id)) {
-    throw ApiError.badRequest("Invalid id", ["Invalid id"]);
-  }
+  const id = Number(req.params.id);
 
   const agency = await agencyService.update(id, req.body);
   res.status(200).json({ success: true, data: agency });
 });
 
 export const remove = asyncHandler(async (req: Request, res: Response) => {
-  const id = parseInt(<string>req.params.id, 10);
-  if (Number.isNaN(id)) {
-    throw ApiError.badRequest("Invalid id", ["Invalid id"]);
-  }
+  const id = Number(req.params.id);
 
   await agencyService.remove(id);
   res.status(200).json({ success: true, data: null });
