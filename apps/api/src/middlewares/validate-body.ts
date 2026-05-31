@@ -1,8 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 import type { ZodType } from "zod";
+import ApiError from "../errors/ApiError.js";
 
 export const validateBody =
-  (schema: ZodType) => (req: Request, res: Response, next: NextFunction) => {
+  (schema: ZodType) => (req: Request, _res: Response, next: NextFunction) => {
     const result = schema.safeParse(req.body);
 
     if (!result.success) {
@@ -11,13 +12,7 @@ export const validateBody =
         message: issue.message,
       }));
 
-      res.status(400).json({
-        success: false,
-        statusCode: 400,
-        errors,
-      });
-
-      return;
+      throw ApiError.badRequest("Validation failed", errors);
     }
 
     req.body = result.data;
