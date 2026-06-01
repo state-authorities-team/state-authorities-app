@@ -35,68 +35,13 @@ We use **Prisma** as our Next-generation Node.js and TypeScript ORM. It ensures 
 
 ---
 
-# KMU Catalog Scraping & Import Pipeline Module
+## KMU Catalog Scraping & Import Pipeline Module
 
 A robust, enterprise-grade data engineering pipeline designed to autonomously gather, sanitize, and persist official public authority records from the Cabinet of Ministers of Ukraine (**Кабінет Міністрів України — КМУ**).
 
 This module adheres to **Layered Architecture** principles, segregating data extraction (I/O), pure business domain parsing transformations, and relational database persistence into isolated, maintainable structures.
 
----
-
-## 🏛️ Module Architecture & Layer Segregation
-
-The module is decoupled into discrete layers to enforce the **Single Responsibility Principle (SRP)**
-
-
-## 🛠️ Step-by-Step Developer Setup Guide
-
-### 1. Initialize the Workspace Storage
-
-Due to strict anti-bot and DDoS protection layers deployed on government servers (**Radware/ShieldSquare Mitigation Engines**), direct programmatic HTTP requests via clients like Axios will be caught by a CAPTCHA proxy wall. To circumvent this safely during development, the module relies on an offline DOM snapshot pipeline.
-
-Create a dedicated `storage` folder in your application runtime root directory and initialize an empty HTML anchor file:
-
-```bash
-mkdir -p storage && touch storage/kmu_page.html
-```
-
-### 2. Capture the Fresh DOM Snapshot
-
-Navigate to the official directory page using a standard desktop browser:
-
-👉 https://www.kmu.gov.ua/catalog
-
-- Complete the hCaptcha puzzle interface manually if prompted by the Radware screen.
-
-- Once the structural catalog list of ministries and services fully loads, hit Ctrl + U (or right-click anywhere and select View Page Source).
-
-- Select the entire source code grid raw content via Ctrl + A and copy it (Ctrl + C).
-
-- Open your local storage/kmu_page.html file in your editor, paste the full buffer text string (Ctrl + V), and save it.
-
-### 3. Sync Database Constraints (Prisma)
-
-```bash
-npx prisma generate
-npx prisma migrate dev
-```
-
-### 4. Execute the ETL Import Automation Pipeline
-
-The module provides a fast-executing script hook using the native tsx engine to dynamically load TypeScript structures without compiler-level intermediate overhead files:
-
-```bash
-npm run parse:kmu
-```
-
-### Pipeline Data Execution Lifecycle (ETL Flow):
-
-1. Extract: The KmuHttpClient parses the file stream from your static asset buffer block (storage/kmu_page.html).
-2. Transform: The KmuHtmlParser handles data sanitization routines (scrubbing hidden mixed Latin-Cyrillic string injection typos like Укрaїни or службa) and handles recursive map tracking for nested child components found inside accordion menu panels.
-
-3. Backup: The data stream compiles a permanent timestamp record inside storage/kmu_agencies_1.csv for manual auditing.
-
-4. Load: The KmuImportService isolates distinct categories, handles programmatic string transliteration to convert categories to latin slugs (e.g. Комісії -> komisiyi), reads relational mapping IDs, and streams updates via transactional database blocks ($transaction).
+See **[Parser Module](/src/modules/parser/README.md)**
 
 ## 📡 Routes
 
