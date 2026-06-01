@@ -1,12 +1,9 @@
 import * as cheerio from "cheerio";
-
-export type ParsedAgencyRow = {
-  name: string;
-  typeName: string;
-  website: string;
-};
+import type { ParsedAgencyRow } from "../types/kmu-types.js";
 
 export class KmuParserService {
+  private readonly KMU_URL = "https://www.kmu.gov.ua";
+
   parseCatalog(html: string): ParsedAgencyRow[] {
     const $ = cheerio.load(html);
     const agencies: ParsedAgencyRow[] = [];
@@ -27,7 +24,7 @@ export class KmuParserService {
           let website = mainLink.attr("href")?.trim() || "";
 
           if (website.startsWith("/")) {
-            website = `https://www.kmu.gov.ua${website}`;
+            website = `${this.KMU_URL}${website}`;
           }
 
           if (name) {
@@ -45,7 +42,7 @@ export class KmuParserService {
               let subWebsite = $(subLinkElement).attr("href")?.trim() || "";
 
               if (subWebsite.startsWith("/")) {
-                subWebsite = `https://www.kmu.gov.ua${subWebsite}`;
+                subWebsite = `${this.KMU_URL}${subWebsite}`;
               }
 
               if (subName) {
