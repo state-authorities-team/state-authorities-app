@@ -61,13 +61,6 @@ export const create = async (data: Prisma.AgencyUncheckedCreateInput) => {
     throw ApiError.notFound(`AgencyType with id ${data.typeId} not found`);
   }
 
-  const agency = await prisma.agency.findUnique({
-    where: { id: Number(data.id) },
-  });
-  if (agency) {
-    throw ApiError.conflict(`Agency with id ${data.id} already exists`);
-  }
-
   return prisma.agency.create({ data, include: { agencyType: true } });
 };
 
