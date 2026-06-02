@@ -4,20 +4,18 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import * as agencyService from "../services/agency-service.js";
 import type { getAgencyQuery } from "../types/get-agency-query.js";
 
-export const getAll = asyncHandler(
-  async (_req: Request, res: Response<unknown, { validatedQuery: getAgencyQuery }>) => {
-    const result = await agencyService.getAll(res.locals.validatedQuery);
+export const getAll = asyncHandler(async (_req: Request, res: Response) => {
+  const result = await agencyService.getAll(res.locals.validatedQuery as getAgencyQuery);
 
-    res.status(200).json({
-      success: true,
-      count: result.count,
-      total: result.total,
-      totalPages: result.totalPages,
-      currentPage: result.currentPage,
-      data: result.data,
-    });
-  },
-);
+  res.status(200).json({
+    success: true,
+    count: result.count,
+    total: result.total,
+    totalPages: result.totalPages,
+    currentPage: result.currentPage,
+    data: result.data,
+  });
+});
 
 export const getById = asyncHandler(async (req: Request, res: Response) => {
   const id = Number(req.params.id);
