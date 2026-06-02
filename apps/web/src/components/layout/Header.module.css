@@ -1,69 +1,69 @@
 .siteHeader {
-	background: #ffffff;
-	border-bottom: 1px solid #dddddd;
+  background: #f4f4f4;
+  border-bottom: 1px solid #dddddd;
 }
 
 .headerInner {
-	min-height: 56px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+  min-height: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .logo,
 .nav {
-	display: flex;
-	align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .logo {
-	gap: 8px;
-	font-weight: 700;
+  gap: 8px;
+  font-weight: 700;
 }
 
 .logoMark {
-	width: 24px;
-	height: 24px;
-	border: 1px solid #999999;
-	display: grid;
-	place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #999999;
+  display: grid;
+  place-items: center;
 }
 
 .nav {
-	gap: 24px;
-	font-size: 14px;
+  gap: 24px;
+  font-size: 14px;
 }
 
 .navLink {
-	display: flex;
-	align-items: center;
-	gap: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .navLink svg,
 .logo svg {
-	color: #777777;
-	flex-shrink: 0;
+  color: #777777;
+  flex-shrink: 0;
 }
 
 .navLink:hover,
 .logo:hover {
-	color: #111111;
+  color: #111111;
 }
 
 .navLink:hover svg,
 .logo:hover svg {
-	color: #111111;
+  color: #111111;
 }
 
 @media (max-width: 768px) {
-	.headerInner {
-		flex-direction: column;
-		align-items: flex-start;
-		padding: 16px 0;
-	}
+  .headerInner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 0;
+  }
 
-	.nav {
-		gap: 12px;
-	}
+  .nav {
+    gap: 12px;
+  }
 }
