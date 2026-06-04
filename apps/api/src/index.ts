@@ -3,6 +3,7 @@ import express from "express";
 import errorHandler from "./middlewares/errorHandler.js";
 import agencyRouter from "./routes/agencies-routes.js";
 import agencyTypeRouter from "./routes/agency-types-routes.js";
+import authRouter from "./routes/auth-routes.js";
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ const PORT = process.env.PORT ?? 3000;
 app.use(express.json());
 app.use("/api/agencies", agencyRouter);
 app.use("/api/agency-types", agencyTypeRouter);
+app.use("/api/auth", authRouter);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
