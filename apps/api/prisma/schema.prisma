@@ -18,7 +18,7 @@ model AgencyType {
 
 model Agency {
   id          Int      @id @default(autoincrement())
-  name        String
+  name        String   @unique
   shortName   String?  @map("short_name")
   typeId      Int      @map("type_id")
   headName    String?  @map("head_name")
