@@ -66,6 +66,22 @@ Example:
 | ------ | ----------------- | ---------------- |
 | GET    | /api/agency-types | Get all agencies |
 
+### Authorization and Registration
+
+| Method | Route     | Description   |
+| ------ | --------- | ------------- |
+| POST   | /api/auth | Register user |
+
+Format:
+
+```json
+{
+  "email": "required valid email",
+  "password": "min 6 characters",
+  "confirmPassword": "as password"
+}
+```
+
 ## Responses
 
 ### Bad response
