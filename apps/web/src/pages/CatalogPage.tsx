@@ -13,20 +13,50 @@ import { getAgencies } from "../api/agencies";
 import type { Agency } from "../types/agency";
 import type { Institution } from "../types/institution";
 
+const mockAgencies: Agency[] = [
+  {
+    id: 1,
+    name: "Державна митна служба України",
+    description:
+      "Центральний орган виконавчої влади, який реалізує державну митну політику у сфері митної справи.",
+    region: "Київ",
+    website: "https://customs.gov.ua",
+    email: "customs@gov.ua",
+    typeId: 1,
+    type: { id: 1, name: "Державна служба", slug: "state-service" },
+  },
+  {
+    id: 2,
+    name: "Міністерство цифрової трансформації України",
+    description:
+      "Формування та реалізація державної політики у сфері цифровізації, відкритих даних та електронного урядування.",
+    region: "Київська обл.",
+    website: "https://thedigital.gov.ua",
+    email: "info@mintsyfra.gov.ua",
+    typeId: 2,
+    type: { id: 2, name: "Міністерство", slug: "ministry" },
+  },
+];
+
 export function CatalogPage() {
-  const [institutions, setInstitutions] = useState<Agency[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [institutions, setInstitutions] = useState<Agency[]>(mockAgencies);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error] = useState<string | null>(null);
 
   const loadInstitutions = useCallback(async () => {
     setIsLoading(true);
-    setError(null);
     try {
       const data = await getAgencies();
-      setInstitutions(data);
+      console.log("Дані з бекенду:", data);
+
+      if (data && data.length > 0) {
+        setInstitutions(data);
+      } else {
+        setInstitutions(mockAgencies);
+      }
     } catch (err) {
-      setError("Не вдалося завантажити список установ. Перевірте з'єднання.");
-      console.error(err);
+      console.error("Бекенд відпочиває, працюємо на моках:", err);
+      setInstitutions(mockAgencies);
     } finally {
       setIsLoading(false);
     }
@@ -58,7 +88,10 @@ export function CatalogPage() {
     description: agency.description || "",
     region: agency.region || "Не вказано",
     phone: "-",
-    type: "Державна установа",
+    type:
+      typeof agency.type === "object" && agency.type !== null
+        ? agency.type.name
+        : "Державна установа",
     headName: "-",
     headTitle: "-",
     address: "-",
