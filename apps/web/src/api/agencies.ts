@@ -19,7 +19,6 @@ const mockAgencies: Agency[] = [];
 
 export const getHomeStats = async (): Promise<HomeStats> => {
   try {
-    // змінимо на реальний запит до бекенду, який повертає статистику
     const response =
       await apiClient.get<ApiListResponse<Agency>>("/agencies?limit=1");
 
@@ -40,9 +39,6 @@ export const getHomeStats = async (): Promise<HomeStats> => {
   }
 };
 
-/**
- * Отримати список усіх установ (з підтримкою фільтрації та пагінації)
- */
 export const getAgencies = async (params?: {
   page?: number;
   limit?: number;
@@ -64,5 +60,31 @@ export const getAgencies = async (params?: {
       error,
     );
     return mockAgencies;
+  }
+};
+
+export const getAgencyById = async (id: number): Promise<Agency | null> => {
+  try {
+    const response = await apiClient.get<{ success: boolean; data: Agency }>(
+      `/agencies/${id}`,
+    );
+
+    if (response.data?.success && response.data.data) {
+      return response.data.data;
+    }
+    return null;
+  } catch (error) {
+    console.warn(
+      `Backend /agencies/${id} unavailable, trying to find inside getAgencies list.`,
+      error,
+    );
+
+    try {
+      const allAgencies = await getAgencies();
+      const found = allAgencies.find((item) => item.id === id);
+      return found || null;
+    } catch {
+      return null;
+    }
   }
 };
