@@ -35,6 +35,14 @@ We use **Prisma** as our Next-generation Node.js and TypeScript ORM. It ensures 
 
 ---
 
+## KMU Catalog Scraping & Import Pipeline Module
+
+A robust, enterprise-grade data engineering pipeline designed to autonomously gather, sanitize, and persist official public authority records from the Cabinet of Ministers of Ukraine (**Кабінет Міністрів України — КМУ**).
+
+This module adheres to **Layered Architecture** principles, segregating data extraction (I/O), pure business domain parsing transformations, and relational database persistence into isolated, maintainable structures.
+
+See **[Parser Module](/src/modules/parser/README.md)**
+
 ## 📡 Routes
 
 ### Agencies
@@ -65,6 +73,22 @@ Example:
 | Method | Route             | Description      |
 | ------ | ----------------- | ---------------- |
 | GET    | /api/agency-types | Get all agencies |
+
+### Authorization and Registration
+
+| Method | Route     | Description   |
+| ------ | --------- | ------------- |
+| POST   | /api/auth | Register user |
+
+Format:
+
+```json
+{
+  "email": "required valid email",
+  "password": "min 6 characters",
+  "confirmPassword": "as password"
+}
+```
 
 ## Responses
 
