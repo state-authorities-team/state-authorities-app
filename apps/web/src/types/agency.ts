@@ -15,6 +15,7 @@ export interface Agency {
   headTitle?: string;
   description?: string;
   address?: string;
+  phone?: string;
   email?: string;
   website?: string;
   region?: string;

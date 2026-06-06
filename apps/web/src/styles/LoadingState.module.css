@@ -1,0 +1,157 @@
+.ghost_loader_wrap {
+  background-color: transparent; /* Робимо фон прозорим */
+  width: 100%;
+  min-height: 350px;
+  height: 50dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  position: relative;
+  /* Якщо хочеш додати легке затемнення заднього фону, розкоментуй рядок нижче: */
+  /* background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(4px); */
+}
+
+.ghosts {
+  display: flex;
+  gap: 1rem;
+  transform: scale(1.2);
+}
+
+.ghost_item {
+  width: 2rem;
+  display: grid;
+  border-radius: 40% 40% 25% 25%;
+  aspect-ratio: 0.83;
+  clip-path: polygon(
+    0% 100%,
+    0% 0%,
+    100% 0%,
+    100% 100%,
+    75% 80%,
+    50% 100%,
+    25% 80%
+  );
+  /* Змінюємо колір зіниць на білий, а радужки на чорний, щоб очі зчитувались на світлому фоні */
+  background:
+    radial-gradient(
+      15% 15% at 42% 35%,
+      #ffffff 50%,
+      transparent 50%,
+      transparent
+    ),
+    radial-gradient(
+      15% 15% at 75% 35%,
+      #ffffff 50%,
+      transparent 50%,
+      transparent
+    ),
+    radial-gradient(
+      25% 25% at 37% 35%,
+      #000000 50%,
+      transparent 50%,
+      transparent
+    ),
+    radial-gradient(
+      25% 25% at 70% 35%,
+      #000000 50%,
+      transparent 50%,
+      transparent
+    ),
+    var(--ghost-color);
+  animation: ghost-body 0.3s ease infinite;
+}
+
+.one {
+  --ghost-color: #1655f2;
+}
+.two {
+  --ghost-color: #fdbd28;
+}
+.three {
+  --ghost-color: #ad5cee;
+}
+.four {
+  --ghost-color: #f1302b;
+}
+
+@keyframes ghost-body {
+  0%,
+  100% {
+    clip-path: polygon(
+      0% 80%,
+      0% 0%,
+      100% 0%,
+      100% 80%,
+      75% 100%,
+      50% 80%,
+      25% 100%
+    );
+  }
+  50% {
+    clip-path: polygon(
+      0% 100%,
+      0% 0%,
+      100% 0%,
+      100% 100%,
+      75% 80%,
+      50% 100%,
+      25% 80%
+    );
+  }
+}
+
+.pacman_loader {
+  width: 3em;
+  font-size: 3rem;
+  aspect-ratio: clamp(2, 3, 10);
+  /* Точки, які їсть Пакман, тепер темно-сірі/брендові, щоб їх було видно на білому */
+  background-image: radial-gradient(closest-side circle, #333333 35%, #fff0 0);
+  background-size: 0.4em 100%;
+  background-position: 0.4em 50%;
+  mask:
+    radial-gradient(farthest-side circle, #fff 99.9%, #fff0) 0 0 / calc(2em / 3)
+      100% no-repeat,
+    linear-gradient(90deg, #0000 calc(1em / 3), #000 0 75%, #0000 95%);
+  transform: scaleX(-1);
+  animation: move 0.4s linear infinite;
+  position: relative;
+}
+
+.pacman_loader::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  height: 50%;
+  aspect-ratio: 2;
+  border-radius: 50% / 100% 100% 0 0;
+  background: #0dc195;
+  transform-origin: 50% 100%;
+  transform: rotate(-40deg);
+  animation: mouth 0.4s linear infinite alternate;
+}
+
+.pacman_loader::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 50%;
+  aspect-ratio: 2;
+  border-radius: 50% / 0 0 100% 100%;
+  transform-origin: 50% 0;
+  transform: rotate(40deg);
+  background: #0dc195;
+  animation: mouth 0.4s linear infinite alternate;
+}
+
+@keyframes mouth {
+  to {
+    transform: rotate(0);
+  }
+}
+@keyframes move {
+  to {
+    background-position: 0 0;
+  }
+}
