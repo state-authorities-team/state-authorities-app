@@ -1,3 +1,4 @@
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import express from "express";
 import errorHandler from "./middlewares/errorHandler.js";
@@ -11,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT ?? 3000;
 
 app.use(express.json());
+app.use(cookieParser());
 app.use("/api/agencies", agencyRouter);
 app.use("/api/agency-types", agencyTypeRouter);
 app.use("/api/auth", authRouter);
