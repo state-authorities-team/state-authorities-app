@@ -1,0 +1,34 @@
+.title {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 40px;
+  color: var(--tekst);
+}
+
+.headerBlock {
+  background: var(--fon-2);
+  padding: 24px 32px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  margin-bottom: 24px;
+}
+
+.catalogLayout {
+  display: grid;
+  grid-template-columns: 292px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.catalogContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .catalogLayout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
