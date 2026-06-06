@@ -1,3 +1,4 @@
+import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import errorHandler from "./middlewares/errorHandler.js";
@@ -9,6 +10,13 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
+
+app.use(
+  cors({
+    origin: "http://localhost:5175",
+    credentials: true,
+  }),
+);
 
 app.use(express.json());
 app.use("/api/agencies", agencyRouter);
