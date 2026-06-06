@@ -1,12 +1,7 @@
-import type { Role } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import ApiError from "../errors/ApiError.js";
-
-type JwtPayload = {
-  id: number;
-  role: Role;
-};
+import type { JwtPayload } from "../types/jwt-types.js";
 
 export const requireAuth = (req: Request, _res: Response, next: NextFunction): void => {
   const token = req.cookies.token as string | undefined;
