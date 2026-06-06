@@ -38,7 +38,7 @@ export const loginUser = async (data: LoginInput) => {
   const expiresIn = process.env.JWT_EXPIRES_IN ?? "7d";
   const expiresInSeconds = parseExpiresInToSeconds(expiresIn);
 
-  const token = jwt.sign({ id: user.id, role: user.role }, secret, { expiresIn });
+  const token = jwt.sign({ id: user.id, role: user.role }, secret, { expiresIn: expiresInSeconds });
 
   return {
     token,
