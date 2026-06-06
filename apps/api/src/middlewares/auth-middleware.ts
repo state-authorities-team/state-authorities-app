@@ -25,3 +25,22 @@ export const requireAuth = (req: Request, _res: Response, next: NextFunction): v
     next(ApiError.unauthorized("Invalid or expired token"));
   }
 };
+
+export const checkRole = (allowedRoles: string[]) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    try {
+      if (!req.user) {
+        throw ApiError.unauthorized("Authentication context missing");
+      }
+
+      const hasPermission = allowedRoles.includes(req.user.role);
+
+      if (!hasPermission) {
+        throw ApiError.forbidden("Access denied. You do not have the required permissions.");
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+};
