@@ -3,24 +3,7 @@ import jwt from "jsonwebtoken";
 import prisma from "../configs/db-config.js";
 import ApiError from "../errors/ApiError.js";
 import type { LoginInput, RegistrationInput } from "../schemas/auth-schema.js";
-
-function parseExpiresInToSeconds(value: string): number {
-  const num = parseInt(value, 10);
-  if (Number.isNaN(num)) {
-    return 7 * 24 * 60 * 60;
-  }
-  const unit = value.slice(String(num).length);
-  switch (unit) {
-    case "m":
-      return num * 60;
-    case "h":
-      return num * 3600;
-    case "d":
-      return num * 86400;
-    default:
-      return num;
-  }
-}
+import { parseExpiresInToSeconds } from "../utils/time.js";
 
 export const registerUser = async (data: RegistrationInput) => {
   const uniqueUser = await prisma.user.findUnique({
