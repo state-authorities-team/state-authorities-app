@@ -1,0 +1,49 @@
+.section {
+  padding-top: 20px;
+  background: #ffffff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.card {
+  padding: 20px;
+  background: #f4f4f4;
+}
+
+.icon {
+  width: 36px;
+  height: 36px;
+  color: #777777;
+}
+
+.label {
+  margin: 8px 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #777777;
+}
+
+.value {
+  margin: 0 0 12px;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1;
+  color: #111111;
+}
+
+.description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #777777;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

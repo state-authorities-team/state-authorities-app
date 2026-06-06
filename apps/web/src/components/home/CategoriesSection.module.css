@@ -1,0 +1,53 @@
+.section {
+  padding-top: 20px;
+  background: #ffffff;
+}
+
+.title {
+  margin: 0 0 20px;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #777777;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 80px;
+  padding: 20px;
+  background: #f4f4f4;
+}
+
+.icon {
+  width: 36px;
+  height: 36px;
+  color: #777777;
+  flex-shrink: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111111;
+}
+
+.count {
+  margin: 0;
+  font-size: 14px;
+  color: #777777;
+}
