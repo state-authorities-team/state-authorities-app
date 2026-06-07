@@ -1,0 +1,92 @@
+.filtersPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 32px;
+  color: var(--tekst);
+}
+
+.icon {
+  font-size: 36px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.label {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--tekst);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 10px;
+  height: 40px;
+  background-color: var(--fon-2);
+  border: 1px solid #dddddd;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--tekst);
+  appearance: none;
+}
+
+.select {
+  appearance: auto;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: #b0b0b0;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.04);
+}
+
+.searchIcon {
+  position: absolute;
+  right: 12px;
+  font-size: 14px;
+  color: #999999;
+  pointer-events: none;
+}
+
+.resetButton {
+  background: transparent;
+  border: none;
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+  color: var(--tekst);
+  transition: all 0.2s ease;
+}
+
+.resetButton:hover {
+  background: #f8f9fa;
+  border-color: #cccccc;
+  color: #333333;
+}
+
+.resetButton:active {
+  background: #f1f3f5;
+}

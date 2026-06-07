@@ -4,6 +4,9 @@ import { CatalogFilters } from "../components/catalog/CatalogFilters";
 import { CatalogToolbar } from "../components/catalog/CatalogToolbar";
 import { InstitutionList } from "../components/catalog/InstitutionList";
 import { Pagination } from "../components/catalog/Pagination";
+import type { AgencyType } from "../types/agency";
+import { getAgencyTypes } from "../api/agencyTypes";
+import css from "./CatalogPage.module.css";
 
 import { LoadingState } from "../components/ui/LoadingState";
 import { ErrorState } from "../components/ui/ErrorState";
