@@ -4,15 +4,19 @@ import styles from "../../styles/CatalogFilters.module.css";
 export function CatalogFilters() {
   return (
     <form onSubmit={(e) => e.preventDefault()} className={styles.filtersForm}>
-      {/* 1. Пошук  */}
+      <div className={styles.filtersHeader}>
+        <Icon name="Filter" className={styles.filterIcon} />
+        <h2 className={styles.filterTitle}>Фільтри</h2>
+      </div>
+
+      {/* 1. Пошук */}
       <label>
-        <span>Пошук</span>
+        <span className={styles.labelTitle}>Пошук</span>
         <div className={styles.searchInputWrapper}>
           <Icon name="Search" className={styles.searchIcon} />
           <input type="text" placeholder="Назва установи..." />
         </div>
       </label>
-
       {/* 2. Категорія */}
       <label>
         <span>Категорія</span>

@@ -111,7 +111,6 @@ export function CatalogPage() {
   return (
     <main className="section">
       <PageContainer>
-        <p className="eyebrow">Довідник установ</p>
         <h1>Каталог державних установ</h1>
 
         <CatalogToolbar count={mappedInstitutions.length} />

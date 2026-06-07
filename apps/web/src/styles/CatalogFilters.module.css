@@ -4,6 +4,26 @@
   gap: 20px;
 }
 
+.filtersHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.filterTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--tekst);
+  margin: 0;
+}
+
+.filterIcon {
+  width: 24px;
+  height: 24px;
+  color: #64748b;
+}
+
 .searchInputWrapper {
   position: relative;
   display: flex;
@@ -14,6 +34,14 @@
   padding-left: 16px;
   padding-right: 40px;
   width: 100%;
+}
+
+.labelTitle {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--tekst);
+  margin-bottom: 8px;
 }
 
 .searchIcon {
