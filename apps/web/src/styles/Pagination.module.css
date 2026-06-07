@@ -1,0 +1,36 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.pageButton,
+.navButton {
+  padding: 8px 12px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #64748b;
+  transition: color 0.2s;
+}
+
+.pageButton:hover,
+.navButton:hover {
+  color: #1e293b;
+}
+
+.pageButton.active {
+  background-color: transparent;
+  color: #1e293b;
+  font-weight: 700;
+  border: solid 1px #cbd5e1;
+  cursor: default;
+}
+
+.ellipsis {
+  color: #94a3b8;
+  padding: 0 4px;
+}

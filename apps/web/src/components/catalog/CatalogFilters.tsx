@@ -1,5 +1,6 @@
 import type { AgencyType } from "../../types/agency";
-import css from "./CatalogFilters.module.css";
+import { Icon } from "../ui/Icon";
+import css from "../../styles/CatalogFilters.module.css";
 
 type CatalogFiltersProps = {
   agencyTypes: AgencyType[];
@@ -20,21 +21,20 @@ export function CatalogFilters({
 }: CatalogFiltersProps) {
   return (
     <aside className={`card ${css.filtersPanel}`}>
-      <h2 className={css.title}>
-        <span className={css.icon}></span>
-        Фільтри
+      <h2 className={css.filtersHeader}>
+        <Icon name="Filter" size={36} className={css.filterIcon} />
+        <span className={css.filterTitle}>Фільтри</span>
       </h2>
-
       <div className={css.fieldGroup}>
-        <span className={css.label}>Пошук</span>
-        <div className={css.inputWrapper}>
+        <span className={css.labelTitle}>Пошук</span>
+        <div className={css.searchInputWrapper}>
           <input className={css.input} placeholder="Назва установи..." />
-          <span className={css.searchIcon}></span>
+          <Icon name="Search" size={20} className={css.searchIcon} />
         </div>
       </div>
 
       <div className={css.fieldGroup}>
-        <span className={css.label}>Категорія</span>
+        <span className={css.labelTitle}>Категорія</span>
         <select
           className={css.select}
           value={selectedType}
@@ -60,7 +60,7 @@ export function CatalogFilters({
       </div>
 
       <div className={css.fieldGroup}>
-        <span className={css.label}>Регіон</span>
+        <span className={css.labelTitle}>Регіон</span>
         <select className={css.select}>
           <option>Усі регіони</option>
           <option>Київ</option>
