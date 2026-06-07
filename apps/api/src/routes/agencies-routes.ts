@@ -17,15 +17,28 @@ agencyRouter.get("/", validateQuery(getAgencyQuerySchema), agencyController.getA
 agencyRouter.get("/:id", isValidId, agencyController.getById);
 
 agencyRouter.post(
-    "/import-csv",
-    requireAuth,
-    checkRole(["ADMIN"]),
-    uploadCsvMiddleware.single("file"),
-    agencyController.importFromCsv,
+  "/import-csv",
+  requireAuth,
+  checkRole(["ADMIN"]),
+  uploadCsvMiddleware.single("file"),
+  agencyController.importFromCsv,
 );
 
-agencyRouter.post("/", requireAuth, checkRole(["ADMIN"]), validate(createAgencySchema), agencyController.create);
-agencyRouter.put("/:id", requireAuth, checkRole(["ADMIN"]), isValidId, validate(updateAgencySchema), agencyController.update);
+agencyRouter.post(
+  "/",
+  requireAuth,
+  checkRole(["ADMIN"]),
+  validate(createAgencySchema),
+  agencyController.create,
+);
+agencyRouter.put(
+  "/:id",
+  requireAuth,
+  checkRole(["ADMIN"]),
+  isValidId,
+  validate(updateAgencySchema),
+  agencyController.update,
+);
 agencyRouter.delete("/:id", requireAuth, checkRole(["ADMIN"]), isValidId, agencyController.remove);
 
 export default agencyRouter;
