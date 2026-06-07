@@ -1,3 +1,4 @@
+import type { Role } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import ApiError from "../errors/ApiError.js";
@@ -26,7 +27,7 @@ export const requireAuth = (req: Request, _res: Response, next: NextFunction): v
   }
 };
 
-export const checkRole = (allowedRoles: string[]) => {
+export const checkRole = (allowedRoles: Role[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
       if (!req.user) {
