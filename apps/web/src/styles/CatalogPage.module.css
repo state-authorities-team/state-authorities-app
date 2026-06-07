@@ -1,0 +1,235 @@
+.catalogLayout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  margin-top: 32px;
+  width: 100%;
+}
+
+/* Лівий сайдбар під фільтри */
+.sidebarFilters {
+  width: 292px;
+  min-height: 647px;
+  flex-shrink: 0;
+  background-color: var(--fon-2, #f8f9fa);
+  padding: 20px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.sidebarFilters form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.sidebarFilters label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.sidebarFilters label span {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--tekst, #2b2b2b);
+}
+
+.sidebarFilters input,
+.sidebarFilters select {
+  width: 100%;
+  height: 40px;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+/* Права колонка з основним контентом */
+.catalogContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* 2. СТИЛІЗАЦІЯ ВНУТРІШНІХ КОМПОНЕНТІВ (Через вкладеність) */
+
+/* Картка */
+.catalogContent :global(.institution-card) {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 24px;
+  box-sizing: border-box;
+  gap: 32px;
+}
+
+/* ЛІВА КОЛОНКА (Теги, Назва, Опис) */
+.catalogContent :global(.card-left-content) {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* Рядок з тегами (Тип + Регіон поруч) */
+.catalogContent :global(.tags-row) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.catalogContent :global(.tag-item) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.catalogContent :global(.type-tag) {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.catalogContent :global(.region-tag) {
+  background-color: #f0fdf4;
+  color: #166534;
+}
+
+/* Назва та опис */
+.catalogContent :global(.title-section) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.catalogContent :global(.institution-card) h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.catalogContent :global(.institution-card) p {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ПРАВА КОЛОНКА (Сайт, Персона, Кількість) */
+.catalogContent :global(.card-right-content) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 181px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.catalogContent :global(.right-meta-item),
+.catalogContent :global(.meta-link) {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: #475569;
+  text-align: left;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+/* Іконки всередині правої колонки */
+.catalogContent :global(.right-meta-item) :global(.icon),
+.catalogContent :global(.meta-link) :global(.icon) {
+  flex-shrink: 0;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.catalogContent :global(.meta-link) :global(.icon) {
+  color: inherit;
+  opacity: 0.8;
+}
+/* Глобальні стилі для компонента Icon */
+.catalogContent :global(.icon) {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Пагінація (Pagination) */
+.catalogContent :global(.pagination) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.catalogContent :global(.pagination) button {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 6px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.catalogContent :global(.pagination) button:global(.active) {
+  background-color: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+@media (max-width: 1024px) {
+  .catalogLayout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sidebarFilters,
+  .catalogContent {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .catalogContent :global(.institution-card) {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .catalogContent :global(.card-right-content) {
+    align-items: flex-start;
+    text-align: left;
+    padding-top: 0;
+    width: 100%;
+    margin-left: 0;
+  }
+}

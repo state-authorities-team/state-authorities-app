@@ -1,0 +1,37 @@
+.filtersForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.searchInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchInputWrapper input {
+  padding-left: 16px;
+  padding-right: 40px;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 12px;
+  width: 18px;
+  height: 18px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.resetButton {
+  margin-top: 10px;
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+  color: var(--tekst);
+  border: none;
+  cursor: pointer;
+}
