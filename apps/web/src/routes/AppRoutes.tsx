@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { HomePage } from "../pages/HomePage";
 import { CatalogPage } from "../pages/CatalogPage";
 import { InstitutionPage } from "../pages/InstitutionPage";
+import { AdminPage } from "../pages/AdminPage";
 
 export function AppRoutes() {
 	return (
@@ -9,6 +10,7 @@ export function AppRoutes() {
 			<Route path="/" element={<HomePage />} />
 			<Route path="/catalog" element={<CatalogPage />} />
 			<Route path="/institutions/:id" element={<InstitutionPage />} />
+			<Route path="/admin" element={<AdminPage />} />
 		</Routes>
 	);
 }
