@@ -1,5 +1,5 @@
 import type { Institution } from "../../types/institution";
-import { InstitutionCard } from "./InstitutionCard"; // 👈 Імпортуємо правильну картку з сусіднього файлу
+import { InstitutionCard } from "./InstitutionCard";
 
 type InstitutionListProps = {
   institutions: Institution[];
