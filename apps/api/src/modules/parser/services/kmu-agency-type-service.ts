@@ -27,5 +27,4 @@ export class KmuAgencyTypeService {
     const dbTypes = await tx.agencyType.findMany();
     return new Map<string, number>(dbTypes.map((t) => [t.name, t.id]));
   }
-
 }
