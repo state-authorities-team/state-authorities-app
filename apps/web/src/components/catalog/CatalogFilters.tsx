@@ -1,60 +1,76 @@
-import { Icon } from "../ui/Icon";
-import styles from "../../styles/CatalogFilters.module.css";
+import type { AgencyType } from "../../types/agency";
+import css from "./CatalogFilters.module.css";
 
-export function CatalogFilters() {
+type CatalogFiltersProps = {
+  agencyTypes: AgencyType[];
+  isLoading: boolean;
+  error: string | null;
+  selectedType: string;
+  onTypeChange: (type: string) => void;
+  onReset: () => void;
+};
+
+export function CatalogFilters({
+  agencyTypes,
+  isLoading,
+  error,
+  selectedType,
+  onTypeChange,
+  onReset,
+}: CatalogFiltersProps) {
   return (
-    <form onSubmit={(e) => e.preventDefault()} className={styles.filtersForm}>
-      <div className={styles.filtersHeader}>
-        <Icon name="Filter" className={styles.filterIcon} />
-        <h2 className={styles.filterTitle}>Фільтри</h2>
+    <aside className={`card ${css.filtersPanel}`}>
+      <h2 className={css.title}>
+        <span className={css.icon}></span>
+        Фільтри
+      </h2>
+
+      <div className={css.fieldGroup}>
+        <span className={css.label}>Пошук</span>
+        <div className={css.inputWrapper}>
+          <input className={css.input} placeholder="Назва установи..." />
+          <span className={css.searchIcon}></span>
+        </div>
       </div>
 
-      {/* 1. Пошук */}
-      <label>
-        <span className={styles.labelTitle}>Пошук</span>
-        <div className={styles.searchInputWrapper}>
-          <Icon name="Search" className={styles.searchIcon} />
-          <input type="text" placeholder="Назва установи..." />
-        </div>
-      </label>
-      {/* 2. Категорія */}
-      <label>
-        <span>Категорія</span>
-        <select>
-          <option value="">Усі категорії</option>
+      <div className={css.fieldGroup}>
+        <span className={css.label}>Категорія</span>
+        <select
+          className={css.select}
+          value={selectedType}
+          onChange={(e) => onTypeChange(e.target.value)}
+          disabled={isLoading || !!error}
+        >
+          {isLoading ? (
+            <option>Завантаження категорій...</option>
+          ) : error ? (
+            <option>Помилка завантаження</option>
+          ) : (
+            <>
+              <option value="">Усі категорії</option>
+              {agencyTypes.map((type) => (
+                <option key={type.id} value={type.slug}>
+                  {type.name}{" "}
+                  {type.count !== undefined ? `(${type.count})` : ""}
+                </option>
+              ))}
+            </>
+          )}
         </select>
-      </label>
+      </div>
 
-      {/* 3. Тип установи */}
-      <label>
-        <span>Тип установи</span>
-        <select disabled>
-          <option value="">Усі типи</option>
-          <option value="central">Центральний орган</option>
-          <option value="local">Місцевий орган</option>
+      <div className={css.fieldGroup}>
+        <span className={css.label}>Регіон</span>
+        <select className={css.select}>
+          <option>Усі регіони</option>
+          <option>Київ</option>
+          <option>Львів</option>
         </select>
-      </label>
+      </div>
 
-      {/* 4. Регіон */}
-      <label>
-        <span>Регіон</span>
-        <select>
-          <option value="">Усі регіони</option>
-        </select>
-      </label>
-
-      {/* 5. Сортування */}
-      <label>
-        <span>Сортування</span>
-        <select disabled>
-          <option value="name_asc">За назвою (А-Я)</option>
-        </select>
-      </label>
-
-      {/* 6. Кнопка */}
-      <button type="button" className={styles.resetButton}>
+      <button type="button" className={css.resetButton} onClick={onReset}>
         Скинути фільтри
       </button>
-    </form>
+    </aside>
   );
 }

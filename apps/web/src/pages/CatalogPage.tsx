@@ -1,14 +1,15 @@
 import { useEffect, useState, useCallback } from "react";
 import { PageContainer } from "../components/layout/PageContainer";
 import { CatalogFilters } from "../components/catalog/CatalogFilters";
-import { CatalogToolbar } from "../components/catalog/CatalogToolbar";
 import { InstitutionList } from "../components/catalog/InstitutionList";
 import { Pagination } from "../components/catalog/Pagination";
+import type { AgencyType } from "../types/agency";
+import { getAgencyTypes } from "../api/agencyTypes";
+import css from "./CatalogPage.module.css";
 
 import { LoadingState } from "../components/ui/LoadingState";
 import { ErrorState } from "../components/ui/ErrorState";
 import { EmptyState } from "../components/ui/EmptyState";
-import styles from "../styles/CatalogPage.module.css";
 
 import { getAgencies } from "../api/agencies";
 import type { Agency } from "../types/agency";
@@ -48,9 +49,33 @@ const mockAgencies: Agency[] = [
 ];
 
 export function CatalogPage() {
-  const [institutions, setInstitutions] = useState<Agency[]>(mockAgencies);
-  const [isLoading, setIsLoading] = useState(false);
+  const [institutions, setInstitutions] = useState<Agency[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error] = useState<string | null>(null);
+  const [agencyTypes, setAgencyTypes] = useState<AgencyType[]>([]);
+  const [isLoadingTypes, setIsLoadingTypes] = useState<boolean>(true);
+  const [typesError, setTypesError] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<string>("");
+
+  useEffect(() => {
+    async function fetchTypes() {
+      try {
+        setIsLoadingTypes(true);
+        const data = await getAgencyTypes();
+        setAgencyTypes(data);
+      } catch (err) {
+        console.error("Помилка завантаження типів агенцій:", err);
+        setTypesError("Не вдалося завантажити категорії");
+      } finally {
+        setIsLoadingTypes(false);
+      }
+    }
+    fetchTypes();
+  }, []);
+
+  const handleResetFilters = () => {
+    setSelectedType("");
+  };
 
   const loadInstitutions = useCallback(async () => {
     setIsLoading(true);
@@ -111,16 +136,24 @@ export function CatalogPage() {
   return (
     <main className="section">
       <PageContainer>
-        <h1>Каталог державних установ</h1>
+        <div className={css.headerBlock}>
+          <h1 className={css.title}>Каталог державних установ</h1>
+        </div>
 
-        <CatalogToolbar count={mappedInstitutions.length} />
-
-        <div className={styles.catalogLayout}>
-          <aside className={styles.sidebarFilters}>
-            <CatalogFilters />
+        {/* Це єдиний контейнер для фільтрів та контенту */}
+        <div className={css.catalogLayout}>
+          <aside className={css.sidebarFilters}>
+            <CatalogFilters
+              agencyTypes={agencyTypes}
+              isLoading={isLoadingTypes}
+              error={typesError}
+              selectedType={selectedType}
+              onTypeChange={setSelectedType}
+              onReset={handleResetFilters}
+            />
           </aside>
 
-          <section className={styles.catalogContent}>
+          <section className={css.catalogContent}>
             {isLoading ? (
               <LoadingState message="Оновлюємо каталог установ..." />
             ) : error ? (
