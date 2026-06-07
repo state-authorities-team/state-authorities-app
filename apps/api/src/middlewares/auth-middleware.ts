@@ -29,19 +29,14 @@ export const requireAuth = (req: Request, _res: Response, next: NextFunction): v
 
 export const checkRole = (allowedRoles: Role[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
-    try {
-      if (!req.user) {
-        throw ApiError.unauthorized("Authentication context missing");
-      }
-
-      const hasPermission = allowedRoles.includes(req.user.role);
-
-      if (!hasPermission) {
-        throw ApiError.forbidden("Access denied. You do not have the required permissions.");
-      }
-      next();
-    } catch (error) {
-      next(error);
+    if (!req.user) {
+      next(ApiError.unauthorized("Authentication context missing"));
+      return;
     }
+    if (!allowedRoles.includes(req.user.role)) {
+      next(ApiError.forbidden("Access denied. You do not have the required permissions."));
+      return;
+    }
+    next();
   };
 };
