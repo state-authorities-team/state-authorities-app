@@ -22,7 +22,9 @@
     "lint": "npx @biomejs/biome check src",
     "lint:fix": "npx @biomejs/biome check --write src",
     "format": "npx @biomejs/biome format --write src",
-    "parse:kmu": "tsx src/modules/parser/index.ts"
+    "parse:kmu": "tsx src/modules/parser/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"No tests present yet\""
   },
   "keywords": [],
   "author": "",
