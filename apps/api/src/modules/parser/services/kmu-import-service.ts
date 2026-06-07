@@ -12,19 +12,21 @@ export class KmuImportService {
       `${new Date().toISOString()} : [Parser][ImportService] Start import pipeline for ${records.length} records`,
     );
 
-    await prisma.$transaction(async (tx) => {
-      const typeNames = records.map((r) => r.typeName);
-      const typeMap = await this.typeService.synchronizeTypes(tx, typeNames);
+    const typeNames = records.map((r) => r.typeName);
+    const typeMap = await this.typeService.synchronizeTypes(prisma, typeNames);
 
-      console.log(
-        `${new Date().toISOString()} : [Parser][ImportService] Starting agency synchronization...`,
-      );
+    console.log(
+      `${new Date().toISOString()} : [Parser][ImportService] Starting agency synchronization...`,
+    );
 
-      const importedCount = await this.agencyDataService.synchronizeAgencies(tx, records, typeMap);
+    const importedCount = await this.agencyDataService.synchronizeAgencies(
+      prisma,
+      records,
+      typeMap,
+    );
 
-      console.log(
-        `${new Date().toISOString()} : [Parser][ImportService] Import execution context finished! Successfully synced ${importedCount} agencies`,
-      );
-    });
+    console.log(
+      `${new Date().toISOString()} : [Parser][ImportService] Import execution context finished! Successfully synced ${importedCount} agencies`,
+    );
   }
 }

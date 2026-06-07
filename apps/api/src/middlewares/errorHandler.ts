@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response, ErrorRequestHandler } from "express";
+import type { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import ApiError from "../errors/ApiError.js";
 
 type PrismaLikeError = Error & {

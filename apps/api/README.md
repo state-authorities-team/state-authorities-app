@@ -178,6 +178,10 @@ SET **DATABASE_URL**:
 
 Example: `postgresql://<user>:<password>@localhost:<port>/state_authorities`
 
+SET **DIRECT_URL**:
+
+- Same as **DATABASE_URL** but with `pooler` option
+
 ### 2. Install Dependencies
 
 ```bash
