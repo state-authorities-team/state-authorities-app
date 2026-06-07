@@ -1,3 +1,4 @@
+import type { Role } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import ApiError from "../errors/ApiError.js";
@@ -24,4 +25,18 @@ export const requireAuth = (req: Request, _res: Response, next: NextFunction): v
   } catch {
     next(ApiError.unauthorized("Invalid or expired token"));
   }
+};
+
+export const checkRole = (allowedRoles: Role[]) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    if (!req.user) {
+      next(ApiError.unauthorized("Authentication context missing"));
+      return;
+    }
+    if (!allowedRoles.includes(req.user.role)) {
+      next(ApiError.forbidden("Access denied. You do not have the required permissions."));
+      return;
+    }
+    next();
+  };
 };
