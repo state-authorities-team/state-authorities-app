@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { PageContainer } from "../components/layout/PageContainer";
 import { Icon } from "../components/ui/Icon";
 import styles from "../styles/AdminPage.module.css";
+import {Institution} from "../types/institution"
 
 export type Institution = {
 	id: number;
