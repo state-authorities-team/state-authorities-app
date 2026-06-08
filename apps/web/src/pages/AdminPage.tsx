@@ -4,21 +4,6 @@ import { Icon } from "../components/ui/Icon";
 import styles from "../styles/AdminPage.module.css";
 import type {Institution} from "../types/institution"
 
-export type Institution = {
-	id: number;
-	name: string;
-	shortName?: string;
-	type: string;
-	region: string;
-	headName: string;
-	headTitle: string;
-	description: string;
-	address: string;
-	phone: string;
-	email: string;
-	website: string;
-};
-
 const fetchAdminData = (): Promise<Institution[]> => {
     return new Promise((resolve) => {
         setTimeout(() => {
