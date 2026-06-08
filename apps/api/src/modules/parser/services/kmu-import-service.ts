@@ -1,32 +1,44 @@
 import prisma from "../../../configs/db-config.js";
-import type { ParsedAgencyRow } from "../types/kmu-types.js";
 import { KmuAgencyDataService } from "./kmu-agency-data-service.js";
 import { KmuAgencyTypeService } from "./kmu-agency-type-service.js";
+import { KmuParserService } from "./kmu-parser-service.js";
+import { KmuScraperService } from "./kmu-scraper-service.js";
 
 export class KmuImportService {
+  private readonly scraperService = new KmuScraperService();
+  private readonly parserService = new KmuParserService();
   private readonly typeService = new KmuAgencyTypeService();
   private readonly agencyDataService = new KmuAgencyDataService();
 
-  async seedFromCsv(records: ParsedAgencyRow[]): Promise<void> {
+  async runAutomatedLiveImport(): Promise<void> {
     console.log(
-      `${new Date().toISOString()} : [Parser][ImportService] Start import pipeline for ${records.length} records`,
+      `${new Date().toISOString()} : [Parser][ImportService] Initializing automated streaming pipeline`,
     );
 
-    const typeNames = records.map((r) => r.typeName);
-    const typeMap = await this.typeService.synchronizeTypes(prisma, typeNames);
+    try {
+      const html = await this.scraperService.fetchCatalogHtml();
+      const records = this.parserService.parseCatalog(html);
 
-    console.log(
-      `${new Date().toISOString()} : [Parser][ImportService] Starting agency synchronization...`,
-    );
+      if (records.length === 0) {
+        console.warn("[Parser][ImportService] Dataset is empty. Aborting update.");
+        return;
+      }
 
-    const importedCount = await this.agencyDataService.synchronizeAgencies(
-      prisma,
-      records,
-      typeMap,
-    );
+      const typeNames = records.map((r) => r.typeName);
+      const typeMap = await this.typeService.synchronizeTypes(prisma, typeNames);
 
-    console.log(
-      `${new Date().toISOString()} : [Parser][ImportService] Import execution context finished! Successfully synced ${importedCount} agencies`,
-    );
+      const importedCount = await this.agencyDataService.synchronizeAgencies(
+        prisma,
+        records,
+        typeMap,
+      );
+
+      console.log(
+        `${new Date().toISOString()} : [Parser][ImportService] Successfully synced ${importedCount} elements.`,
+      );
+    } catch (error) {
+      console.error("[Parser][ImportService] Critical failure inside seeding loop:", error);
+      throw error;
+    }
   }
 }
