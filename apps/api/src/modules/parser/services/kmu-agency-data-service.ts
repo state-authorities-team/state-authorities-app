@@ -1,9 +1,9 @@
-import type { Prisma } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
 import type { ParsedAgencyRow } from "../types/kmu-types.js";
 
 export class KmuAgencyDataService {
   async synchronizeAgencies(
-    tx: Prisma.TransactionClient,
+    db: PrismaClient,
     records: ParsedAgencyRow[],
     typeMap: Map<string, number>,
   ): Promise<number> {
@@ -19,7 +19,7 @@ export class KmuAgencyDataService {
         continue;
       }
 
-      await tx.agency.upsert({
+      await db.agency.upsert({
         where: { name: record.name },
         update: {
           website: record.website,

@@ -1,16 +1,13 @@
-import type { Prisma } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
 import { slugify } from "../../../utils/slugify.js";
 
 export class KmuAgencyTypeService {
-  async synchronizeTypes(
-    tx: Prisma.TransactionClient,
-    typeNames: string[],
-  ): Promise<Map<string, number>> {
+  async synchronizeTypes(db: PrismaClient, typeNames: string[]): Promise<Map<string, number>> {
     const uniqueTypeNames = Array.from(new Set(typeNames));
 
     for (const typeName of uniqueTypeNames) {
       const slug = slugify(typeName);
-      await tx.agencyType.upsert({
+      await db.agencyType.upsert({
         where: { slug },
         update: {},
         create: {
@@ -24,7 +21,7 @@ export class KmuAgencyTypeService {
       `${new Date().toISOString()} : [Parser][TypeService] All AgencyTypes successfully synchronized`,
     );
 
-    const dbTypes = await tx.agencyType.findMany();
+    const dbTypes = await db.agencyType.findMany();
     return new Map<string, number>(dbTypes.map((t) => [t.name, t.id]));
   }
 }
