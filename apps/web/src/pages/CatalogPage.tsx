@@ -15,48 +15,22 @@ import { getAgencies } from "../api/agencies";
 import type { Agency } from "../types/agency";
 import type { Institution } from "../types/institution";
 
-const mockAgencies: Agency[] = [
-  {
-    id: 1,
-    name: "Державна митна служба України",
-    description:
-      "Центральний орган виконавчої влади, який реалізує державну митну політику у сфері митної справи.",
-    region: "Київ",
-    website: "https://customs.gov.ua",
-    email: "customs@gov.ua",
-    typeId: 1,
-    type: { id: 1, name: "Державна служба", slug: "state-service" },
-    headName: "Звягінцев Сергій Володимирович",
-    headTitle: "Голова служби",
-    phone: "+38 (044) 281-28-28",
-    address: "вул. Дегтярівська, 11-г, м. Київ, 04119",
-  },
-  {
-    id: 2,
-    name: "Міністерство цифрової трансформації України",
-    description:
-      "Формування та реалізація державної політики у сфері цифровізації, відкритих даних та електронного урядування.",
-    region: "Київська обл.",
-    website: "https://thedigital.gov.ua",
-    email: "info@mintsyfra.gov.ua",
-    typeId: 2,
-    type: { id: 2, name: "Міністерство", slug: "ministry" },
-    headName: "Федоров Михайло Альбертович",
-    headTitle: "Міністр",
-    phone: "+38 (044) 567-89-01",
-    address: "вул. Ділова, 24, м. Київ, 03150",
-  },
-];
-
 export function CatalogPage() {
   const [institutions, setInstitutions] = useState<Agency[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // Пагінаційні стейти
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const ITEMS_PER_PAGE = 6;
+
   const [agencyTypes, setAgencyTypes] = useState<AgencyType[]>([]);
   const [isLoadingTypes, setIsLoadingTypes] = useState<boolean>(true);
   const [typesError, setTypesError] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string>("");
 
+  // 1. Завантаження типів агенцій при монтуванні
   useEffect(() => {
     async function fetchTypes() {
       try {
@@ -73,39 +47,60 @@ export function CatalogPage() {
     fetchTypes();
   }, []);
 
-  const handleResetFilters = () => {
-    setSelectedType("");
-  };
+  // 2. Ізольована функція для ручного перезапуску (onRetry)
+  const loadInstitutions = useCallback(
+    async (page: number, typeSlug: string) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await getAgencies({
+          page,
+          limit: ITEMS_PER_PAGE,
+          type: typeSlug || undefined,
+        });
 
-  const loadInstitutions = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const data = await getAgencies();
-      console.log("Дані з бекенду:", data);
-
-      if (data && data.length > 0) {
-        setInstitutions(data);
-      } else {
-        setInstitutions(mockAgencies);
+        if (response && response.success) {
+          setInstitutions(response.data);
+          setTotalPages(response.totalPages || 1);
+        }
+      } catch (err) {
+        console.error("Помилка під час завантаження установ:", err);
+        setError("Не вдалося завантажити дані з сервера");
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      console.error("Бекенд відпочиває, працюємо на моках:", err);
-      setInstitutions(mockAgencies);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  const handleClearFilters = useCallback(() => {
-    loadInstitutions();
-  }, [loadInstitutions]);
+    },
+    [],
+  );
 
   useEffect(() => {
     let isMounted = true;
 
     async function fetchData() {
-      if (isMounted) {
-        await loadInstitutions();
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await getAgencies({
+          page: currentPage,
+          limit: ITEMS_PER_PAGE,
+          type: selectedType || undefined,
+        });
+
+        if (isMounted) {
+          if (response && response.success) {
+            setInstitutions(response.data);
+            setTotalPages(response.totalPages || 1);
+          }
+        }
+      } catch (err) {
+        console.error("Помилка під час завантаження установ в ефекті:", err);
+        if (isMounted) {
+          setError("Не вдалося завантажити дані з сервера");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     }
 
@@ -114,7 +109,21 @@ export function CatalogPage() {
     return () => {
       isMounted = false;
     };
-  }, [loadInstitutions]);
+  }, [currentPage, selectedType]);
+
+  const handleTypeChange = (type: string) => {
+    setSelectedType(type);
+    setCurrentPage(1);
+  };
+
+  const handleResetFilters = () => {
+    setSelectedType("");
+    setCurrentPage(1);
+  };
+
+  const handleClearFilters = useCallback(() => {
+    handleResetFilters();
+  }, []);
 
   const mappedInstitutions: Institution[] = institutions.map((agency) => ({
     id: agency.id,
@@ -140,7 +149,6 @@ export function CatalogPage() {
           <h1 className={css.title}>Каталог державних установ</h1>
         </div>
 
-        {/* Це єдиний контейнер для фільтрів та контенту */}
         <div className={css.catalogLayout}>
           <aside className={css.sidebarFilters}>
             <CatalogFilters
@@ -148,16 +156,19 @@ export function CatalogPage() {
               isLoading={isLoadingTypes}
               error={typesError}
               selectedType={selectedType}
-              onTypeChange={setSelectedType}
+              onTypeChange={handleTypeChange}
               onReset={handleResetFilters}
             />
           </aside>
 
           <section className={css.catalogContent}>
-            {isLoading ? (
-              <LoadingState message="Оновлюємо каталог установ..." />
+            {isLoading && institutions.length === 0 ? (
+              <LoadingState message="Завантажуємо каталог установ..." />
             ) : error ? (
-              <ErrorState message={error} onRetry={loadInstitutions} />
+              <ErrorState
+                message={error}
+                onRetry={() => loadInstitutions(currentPage, selectedType)}
+              />
             ) : institutions.length === 0 ? (
               <EmptyState
                 title="Каталог порожній"
@@ -165,10 +176,14 @@ export function CatalogPage() {
                 onClearFilters={handleClearFilters}
               />
             ) : (
-              <>
+              <div className={isLoading ? css.loadingOverlay : ""}>
                 <InstitutionList institutions={mappedInstitutions} />
-                <Pagination />
-              </>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
             )}
           </section>
         </div>

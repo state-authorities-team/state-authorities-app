@@ -1,3 +1,4 @@
+
 import { apiClient } from "./client";
 import type { Agency } from "../types/agency";
 import type { ApiListResponse } from "../types/api";
@@ -14,19 +15,57 @@ const mockStats: HomeStats = {
   regionsCount: "25",
 };
 
-// Тимчасовий моковий список установ
-const mockAgencies: Agency[] = [];
+const mockAgenciesFallback: Agency[] = [
+  {
+    id: 1,
+    name: "Державна митна служба України",
+    description:
+      "Центральний орган виконавчої влади, який реалізує державну митну політику у сфері митної справи.",
+    region: "Київ",
+    website: "https://customs.gov.ua",
+    email: "customs@gov.ua",
+    typeId: 1,
+    type: { id: 1, name: "Державна служба", slug: "state-service" },
+    headName: "Звягінцев Сергій Володимирович",
+    headTitle: "Голова служби",
+    phone: "+38 (044) 281-28-28",
+    address: "вул. Дегтярівська, 11-г, м. Київ, 04119",
+  },
+  {
+    id: 2,
+    name: "Міністерство цифрової трансформації України",
+    description:
+      "Формування та реалізація державної політики у сфері цифровізації, відкритих даних та електронного урядування.",
+    region: "Київська обл.",
+    website: "https://thedigital.gov.ua",
+    email: "info@mintsyfra.gov.ua",
+    typeId: 2,
+    type: { id: 2, name: "Міністерство", slug: "ministry" },
+    headName: "Федоров Михайло Альбертович",
+    headTitle: "Міністр",
+    phone: "+38 (044) 567-89-01",
+    address: "вул. Ділова, 24, м. Київ, 03150",
+  },
+];
+
+const createMockResponse = (data: Agency[]): ApiListResponse<Agency> => ({
+  success: true,
+  count: data.length,
+  total: data.length,
+  totalPages: 1,
+  currentPage: 1,
+  data,
+});
 
 export const getHomeStats = async (): Promise<HomeStats> => {
   try {
     const response =
       await apiClient.get<ApiListResponse<Agency>>("/agencies?limit=1");
-
     if (response.data?.success && response.data.total > 0) {
       return {
         agenciesCount: response.data.total.toLocaleString("uk-UA"),
-        employeesCount: "2.85M", // Поки що фіксоване значення, оскільки немає даних про кількість працівників
-        regionsCount: "25", // Поки що фіксоване значення, оскільки немає даних про кількість регіонів
+        employeesCount: "2.85M",
+        regionsCount: "25",
       };
     }
     return mockStats;
@@ -44,22 +83,24 @@ export const getAgencies = async (params?: {
   limit?: number;
   type?: string;
   search?: string;
-}): Promise<ApiListResponse<Agency>["data"]> => {
+}): Promise<ApiListResponse<Agency>> => {
   try {
     const response = await apiClient.get<ApiListResponse<Agency>>("/agencies", {
       params,
     });
-
-    if (response.data?.data && response.data.data.length > 0) {
-      return response.data.data;
+    if (response.data?.success && Array.isArray(response.data.data)) {
+      if (response.data.data.length === 0 && !params?.type && !params?.search) {
+        return createMockResponse(mockAgenciesFallback);
+      }
+      return response.data;
     }
-    return mockAgencies;
+    return createMockResponse(mockAgenciesFallback);
   } catch (error) {
     console.warn(
-      "Backend /agencies unavailable, using fallback mock agencies.",
+      "Backend /agencies unavailable, using fallback mock data.",
       error,
     );
-    return mockAgencies;
+    return createMockResponse(mockAgenciesFallback);
   }
 };
 
@@ -68,23 +109,15 @@ export const getAgencyById = async (id: number): Promise<Agency | null> => {
     const response = await apiClient.get<{ success: boolean; data: Agency }>(
       `/agencies/${id}`,
     );
-
     if (response.data?.success && response.data.data) {
       return response.data.data;
     }
     return null;
   } catch (error) {
     console.warn(
-      `Backend /agencies/${id} unavailable, trying to find inside getAgencies list.`,
+      `Backend /agencies/${id} unavailable, using fallback search.`,
       error,
     );
-
-    try {
-      const allAgencies = await getAgencies();
-      const found = allAgencies.find((item) => item.id === id);
-      return found || null;
-    } catch {
-      return null;
-    }
+    return mockAgenciesFallback.find((item) => item.id === id) || null;
   }
 };

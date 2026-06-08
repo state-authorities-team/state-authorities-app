@@ -16,8 +16,10 @@ export const getAgencyTypes = async (): Promise<AgencyType[]> => {
     const response =
       await apiClient.get<ApiListResponse<AgencyType>>("/agency-types");
 
-    if (response.data?.data && response.data.data.length > 0) {
-      return response.data.data;
+    if (response.data?.success && Array.isArray(response.data.data)) {
+      return response.data.data.length > 0
+        ? response.data.data
+        : mockAgencyTypes;
     }
     return mockAgencyTypes;
   } catch (error) {

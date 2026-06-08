@@ -1,15 +1,55 @@
 import styles from "../../styles/Pagination.module.css";
 
-export function Pagination() {
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
+export function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: PaginationProps) {
+  if (totalPages <= 1) return null;
+
+  const handlePrev = () => {
+    if (currentPage > 1) onPageChange(currentPage - 1);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) onPageChange(currentPage + 1);
+  };
+
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
     <div className={styles.pagination}>
-      <button className={styles.navButton}>{"<"}</button>
-      <button className={`${styles.pageButton} ${styles.active}`}>1</button>
-      <button className={styles.pageButton}>2</button>
-      <button className={styles.pageButton}>3</button>
-      <span className={styles.ellipsis}>...</span>
-      <button className={styles.pageButton}>10</button>
-      <button className={styles.navButton}>{">"}</button>
+      <button
+        className={styles.navButton}
+        onClick={handlePrev}
+        disabled={currentPage === 1}
+      >
+        {"<"}
+      </button>
+
+      {pages.map((page) => (
+        <button
+          key={page}
+          className={`${styles.pageButton} ${currentPage === page ? styles.active : ""}`}
+          onClick={() => onPageChange(page)}
+        >
+          {page}
+        </button>
+      ))}
+
+      <button
+        className={styles.navButton}
+        onClick={handleNext}
+        disabled={currentPage === totalPages}
+      >
+        {">"}
+      </button>
     </div>
   );
 }
