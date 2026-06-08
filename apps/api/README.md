@@ -47,14 +47,14 @@ See **[Parser Module](/src/modules/parser/README.md)**
 
 ### Agencies
 
-| Method | Route                    | Description                   | Errors   |
-| ------ | ------------------------ | ----------------------------- | -------- |
-| GET    | /api/agencies            | Get all agencies              |
-| POST   | /api/agencies            | Create agency                 | 400, 404 |
-| PUT    | /api/agencies/:id        | Update agency                 | 400, 404 |
-| DELETE | /api/agencies/:id        | Delete agency                 | 404      |
-| GET    | /api/agencies/:id        | Get agency by id              | 400, 404 |
-| POST   | /api/agencies/import-csv | Import agencies from CSV file | 400      |
+| Method | Route                    | Description                   | Errors             | Auth  |
+| ------ | ------------------------ | ----------------------------- | ------------------ | ----- |
+| GET    | /api/agencies            | Get all agencies              |                    | -     |
+| POST   | /api/agencies            | Create agency                 | 400, 404, 401, 403 | ADMIN |
+| PUT    | /api/agencies/:id        | Update agency                 | 400, 404, 401, 403 | ADMIN |
+| DELETE | /api/agencies/:id        | Delete agency                 | 404, 401, 403      | ADMIN |
+| GET    | /api/agencies/:id        | Get agency by id              | 400, 404           | -     |
+| POST   | /api/agencies/import-csv | Import agencies from CSV file | 400, 401, 403      | ADMIN |
 
 #### 🔍 Query Parameters
 
@@ -76,9 +76,10 @@ Example:
 
 ### Authorization and Registration
 
-| Method | Route     | Description   |
-| ------ | --------- | ------------- |
-| POST   | /api/auth | Register user |
+| Method | Route              | Description                                     |
+| ------ | ------------------ | ----------------------------------------------- |
+| POST   | /api/auth/register | Register user                                   |
+| POST   | /api/auth/login    | Sign in for user, provides jwt token in cookies |
 
 Format:
 
@@ -210,14 +211,15 @@ Use `http://localhost:3000/api/agencies` endpoint to get a list of all agencies 
 
 ## 📜 Available Scripts
 
-| Script             | Description                                                                    |
-| ------------------ | ------------------------------------------------------------------------------ |
-| `npm run dev`      | Starts the server in development mode with hot-reload (using tsx).             |
-| `npm run build`    | Compiles TypeScript code into production-ready JavaScript (output to `dist/`). |
-| `npm run start`    | Runs the compiled project from the `dist/` directory.                          |
-| `npm run lint`     | Checks the code for linting and formatting issues using Biome.                 |
-| `npm run lint:fix` | Automatically fixes linting errors and formats the code via Biome.             |
-| `npm run format`   | Automatically formats the code via Biome.                                      |
+| Script              | Description                                                                    |
+| ------------------- | ------------------------------------------------------------------------------ |
+| `npm run dev`       | Starts the server in development mode with hot-reload (using tsx).             |
+| `npm run build`     | Compiles TypeScript code into production-ready JavaScript (output to `dist/`). |
+| `npm run start`     | Runs the compiled project from the `dist/` directory.                          |
+| `npm run lint`      | Checks the code for linting and formatting issues using Biome.                 |
+| `npm run lint:fix`  | Automatically fixes linting errors and formats the code via Biome.             |
+| `npm run format`    | Automatically formats the code via Biome.                                      |
+| `npm run parse:kmu` | Automatically parse, load and save in DB data about agencies from `kmu.gov.ua` |
 
 ---
 
