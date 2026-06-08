@@ -13,89 +13,68 @@ The module is encapsulated inside its own directory, ensuring that all component
 ```text
 src/modules/parser/
 ├── config/
-│   └── parser.config.ts          # Centralized path & environment configuration
+│   └── puppeteer-config.ts        # Puppetter configuration
 ├── services/
-│   ├── kmu-scraper.service.ts    # File system I/O (Extract layer)
-│   ├── kmu-parser.service.ts     # HTML parsing & data sanitation (Transform layer)
-│   ├── kmu-agency-type.service.ts# DB persistence for Agency Types (Load sub-layer)
-│   ├── kmu-agency-data.service.ts# DB persistence for Agencies (Load sub-layer)
-│   └── kmu-import.service.ts     # Pipeline orchestrator & transaction manager
+│   ├── kmu-agency-data-service.ts # DB persistence for Agencies (Load sub-layer)
+│   ├── kmu-agency-type-service.ts # DB persistence for Agency Types (Load sub-layer)
+│   ├── kmu-import-service.ts      # Pipeline orchestrator
+│   ├── kmu-parser.service.ts      # HTML parsing & data sanitation (Transform layer)
+│   └── kmu-scraper.service.ts     # Web scrapper(Extract layer)
 ├── types/
-│   └── kmu-types.ts              # Unified type definitions (DTOs)
-├── index.ts                      # Module entry point
-└── README.md                     # Documentation
-
+│   └── kmu-types.ts               # Unified type definitions (DTOs)
+├── index.ts                       # Module entry point
+└── README.md                      # Documentation
 ```
-
----
 
 ## 🏛️ Service Breakdown & Responsibilities
 
-The module is split into five core services to satisfy the **Single Responsibility Principle (SRP)**:
+The module is strictly split into core services to fully satisfy the **Single Responsibility Principle (SRP)** and optimize runtime efficiency:
 
 ### 1. `KmuScraperService` (Extract)
 
-- **Responsibility**: Manages file system I/O bound requests.
-- **Operation**: It safely reads the local offline HTML snapshot from the storage directory. Includes comprehensive error handling for missing files (`ENOENT`), permission issues (`EACCES`), and guard clauses for empty snapshots.
+- **Responsibility**: Manages the browser automation lifecycle and network I/O.
+- **Operation**: Launches a headless (invisible) Chromium instance via `puppeteer` to bypass client-side rendering bottlenecks. It navigates to the live portal, waits dynamically for the JavaScript-driven elements to mount, extracts the full raw HTML string using `page.content()`, and immediately terminates the browser process to prevent server memory leaks.
 
 ### 2. `KmuParserService` (Transform)
 
 - **Responsibility**: Houses pure, deterministic business domain parsing logic.
-- **Operation**: Utilizes `cheerio` to traverse the HTML DOM tree. It normalizes text inputs, resolves nested accordion tables, and executes **Data Sanitation routines** (scrubbing hidden mixed Latin-Cyrillic string injection typos like `Укрaїни` or `службa` to avoid data corruption).
+- **Operation**: Accepts the raw HTML string and utilizes `cheerio` to rapidly traverse the static DOM tree on the Node.js side. It normalizes text inputs, parses nested accordion sub-panels (`.slide-panel li a`) to extract parent and subordinated state agencies, and formats unified data objects ready for database ingestion.
 
 ### 3. `KmuAgencyTypeService` (Load / Core DB)
 
 - **Responsibility**: Manages operational mutations for the `AgencyType` relational matrix.
-- **Operation**: Extracts unique category names, programmatically generates URI-friendly text slugs using `slugify`, and executes safe `$transaction`-bound `upsert` queries. It returns an active `Map<string, number>` caching `[name, id]` values for lightning-fast memory lookups.
+- **Operation**: Extracts unique category names (e.g., Ministries, Services, Agencies), programmatically generates URI-friendly text slugs using `slugify`, and executes stable database `upsert` queries. It returns an active `Map<string, number>` caching `[name, id]` values for lightning-fast lookups.
 
 ### 4. `KmuAgencyDataService` (Load / Core DB)
 
 - **Responsibility**: Manages operational mutations for the primary `Agency` model.
-- **Operation**: Maps sanitized CSV data nodes to their respective relational database category IDs. It loops through the dataset and safely triggers index-validated `upsert` queries to prevent duplication across repeated script executions.
+- **Operation**: Maps parsed data nodes (including scraped website URLs) to their respective relational category IDs. It loops through the dataset and executes non-transactional, index-validated individual `upsert` queries. This ensures long-running sync scripts never exceed хмари cloud timeouts (like Render's 5-second locks).
 
 ### 5. `KmuImportService` (The Orchestrator)
 
-- **Responsibility**: Acts as a high-level pipeline manager.
-- **Operation**: It does not contain low-level Prisma block logic. Instead, it manages the lifecycle of the global database transaction (`prisma.$transaction`). It injects sub-services, streams data across the layers, and enforces a strict **Rollback policy** — ensuring database integrity if any layer fails.
+- **Responsibility**: Acts as a high-level pipeline manager (Facade Pattern).
+- **Operation**: Coordinates data streaming across all sub-services. It triggers the scraper, pipes the raw HTML into the Cheerio parser, builds the relational category map, and pushes final records to the database client wrapper without locking tables.
 
 ---
 
 ## 🛠️ Step-by-Step Setup & Execution Guide
 
-### 1. Initialize the Workspace Storage
+### 1. Configuration Check
 
-Due to strict anti-bot and DDoS protection layers deployed on government servers (**Radware/ShieldSquare Mitigation Engines**), direct programmatic HTTP requests via clients like Axios will be caught by a CAPTCHA proxy wall. To circumvent this safely, the module relies on an offline DOM snapshot pipeline.
+The parser runs dynamically using headless browser parameters. Ensure your environment configurations inside `src/config/puppeteer-config.ts` contain required arguments (`--no-sandbox`, etc.) to allow stable operation within restricted Linux containers (e.g., Render.com or Docker environments).
 
-Create a dedicated `storage` folder in your application runtime root directory and initialize an empty HTML anchor file:
+### 2. Sync Database Schema
 
-```bash
-mkdir -p storage && touch storage/kmu_page.html
-
-```
-
-_(Note: The entire `/storage/` folder is globally ignored via `.gitignore` to keep the Git repository clean)._
-
-### 2. Capture the Fresh DOM Snapshot
-
-1. Navigate to the official directory page using a standard desktop browser:
-   👉 [https://www.kmu.gov.ua/catalog](https://www.kmu.gov.ua/catalog)
-2. Complete the **hCaptcha** puzzle interface manually if prompted by the security screen.
-3. Once the structural catalog list fully loads, press **`Ctrl + U`** (or right-click anywhere and select **View Page Source**).
-4. Select the entire source code grid raw content via **`Ctrl + A`** and copy it (**`Ctrl + C`**).
-5. Open your local `storage/kmu_page.html` file in your editor, paste the full buffer text string (**`Ctrl + V`**), and save it.
-
-### 2. Sync database
+Before running the automated crawler, ensure your local or cloud relational state matches your current Prisma schema setup:
 
 ```bash
 npx prisma generate
 npx prisma migrate dev
 ```
 
-_Note: If duplicate records already exist in your local DB container from previous mock tests, clear your DB with TRUNCATE tables._
+### 3. Run the Automated Live Pipeline
 
-### 4. Run the Pipeline Script
-
-The module provides a fast-executing script hook using the native `tsx` engine to dynamically load TypeScript structures without compiler-level intermediate overhead files:
+The pipeline completely eliminates manual file creation or page source copying. It runs natively using a high-performance TypeScript execution engine:
 
 ```bash
 npm run parse:kmu
@@ -105,13 +84,21 @@ npm run parse:kmu
 
 ## 📊 Verification and Auditing
 
-When the script successfully closes, you will receive the following terminal verification signal:
+The system logs structural metrics in real-time. Upon successful completion, your terminal output stream will confirm execution steps:
 
 ```text
-[Parser][ImportService] Import execution context finished! Successfully synced 167 agencies
+2026-06-08T12:00:00.000Z : [Parser] Initializing automated live database update...
+2026-06-08T12:00:00.002Z : [Parser][ImportService] Initializing automated streaming pipeline
+2026-06-08T12:00:00.003Z : [Parser][ScrapperService] Launching headless browser...
+2026-06-08T12:00:02.150Z : [Parser][ScrapperService] Navigating to live URL...
+2026-06-08T12:00:05.420Z : [Parser][ScrapperService] Extracting raw HTML source code...
+2026-06-08T12:00:06.100Z : [Parser][ScrapperService] Browser closed. Parsing DOM via Cheerio...
+2026-06-08T12:00:06.350Z : [Parser][TypeService] All AgencyTypes successfully synchronized
+2026-06-08T12:00:11.890Z : [Parser][ImportService] Successfully synced 132 elements.
+
 ```
 
-Launch the local visualizer matrix to inspect your newly structured records:
+Launch the Prisma internal database visualizer engine to inspect your live synchronized production-ready rows:
 
 ```bash
 npx prisma studio
