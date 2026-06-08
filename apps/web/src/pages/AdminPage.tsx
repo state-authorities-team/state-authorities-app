@@ -1,17 +1,8 @@
 import { useEffect, useState } from "react";
 import { PageContainer } from "../components/layout/PageContainer";
 import { Icon } from "../components/ui/Icon";
-import styles from "./AdminPage.module.css";
-
-type Institution = {
-    id: number;
-    tags: string[];
-    title: string;
-    desc: string;
-    manager: string;
-    employees: string;
-    website: string;
-};
+import styles from "../styles/AdminPage.module.css";
+import { Institution } from "../types/institution";
 
 const fetchAdminData = (): Promise<Institution[]> => {
     return new Promise((resolve) => {
