@@ -208,6 +208,13 @@
   color: #ffffff;
   border-color: #2563eb;
 }
+.loadingOverlay {
+  opacity: 0.6;
+  filter: blur(1.5px);
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+}
+
 @media (max-width: 1024px) {
   .catalogLayout {
     flex-direction: column;
