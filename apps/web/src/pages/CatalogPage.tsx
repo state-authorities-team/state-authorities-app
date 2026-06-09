@@ -70,7 +70,7 @@ export function CatalogPage() {
         if (response && response.success) {
           setInstitutions(response.data);
           setTotalPages(response.totalPages || 1);
-          setTotalInstitutions(response.count || 0);
+          setTotalInstitutions(response.total || 0);
         }
       } catch (err) {
         console.error("Помилка під час завантаження установ:", err);
@@ -100,7 +100,7 @@ export function CatalogPage() {
           if (response && response.success) {
             setInstitutions(response.data);
             setTotalPages(response.totalPages || 1);
-            setTotalInstitutions(response.count || 0);
+            setTotalInstitutions(response.total || 0);
           }
         }
       } catch (err) {
