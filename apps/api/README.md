@@ -47,14 +47,15 @@ See **[Parser Module](/src/modules/parser/README.md)**
 
 ### Agencies
 
-| Method | Route                    | Description                   | Errors             | Auth  |
-| ------ | ------------------------ | ----------------------------- | ------------------ | ----- |
-| GET    | /api/agencies            | Get all agencies              |                    | -     |
-| POST   | /api/agencies            | Create agency                 | 400, 404, 401, 403 | ADMIN |
-| PUT    | /api/agencies/:id        | Update agency                 | 400, 404, 401, 403 | ADMIN |
-| DELETE | /api/agencies/:id        | Delete agency                 | 404, 401, 403      | ADMIN |
-| GET    | /api/agencies/:id        | Get agency by id              | 400, 404           | -     |
-| POST   | /api/agencies/import-csv | Import agencies from CSV file | 400, 401, 403      | ADMIN |
+| Method | Route                    | Description                                       | Errors             | Auth  |
+|--------|--------------------------|---------------------------------------------------|--------------------|-------|
+| GET    | /api/agencies            | Get all agencies                                  |                    | -     |
+| POST   | /api/agencies            | Create agency                                     | 400, 404, 401, 403 | ADMIN |
+| PUT    | /api/agencies/:id        | Update agency                                     | 400, 404, 401, 403 | ADMIN |
+| DELETE | /api/agencies/:id        | Delete agency                                     | 404, 401, 403      | ADMIN |
+| GET    | /api/agencies/:id        | Get agency by id                                  | 400, 404           | -     |
+| POST   | /api/agencies/import-csv | Import agencies from CSV file                     | 400, 401, 403      | ADMIN |
+| POST   | /api/refresh             | Trigger KMU catalog scraping and DB sync pipeline | 401, 403, 429      | ADMIN |
 
 #### 🔍 Query Parameters
 
