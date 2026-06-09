@@ -10,7 +10,7 @@ export interface Agency {
   name: string;
   shortName?: string;
   typeId: number;
-  type?: AgencyType;
+  agencyType?: AgencyType;
   headName?: string;
   headTitle?: string;
   description?: string;

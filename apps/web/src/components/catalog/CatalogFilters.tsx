@@ -9,6 +9,8 @@ type CatalogFiltersProps = {
   selectedType: string;
   onTypeChange: (type: string) => void;
   onReset: () => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
 };
 
 export function CatalogFilters({
@@ -18,6 +20,8 @@ export function CatalogFilters({
   selectedType,
   onTypeChange,
   onReset,
+  searchQuery,
+  onSearchChange,
 }: CatalogFiltersProps) {
   return (
     <aside className={`card ${css.filtersPanel}`}>
@@ -28,7 +32,13 @@ export function CatalogFilters({
       <div className={css.fieldGroup}>
         <span className={css.labelTitle}>Пошук</span>
         <div className={css.searchInputWrapper}>
-          <input className={css.input} placeholder="Назва установи..." />
+          <input
+            id="search"
+            type="text"
+            placeholder="Назва установи..."
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+          />
           <Icon name="Search" size={20} className={css.searchIcon} />
         </div>
       </div>
