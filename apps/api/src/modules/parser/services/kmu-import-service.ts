@@ -10,7 +10,7 @@ export class KmuImportService {
   private readonly typeService = new KmuAgencyTypeService();
   private readonly agencyDataService = new KmuAgencyDataService();
 
-  async runAutomatedLiveImport(): Promise<void> {
+  async runAutomatedLiveImport(): Promise<number> {
     console.log(
       `${new Date().toISOString()} : [Parser][ImportService] Initializing automated streaming pipeline`,
     );
@@ -21,7 +21,7 @@ export class KmuImportService {
 
       if (records.length === 0) {
         console.warn("[Parser][ImportService] Dataset is empty. Aborting update.");
-        return;
+        return 0;
       }
 
       const typeNames = records.map((r) => r.typeName);
@@ -36,6 +36,7 @@ export class KmuImportService {
       console.log(
         `${new Date().toISOString()} : [Parser][ImportService] Successfully synced ${importedCount} elements.`,
       );
+      return importedCount;
     } catch (error) {
       console.error("[Parser][ImportService] Critical failure inside seeding loop:", error);
       throw error;
