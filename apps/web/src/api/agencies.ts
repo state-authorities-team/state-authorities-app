@@ -1,4 +1,3 @@
-
 import { apiClient } from "./client";
 import type { Agency } from "../types/agency";
 import type { ApiListResponse } from "../types/api";
@@ -25,7 +24,7 @@ const mockAgenciesFallback: Agency[] = [
     website: "https://customs.gov.ua",
     email: "customs@gov.ua",
     typeId: 1,
-    type: { id: 1, name: "Державна служба", slug: "state-service" },
+    agencyType: { id: 1, name: "Державна служба", slug: "state-service" },
     headName: "Звягінцев Сергій Володимирович",
     headTitle: "Голова служби",
     phone: "+38 (044) 281-28-28",
@@ -40,7 +39,7 @@ const mockAgenciesFallback: Agency[] = [
     website: "https://thedigital.gov.ua",
     email: "info@mintsyfra.gov.ua",
     typeId: 2,
-    type: { id: 2, name: "Міністерство", slug: "ministry" },
+    agencyType: { id: 2, name: "Міністерство", slug: "ministry" },
     headName: "Федоров Михайло Альбертович",
     headTitle: "Міністр",
     phone: "+38 (044) 567-89-01",
