@@ -7,9 +7,10 @@ datasource db {
 }
 
 model AgencyType {
-  id   Int    @id @default(autoincrement())
-  name String
-  slug String @unique
+  id        Int      @id @default(autoincrement())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
 
   agencies Agency[]
 

@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
-import ApiError from "../errors/ApiError.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import * as agencyTypeService from "../services/agency-type-service.js";
+
+const buildExportTimestamp = () => new Date().toISOString().replace(/[:.]/g, "-");
 
 export const getAll = asyncHandler(async (_req: Request, res: Response) => {
   const data = await agencyTypeService.getAll();
@@ -15,6 +16,11 @@ export const getAll = asyncHandler(async (_req: Request, res: Response) => {
   });
 });
 
-export const exportCsv = asyncHandler(async (_req: Request, _res: Response) => {
-  throw ApiError.internal("AgencyType CSV export is not implemented yet");
+export const exportCsv = asyncHandler(async (_req: Request, res: Response) => {
+  const csvBuffer = await agencyTypeService.exportCsv();
+  const timestamp = buildExportTimestamp();
+
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader("Content-Disposition", `attachment; filename="agency_types_${timestamp}.csv"`);
+  res.status(200).send(csvBuffer);
 });
