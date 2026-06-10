@@ -43,6 +43,10 @@ export const remove = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({ success: true, data: null });
 });
 
+export const exportCsv = asyncHandler(async (_req: Request, _res: Response) => {
+  throw ApiError.internal("Agency CSV export is not implemented yet");
+});
+
 export const importFromCsv = asyncHandler(async (req: Request, res: Response) => {
   if (!req.file) {
     throw ApiError.badRequest("File was not upload");

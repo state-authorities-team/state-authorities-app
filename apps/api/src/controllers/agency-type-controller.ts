@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import ApiError from "../errors/ApiError.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import * as agencyTypeService from "../services/agency-type-service.js";
 
@@ -12,4 +13,8 @@ export const getAll = asyncHandler(async (_req: Request, res: Response) => {
     currentPage: 1,
     data,
   });
+});
+
+export const exportCsv = asyncHandler(async (_req: Request, _res: Response) => {
+  throw ApiError.internal("AgencyType CSV export is not implemented yet");
 });
