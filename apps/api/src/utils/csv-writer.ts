@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-
-type CsvScalarValue = string | number | boolean | Date | null | undefined;
+import type { CsvScalarValue } from "../types/csv-parser-types.js";
 
 const BOM = "\ufeff";
 

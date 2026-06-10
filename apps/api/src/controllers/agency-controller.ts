@@ -3,8 +3,7 @@ import ApiError from "../errors/ApiError.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import * as agencyService from "../services/agency-service.js";
 import type { getAgencyQuery } from "../types/get-agency-query.js";
-
-const buildExportTimestamp = () => new Date().toISOString().replace(/[:.]/g, "-");
+import { buildExportTimestamp } from "../utils/time.js";
 
 export const getAll = asyncHandler(async (_req: Request, res: Response) => {
   const result = await agencyService.getAll(res.locals.validatedQuery as getAgencyQuery);
