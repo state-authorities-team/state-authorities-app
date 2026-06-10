@@ -14,6 +14,7 @@ import {
 const agencyRouter = express.Router();
 
 agencyRouter.get("/", validateQuery(getAgencyQuerySchema), agencyController.getAll);
+agencyRouter.get("/export", agencyController.exportCsv);
 agencyRouter.get("/:id", isValidId, agencyController.getById);
 
 agencyRouter.post(

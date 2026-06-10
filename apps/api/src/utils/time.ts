@@ -15,3 +15,7 @@ export function parseExpiresInToSeconds(value: string): number {
       return num;
   }
 }
+
+export function buildExportTimestamp(): string {
+  return new Date().toISOString().replace(/[:.]/g, "-");
+}

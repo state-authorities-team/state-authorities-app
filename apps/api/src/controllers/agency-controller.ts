@@ -3,6 +3,7 @@ import ApiError from "../errors/ApiError.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import * as agencyService from "../services/agency-service.js";
 import type { getAgencyQuery } from "../types/get-agency-query.js";
+import { buildExportTimestamp } from "../utils/time.js";
 
 export const getAll = asyncHandler(async (_req: Request, res: Response) => {
   const result = await agencyService.getAll(res.locals.validatedQuery as getAgencyQuery);
@@ -41,6 +42,15 @@ export const remove = asyncHandler(async (req: Request, res: Response) => {
 
   await agencyService.remove(id);
   res.status(200).json({ success: true, data: null });
+});
+
+export const exportCsv = asyncHandler(async (_req: Request, res: Response) => {
+  const csvBuffer = await agencyService.exportCsv();
+  const timestamp = buildExportTimestamp();
+
+  res.setHeader("Content-Type", "text/csv; charset=utf-8");
+  res.setHeader("Content-Disposition", `attachment; filename="agencies_${timestamp}.csv"`);
+  res.status(200).send(csvBuffer);
 });
 
 export const importFromCsv = asyncHandler(async (req: Request, res: Response) => {

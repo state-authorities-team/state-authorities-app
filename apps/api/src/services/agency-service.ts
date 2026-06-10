@@ -4,6 +4,9 @@ import ApiError from "../errors/ApiError.js";
 import { type CreateAgencySchema, createAgencySchema } from "../schemas/agency.schema.js";
 import type { getAgencyQuery } from "../types/get-agency-query.js";
 import { parseAndValidate } from "../utils/csv-parser.js";
+import { buildCsvBuffer } from "../utils/csv-writer.js";
+
+const agencyExportHeaders = ["id", "name", "website", "typeName", "createdAt"] as const;
 
 export const getAll = async (params: getAgencyQuery) => {
   const { type, search, page, limit } = params;
@@ -100,6 +103,32 @@ export const remove = async (id: number) => {
   }
 
   return prisma.agency.delete({ where: { id } });
+};
+
+export const exportCsv = async () => {
+  const agencies = await prisma.agency.findMany({
+    select: {
+      id: true,
+      name: true,
+      website: true,
+      createdAt: true,
+      agencyType: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  const rows = agencies.map((agency) => ({
+    id: agency.id,
+    name: agency.name,
+    website: agency.website,
+    typeName: agency.agencyType.name,
+    createdAt: agency.createdAt,
+  }));
+
+  return buildCsvBuffer(agencyExportHeaders, rows);
 };
 
 export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
