@@ -16,7 +16,9 @@ export function buildCsvContent<T extends Record<string, CsvScalarValue>>(
   data: readonly T[],
 ): string {
   const headerRow = headers.join(",");
-  const bodyRows = data.map((row) => headers.map((header) => escapeCsvValue(row[header])).join(","));
+  const bodyRows = data.map((row) =>
+    headers.map((header) => escapeCsvValue(row[header])).join(","),
+  );
 
   return [headerRow, ...bodyRows].join("\r\n");
 }
