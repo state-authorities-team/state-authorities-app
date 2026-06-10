@@ -11,7 +11,7 @@ export class NewsAiAnalyzerService {
     this.ai = new GoogleGenAI({ apiKey: process.env.AI_API_KEY });
   }
 
-  generateSelectors = async (htmlSnapshot: string): Promise<ScrapeSelectors> => {
+  async generateSelectors(htmlSnapshot: string): Promise<ScrapeSelectors> {
     const timestamp = new Date().toISOString();
 
     const bodyMatch = htmlSnapshot.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
@@ -79,5 +79,5 @@ export class NewsAiAnalyzerService {
       }
       throw error;
     }
-  };
+  }
 }
