@@ -26,16 +26,19 @@
     "format": "npx @biomejs/biome format --write src",
     "parse:kmu": "tsx src/modules/parser/index.ts",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"No tests present yet\""
+    "test": "echo \"No tests present yet\"",
+    "test:news-ai": "tsx src/modules/news-aggregator/test-ai-analyzer.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@google/genai": "^2.8.0",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "argon2": "^0.44.0",
+    "axios": "^1.17.0",
     "cheerio": "^1.2.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
