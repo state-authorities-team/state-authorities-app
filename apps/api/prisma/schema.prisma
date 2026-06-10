@@ -32,7 +32,9 @@ model Agency {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  agencyType AgencyType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  agencyType   AgencyType    @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  news         News[]
+  scrapeConfig ScrapeConfig?
 
   @@map("agencies")
 }
@@ -51,4 +53,29 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model News {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?   @db.Text
+  content     String?   @db.Text
+  url         String    @unique
+  publishedAt DateTime? @map("published_at")
+  agencyId    Int       @map("agency_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  @@map("news")
+}
+
+model ScrapeConfig {
+  agencyId  Int      @id @map("agency_id")
+  selectors Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  @@map("scrape_configs")
 }
