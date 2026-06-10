@@ -2,18 +2,18 @@ import { GoogleGenAI } from "@google/genai";
 import type { ScrapeSelectors } from "../types/news-types.js";
 
 export class NewsAiAnalyzerService {
-  private readonly ai = new GoogleGenAI({
-    apiKey: process.env.AI_API_KEY || "",
-  });
+  private readonly ai: GoogleGenAI;
+
+  constructor() {
+    if (!process.env.AI_API_KEY) {
+      throw new Error("[NewsAiAnalyzerService] AI_API_KEY is not configured.");
+    }
+    this.ai = new GoogleGenAI({ apiKey: process.env.AI_API_KEY });
+  }
 
   generateSelectors = async (htmlSnapshot: string): Promise<ScrapeSelectors> => {
     const timestamp = new Date().toISOString();
 
-    if (!process.env.AI_API_KEY) {
-      throw new Error(
-        `${timestamp} : [NewsAiAnalyzerService] Critical error: AI_API_KEY is missing in environmental variables.`,
-      );
-    }
     const bodyMatch = htmlSnapshot.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
 
     const bodyHtml = bodyMatch ? bodyMatch[1] : htmlSnapshot;
