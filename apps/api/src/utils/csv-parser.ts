@@ -3,6 +3,26 @@ import { parse } from "csv-parse";
 import { type ZodType, z } from "zod";
 import type { CsvTypeCastFn, ParseCsvResult } from "../types/csv-parser-types.js";
 
+const csvParseOptions = {
+  bom: true,
+  columns: true,
+  encoding: "utf8",
+  record_delimiter: ["\r\n", "\n"],
+  skip_empty_lines: true,
+  trim: true,
+} as const;
+
+export const parseCsvBuffer = async (fileBuffer: Buffer): Promise<Record<string, string>[]> => {
+  const rows: Record<string, string>[] = [];
+
+  const stream = Readable.from(fileBuffer).pipe(parse(csvParseOptions));
+  for await (const row of stream) {
+    rows.push(row as Record<string, string>);
+  }
+
+  return rows;
+};
+
 export const parseAndValidate = async <T>(
   fileBuffer: Buffer,
   schema: ZodType<T>,
@@ -12,13 +32,7 @@ export const parseAndValidate = async <T>(
   let skippedRows = 0;
   let totalRows = 0;
 
-  const stream = Readable.from(fileBuffer).pipe(
-    parse({
-      columns: true,
-      skip_empty_lines: true,
-      trim: true,
-    }),
-  );
+  const stream = Readable.from(fileBuffer).pipe(parse(csvParseOptions));
   for await (const row of stream) {
     totalRows++;
 

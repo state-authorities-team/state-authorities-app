@@ -33,12 +33,11 @@ export const importFromCsv = asyncHandler(async (req: Request, res: Response) =>
     throw ApiError.badRequest("Only CSV files are allowed");
   }
 
+  const result = await agencyTypeService.importAgencyTypesFromCsv(req.file.buffer);
+
   res.status(200).json({
     success: true,
-    message: "CSV file was received successfully",
-    data: {
-      fileName: req.file.originalname,
-      size: req.file.size,
-    },
+    message: "CSV file was parsed successfully",
+    data: result,
   });
 });

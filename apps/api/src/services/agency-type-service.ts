@@ -1,4 +1,5 @@
 import prisma from "../configs/db-config.js";
+import { parseCsvBuffer } from "../utils/csv-parser.js";
 import { buildCsvBuffer } from "../utils/csv-writer.js";
 
 const agencyTypeExportHeaders = ["id", "name", "slug", "createdAt"] as const;
@@ -26,4 +27,13 @@ export const exportCsv = async () => {
   }));
 
   return buildCsvBuffer(agencyTypeExportHeaders, rows);
+};
+
+export const importAgencyTypesFromCsv = async (fileBuffer: Buffer) => {
+  const rows = await parseCsvBuffer(fileBuffer);
+
+  return {
+    totalRows: rows.length,
+    rows,
+  };
 };
