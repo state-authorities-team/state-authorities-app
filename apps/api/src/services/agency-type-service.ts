@@ -1,6 +1,10 @@
 import prisma from "../configs/db-config.js";
 import ApiError from "../errors/ApiError.js";
-import { parseCsvBuffer } from "../utils/csv-parser.js";
+import {
+  type CreateAgencyTypeSchema,
+  createAgencyTypeSchema,
+} from "../schemas/agency-type.schema.js";
+import { parseAndValidate } from "../utils/csv-parser.js";
 import { buildCsvBuffer } from "../utils/csv-writer.js";
 import { slugify } from "../utils/slugify.js";
 
@@ -32,55 +36,50 @@ export const exportCsv = async () => {
 };
 
 export const importAgencyTypesFromCsv = async (fileBuffer: Buffer) => {
-  const rows = await parseCsvBuffer(fileBuffer);
+  const { validRecords, skippedRows, totalRows } = await parseAndValidate<CreateAgencyTypeSchema>(
+    fileBuffer,
+    createAgencyTypeSchema,
+    (row) => {
+      const cleanedRow = Object.fromEntries(
+        Object.entries(row).map(([key, value]) => [
+          key,
+          typeof value === "string" && value.trim() === "" ? undefined : value?.toString().trim(),
+        ]),
+      );
 
-  if (rows.length === 0) {
+      return {
+        name: cleanedRow.name,
+        slug: cleanedRow.slug,
+      };
+    },
+  );
+
+  if (totalRows === 0) {
     throw ApiError.badRequest("CSV file is empty");
   }
 
-  if (!Object.hasOwn(rows[0], "name")) {
+  if (validRecords.length === 0) {
     throw ApiError.badRequest('CSV file must contain "name" column');
   }
 
   let imported = 0;
-  let skipped = 0;
-  const rowErrors: string[] = [];
+  for (const record of validRecords) {
+    const name = record.name.trim();
+    const slug = record.slug?.trim() || slugify(name);
 
-  for (const [index, row] of rows.entries()) {
-    const rowNumber = index + 2;
+    await prisma.agencyType.upsert({
+      where: { slug },
+      create: { name, slug },
+      update: { name, slug },
+    });
 
-    try {
-      const name = row.name?.trim();
-      const slugFromFile = row.slug?.trim();
-      const slug = slugFromFile || (name ? slugify(name) : "");
-
-      if (!name) {
-        throw new Error('Missing required field "name"');
-      }
-
-      if (!slug) {
-        throw new Error("Unable to generate slug");
-      }
-
-      await prisma.agencyType.upsert({
-        where: { slug },
-        create: { name, slug },
-        update: { name, slug },
-      });
-
-      imported++;
-    } catch (error) {
-      skipped++;
-      const message = error instanceof Error ? error.message : "Unknown import error";
-      rowErrors.push(`Row ${rowNumber}: ${message}`);
-      console.warn(`${new Date().toISOString()} [AgencyType CSV] Row ${rowNumber} skipped`, error);
-    }
+    imported++;
   }
 
   return {
-    totalRows: rows.length,
+    totalRows,
     imported,
-    skipped,
-    errors: rowErrors,
+    skipped: skippedRows,
+    errors: [],
   };
 };
