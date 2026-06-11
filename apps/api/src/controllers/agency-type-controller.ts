@@ -37,7 +37,7 @@ export const importFromCsv = asyncHandler(async (req: Request, res: Response) =>
 
   res.status(200).json({
     success: true,
-    message: "CSV file was parsed successfully",
+    message: "CSV file was imported successfully",
     data: result,
   });
 });
