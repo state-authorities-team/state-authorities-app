@@ -5,6 +5,7 @@ import type { CsvTypeCastFn, ParseCsvResult } from "../types/csv-parser-types.js
 
 const csvParseOptions = {
   bom: true,
+  delimiter: [",", ";"],
   columns: true,
   encoding: "utf8",
   record_delimiter: ["\r\n", "\n"],
