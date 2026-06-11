@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import ApiError from "../errors/ApiError.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import * as agencyTypeService from "../services/agency-type-service.js";
 import { buildExportTimestamp } from "../utils/time.js";
@@ -22,4 +23,22 @@ export const exportCsv = asyncHandler(async (_req: Request, res: Response) => {
   res.setHeader("Content-Type", "text/csv; charset=utf-8");
   res.setHeader("Content-Disposition", `attachment; filename="agency_types_${timestamp}.csv"`);
   res.status(200).send(csvBuffer);
+});
+
+export const importFromCsv = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.file) {
+    throw ApiError.badRequest("File was not upload");
+  }
+  if (req.file.mimetype !== "text/csv") {
+    throw ApiError.badRequest("Only CSV files are allowed");
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "CSV file was received successfully",
+    data: {
+      fileName: req.file.originalname,
+      size: req.file.size,
+    },
+  });
 });
