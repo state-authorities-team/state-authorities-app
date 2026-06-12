@@ -16,6 +16,7 @@ export class NewsImportService {
     const html = await this.browserScraper.fetchCatalogHtml(websiteUrl);
 
     let selectors = await this.newsDataService.getScrapeConfig(agencyId);
+    const hadExistingConfig = selectors !== null;
 
     if (!selectors) {
       console.log(
@@ -28,7 +29,7 @@ export class NewsImportService {
 
     let newsItems = this.cheerioParser.parseNewsWithConfig(html, selectors, websiteUrl);
 
-    if (newsItems.length === 0) {
+    if (newsItems.length === 0 && hadExistingConfig) {
       console.warn(
         `${timestamp} : [Self-Healing] Zero items matched. Layout change suspected. Re-invoking AI...`,
       );
