@@ -7,7 +7,11 @@ export class NewsImportService {
   private readonly browserScraper = new KmuScraperService();
   private readonly aiAnalyzer = new NewsAiAnalyzerService();
   private readonly cheerioParser = new NewsScraperService();
-  private readonly newsDataService = new NewsDataService();
+  private readonly newsDataService: NewsDataService;
+
+  constructor(newsDataService = new NewsDataService()) {
+    this.newsDataService = newsDataService;
+  }
 
   async runAutomatedLiveImport(agencyId: number, websiteUrl: string): Promise<number> {
     const timestamp = new Date().toISOString();
