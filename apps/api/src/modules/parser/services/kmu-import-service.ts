@@ -5,6 +5,7 @@ import { KmuParserService } from "./kmu-parser-service.js";
 import { KmuScraperService } from "./kmu-scraper-service.js";
 
 export class KmuImportService {
+  private readonly kmuUrl = "https://www.kmu.gov.ua/catalog";
   private readonly scraperService = new KmuScraperService();
   private readonly parserService = new KmuParserService();
   private readonly typeService = new KmuAgencyTypeService();
@@ -16,7 +17,7 @@ export class KmuImportService {
     );
 
     try {
-      const html = await this.scraperService.fetchCatalogHtml();
+      const html = await this.scraperService.fetchCatalogHtml(this.kmuUrl);
       const records = this.parserService.parseCatalog(html);
 
       if (records.length === 0) {
