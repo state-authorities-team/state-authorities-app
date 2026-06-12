@@ -35,8 +35,9 @@ export class NewsImportService {
       );
 
       const freshSelectors = await this.aiAnalyzer.generateSelectors(html);
-      await this.newsDataService.upsertScrapeConfig(agencyId, freshSelectors);
-
+      if (newsItems.length > 0) {
+        await this.newsDataService.upsertScrapeConfig(agencyId, freshSelectors);
+      }
       newsItems = this.cheerioParser.parseNewsWithConfig(html, freshSelectors, websiteUrl);
     }
 
