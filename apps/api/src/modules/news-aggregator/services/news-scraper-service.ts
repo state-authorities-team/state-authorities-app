@@ -17,7 +17,7 @@ export class NewsScraperService {
         return;
       }
 
-      const finalUrl = rawUrl.startsWith("/") ? `${sanitizedBaseUrl}/${rawUrl}` : rawUrl;
+      const finalUrl = rawUrl.startsWith("/") ? `${sanitizedBaseUrl}${rawUrl}` : rawUrl;
 
       const parsedDate = rawDate ? new Date(rawDate) : new Date();
       const finalDate = Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
