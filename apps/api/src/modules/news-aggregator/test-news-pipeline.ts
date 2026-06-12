@@ -9,10 +9,6 @@ import type {
 
 dotenv.config();
 
-// interface TestableNewsSyncService {
-//   newsDataService: NewsDataService;
-// }
-
 const runOrchestratorTest = async (): Promise<void> => {
   const timestamp = new Date().toISOString();
   console.log(`${timestamp} : [Orchestrator Test] Initializing test harness...`);
