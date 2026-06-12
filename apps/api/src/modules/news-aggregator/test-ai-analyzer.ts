@@ -1,51 +1,49 @@
-import axios from "axios";
 import * as dotenv from "dotenv";
+import { KmuScraperService } from "../parser/services/kmu-scraper-service.js";
 import { NewsAiAnalyzerService } from "./services/news-ai-analyzer-service.js";
+import { NewsScraperService } from "./services/news-scraper-service.js";
 
 dotenv.config();
 
-const runTest = async (): Promise<void> => {
+const runFullPipelineTest = async (): Promise<void> => {
   const timestamp = new Date().toISOString();
-  console.log(`${timestamp} : [Test] Starting AI Analyzer integration test...`);
+  console.log(`${timestamp} : [Integration Test] Starting full dynamic scraping pipeline...`);
 
-  const targetUrl = "https://www.adm-km.gov.ua/";
+  // Виберемо сайт Хмельницької ОДА (або будь-який інший державний сайт новин)
+  const targetUrl = "https://www.adm-km.gov.ua";
 
-  const aiService = new NewsAiAnalyzerService();
+  const browserScraper = new KmuScraperService();
+  const aiAnalyzer = new NewsAiAnalyzerService();
+  const cheerioParser = new NewsScraperService();
 
   try {
-    console.log(`${timestamp} : [Test] Fetching raw HTML from "${targetUrl}" via Axios...`);
+    const rawHtml = await browserScraper.fetchCatalogHtml(targetUrl);
+    console.log(`${timestamp} : [Integration Test] Raw HTML captured via Puppeteer.`);
 
-    const response = await axios.get(targetUrl, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      },
-    });
-
-    const rawHtml = response.data as string;
-    console.log(
-      `${timestamp} : [Test] HTML downloaded successfully (${(rawHtml.length / 1024).toFixed(2)} KB).`,
-    );
-
-    console.log(`${timestamp} : [Test] Invoking Gemini AI model analysis...`);
-
-    const startTime = Date.now();
-    const selectors = await aiService.generateSelectors(rawHtml);
-    const endTime = Date.now();
-
-    console.log("\n================ TEST RESULT ================");
-    console.log(`Execution Time: ${((endTime - startTime) / 1000).toFixed(2)} seconds`);
-    console.log("Generated CSS Selectors Matrix:");
+    const selectors = await aiAnalyzer.generateSelectors(rawHtml);
+    console.log("\n[Step 2] AI Matrix Results:");
     console.log(JSON.stringify(selectors, null, 2));
-    console.log("================================================\n");
-  } catch (error) {
-    console.error(`${timestamp} : [Test CRITICAL ERROR] Pipeline failed!`);
-    if (error instanceof Error) {
-      console.error(`=> Message: ${error.message}`);
+
+    console.log(
+      `\n${timestamp} : [Integration Test] Executing fast runtime parsing via Cheerio...`,
+    );
+    const newsItems = cheerioParser.parseNewsWithConfig(rawHtml, selectors, targetUrl);
+
+    console.log("\n================ PARSED NEWS FEED RESULT ================");
+    console.log(`Total News Discovered: ${newsItems.length}`);
+    if (newsItems.length > 0) {
+      console.log("First 3 items preview:");
+      console.log(JSON.stringify(newsItems.slice(0, 3), null, 2));
     } else {
-      console.error(`=> Unknown error context:`, error);
+      console.warn("Warning: Cheerio returned 0 elements based on AI selectors!");
+    }
+    console.log("============================================================\n");
+  } catch (error) {
+    console.error(`${timestamp} : [Integration Test CRITICAL ERROR] Pipeline broke!`);
+    if (error instanceof Error) {
+      console.error(`=> Reason: ${error.message}`);
     }
   }
 };
 
-runTest();
+runFullPipelineTest();
