@@ -95,9 +95,9 @@ export function InstitutionPage() {
                 <div>
                   <dt>Тип</dt>
                   <dd>
-                    {typeof institution.type === "object"
-                      ? institution.type.name
-                      : institution.type || "-"}
+                    {typeof institution.agencyType === "object"
+                      ? institution.agencyType.name
+                      : institution.agencyType || "-"}
                   </dd>
                 </div>
                 <div>

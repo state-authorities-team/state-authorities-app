@@ -6,6 +6,8 @@ import { Pagination } from "../components/catalog/Pagination";
 import type { AgencyType } from "../types/agency";
 import { getAgencyTypes } from "../api/agencyTypes";
 import css from "../styles/CatalogPage.module.css";
+import { CatalogToolbar } from "../components/catalog/CatalogToolbar";
+import { useDebounce } from "../hooks/useDebounce";
 
 import { LoadingState } from "../components/ui/LoadingState";
 import { ErrorState } from "../components/ui/ErrorState";
@@ -13,6 +15,7 @@ import { EmptyState } from "../components/ui/EmptyState";
 
 import { getAgencies } from "../api/agencies";
 import type { Agency } from "../types/agency";
+
 import type { Institution } from "../types/institution";
 
 export function CatalogPage() {
@@ -29,6 +32,10 @@ export function CatalogPage() {
   const [isLoadingTypes, setIsLoadingTypes] = useState<boolean>(true);
   const [typesError, setTypesError] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [totalInstitutions, setTotalInstitutions] = useState<number>(0);
+
+  const debouncedSearch = useDebounce(searchQuery, 500);
 
   // 1. Завантаження типів агенцій при монтуванні
   useEffect(() => {
@@ -49,7 +56,7 @@ export function CatalogPage() {
 
   // 2. Ізольована функція для ручного перезапуску (onRetry)
   const loadInstitutions = useCallback(
-    async (page: number, typeSlug: string) => {
+    async (page: number, typeSlug: string, searchStr: string) => {
       setIsLoading(true);
       setError(null);
       try {
@@ -57,11 +64,13 @@ export function CatalogPage() {
           page,
           limit: ITEMS_PER_PAGE,
           type: typeSlug || undefined,
+          search: searchStr || undefined,
         });
 
         if (response && response.success) {
           setInstitutions(response.data);
           setTotalPages(response.totalPages || 1);
+          setTotalInstitutions(response.total || 0);
         }
       } catch (err) {
         console.error("Помилка під час завантаження установ:", err);
@@ -84,12 +93,14 @@ export function CatalogPage() {
           page: currentPage,
           limit: ITEMS_PER_PAGE,
           type: selectedType || undefined,
+          search: debouncedSearch || undefined,
         });
 
         if (isMounted) {
           if (response && response.success) {
             setInstitutions(response.data);
             setTotalPages(response.totalPages || 1);
+            setTotalInstitutions(response.total || 0);
           }
         }
       } catch (err) {
@@ -109,7 +120,7 @@ export function CatalogPage() {
     return () => {
       isMounted = false;
     };
-  }, [currentPage, selectedType]);
+  }, [currentPage, selectedType, debouncedSearch]);
 
   const handleTypeChange = (type: string) => {
     setSelectedType(type);
@@ -118,6 +129,12 @@ export function CatalogPage() {
 
   const handleResetFilters = () => {
     setSelectedType("");
+    setCurrentPage(1);
+    setSearchQuery("");
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
     setCurrentPage(1);
   };
 
@@ -130,9 +147,10 @@ export function CatalogPage() {
     name: agency.name,
     description: agency.description || "",
     region: agency.region || "Не вказано",
+
     type:
-      typeof agency.type === "object" && agency.type !== null
-        ? agency.type.name
+      typeof agency.agencyType === "object" && agency.agencyType !== null
+        ? agency.agencyType.name
         : "Державна установа",
     website: agency.website || "",
     email: agency.email || "",
@@ -147,6 +165,7 @@ export function CatalogPage() {
       <PageContainer>
         <div className={css.headerBlock}>
           <h1 className={css.title}>Каталог державних установ</h1>
+          <CatalogToolbar count={totalInstitutions} />
         </div>
 
         <div className={css.catalogLayout}>
@@ -158,6 +177,8 @@ export function CatalogPage() {
               selectedType={selectedType}
               onTypeChange={handleTypeChange}
               onReset={handleResetFilters}
+              searchQuery={searchQuery}
+              onSearchChange={handleSearchChange}
             />
           </aside>
 
@@ -167,7 +188,9 @@ export function CatalogPage() {
             ) : error ? (
               <ErrorState
                 message={error}
-                onRetry={() => loadInstitutions(currentPage, selectedType)}
+                onRetry={() =>
+                  loadInstitutions(currentPage, selectedType, searchQuery)
+                }
               />
             ) : institutions.length === 0 ? (
               <EmptyState
