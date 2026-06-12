@@ -1,49 +1,89 @@
 import * as dotenv from "dotenv";
-import { KmuScraperService } from "../parser/services/kmu-scraper-service.js";
-import { NewsAiAnalyzerService } from "./services/news-ai-analyzer-service.js";
-import { NewsScraperService } from "./services/news-scraper-service.js";
+import type { NewsDataService } from "./services/news-data-service.js";
+import { NewsImportService } from "./services/news-import-service.js";
+import type {
+  NewsDataInput,
+  ScrapeSelectors,
+  TestableNewsSyncService,
+} from "./types/news-types.js";
 
 dotenv.config();
 
-const runFullPipelineTest = async (): Promise<void> => {
+// interface TestableNewsSyncService {
+//   newsDataService: NewsDataService;
+// }
+
+const runOrchestratorTest = async (): Promise<void> => {
   const timestamp = new Date().toISOString();
-  console.log(`${timestamp} : [Integration Test] Starting full dynamic scraping pipeline...`);
+  console.log(`${timestamp} : [Orchestrator Test] Initializing test harness...`);
 
-  // Виберемо сайт Хмельницької ОДА (або будь-який інший державний сайт новин)
-  const targetUrl = "https://www.adm-km.gov.ua";
+  const syncService = new NewsImportService();
 
-  const browserScraper = new KmuScraperService();
-  const aiAnalyzer = new NewsAiAnalyzerService();
-  const cheerioParser = new NewsScraperService();
+  const mockRepository = (syncService as unknown as TestableNewsSyncService<NewsDataService>)
+    .newsDataService;
+
+  mockRepository.getScrapeConfig = async (agencyId: number): Promise<ScrapeSelectors | null> => {
+    console.log(
+      `   [Mock DB] getScrapeConfig called for agency ${agencyId}. Returning stubbed selectors.`,
+    );
+    return {
+      container: "div.old-news-card-class-that-will-fail", // just old class for selfcured test
+      title: "h3",
+      url: "a",
+      date: "span",
+    };
+  };
+
+  // Mocked config update method (when AI will find new classes than orchestrator calls this method)
+  mockRepository.upsertScrapeConfig = async (
+    agencyId: number,
+    selectors: ScrapeSelectors,
+  ): Promise<void> => {
+    console.log(
+      `   [Mock DB] ✅ SUCCESS: upsertScrapeConfig triggered for agency ${agencyId}. New selectors saved:`,
+      JSON.stringify(selectors),
+    );
+  };
+
+  // Mock news records
+  mockRepository.upsertManyNews = async (
+    newsItems: NewsDataInput[],
+    agencyId: number,
+  ): Promise<number> => {
+    console.log(
+      `   [Mock DB] ✅ SUCCESS: upsertManyNews triggered. Received ${newsItems.length} elements for agency ${agencyId}.`,
+    );
+    return newsItems.length;
+  };
 
   try {
-    const rawHtml = await browserScraper.fetchCatalogHtml(targetUrl);
-    console.log(`${timestamp} : [Integration Test] Raw HTML captured via Puppeteer.`);
+    // Run orchestrator with site (Хмельницька ОДА)
+    const targetUrl = "https://www.adm-km.gov.ua/";
 
-    const selectors = await aiAnalyzer.generateSelectors(rawHtml);
-    console.log("\n[Step 2] AI Matrix Results:");
-    console.log(JSON.stringify(selectors, null, 2));
+    console.log(`${timestamp} : [Orchestrator Test] Triggering syncAgencyNews pipeline...`);
+    const startTime = Date.now();
 
-    console.log(
-      `\n${timestamp} : [Integration Test] Executing fast runtime parsing via Cheerio...`,
-    );
-    const newsItems = cheerioParser.parseNewsWithConfig(rawHtml, selectors, targetUrl);
+    const totalSynced = await syncService.runAutomatedLiveImport(999, targetUrl);
 
-    console.log("\n================ PARSED NEWS FEED RESULT ================");
-    console.log(`Total News Discovered: ${newsItems.length}`);
-    if (newsItems.length > 0) {
-      console.log("First 3 items preview:");
-      console.log(JSON.stringify(newsItems.slice(0, 3), null, 2));
+    const endTime = Date.now();
+
+    // Results
+    console.log("\n================ ORCHESTRATOR PIPELINE RESULT ================");
+    console.log(`Execution Time: ${((endTime - startTime) / 1000).toFixed(2)} seconds`);
+    console.log(`Total News Successfully Synced (Mocked Storage): ${totalSynced}`);
+    console.log("=================================================================\n");
+
+    if (totalSynced > 0) {
+      console.log(" Test successfully finished! Selfcured logic worked without DB");
     } else {
-      console.warn("Warning: Cheerio returned 0 elements based on AI selectors!");
+      console.warn("Warning: Pipeline finished, but returned 0 news.");
     }
-    console.log("============================================================\n");
   } catch (error) {
-    console.error(`${timestamp} : [Integration Test CRITICAL ERROR] Pipeline broke!`);
+    console.error(`${timestamp} : [Orchestrator Test CRITICAL ERROR] Pipeline failed!`);
     if (error instanceof Error) {
       console.error(`=> Reason: ${error.message}`);
     }
   }
 };
 
-runFullPipelineTest();
+runOrchestratorTest();
