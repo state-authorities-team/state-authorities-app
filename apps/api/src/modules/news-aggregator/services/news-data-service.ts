@@ -18,8 +18,6 @@ export class NewsDataService {
   }
 
   async upsertManyNews(newsItems: NewsDataInput[], agencyId: number): Promise<number> {
-    let savedCount = 0;
-
     for (const item of newsItems) {
       await prisma.news.upsert({
         where: { url: item.url },
@@ -34,8 +32,7 @@ export class NewsDataService {
           agencyId,
         },
       });
-      savedCount++;
     }
-    return savedCount;
+    return newsItems.length;
   }
 }
