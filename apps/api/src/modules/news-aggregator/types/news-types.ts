@@ -10,7 +10,3 @@ export interface NewsDataInput {
   url: string;
   publishedAt: Date;
 }
-
-export interface TestableNewsSyncService<T> {
-  newsDataService: T;
-}
