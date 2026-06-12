@@ -1,11 +1,7 @@
 import * as dotenv from "dotenv";
-import type { NewsDataService } from "./services/news-data-service.js";
+import { NewsDataService } from "./services/news-data-service.js";
 import { NewsImportService } from "./services/news-import-service.js";
-import type {
-  NewsDataInput,
-  ScrapeSelectors,
-  TestableNewsSyncService,
-} from "./types/news-types.js";
+import type { NewsDataInput, ScrapeSelectors } from "./types/news-types.js";
 
 dotenv.config();
 
@@ -13,10 +9,7 @@ const runOrchestratorTest = async (): Promise<void> => {
   const timestamp = new Date().toISOString();
   console.log(`${timestamp} : [Orchestrator Test] Initializing test harness...`);
 
-  const syncService = new NewsImportService();
-
-  const mockRepository = (syncService as unknown as TestableNewsSyncService<NewsDataService>)
-    .newsDataService;
+  const mockRepository = new NewsDataService();
 
   mockRepository.getScrapeConfig = async (agencyId: number): Promise<ScrapeSelectors | null> => {
     console.log(
@@ -51,6 +44,8 @@ const runOrchestratorTest = async (): Promise<void> => {
     );
     return newsItems.length;
   };
+
+  const syncService = new NewsImportService(mockRepository);
 
   try {
     // Run orchestrator with site (Хмельницька ОДА)
