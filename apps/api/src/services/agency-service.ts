@@ -160,6 +160,7 @@ export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
   let skippedByMissingType = 0;
 
   for (const record of validRecords) {
+    const normalizedName = record.name.trim();
     const typeId = agencyTypeMap.get(record.typeName);
 
     if (!typeId) {
@@ -171,7 +172,7 @@ export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
     }
 
     await prisma.agency.upsert({
-      where: { name: record.name },
+      where: { name: normalizedName },
       update: {
         website: record.website,
         shortName: record.shortName,
@@ -185,7 +186,7 @@ export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
         typeId,
       },
       create: {
-        name: record.name,
+        name: normalizedName,
         website: record.website,
         shortName: record.shortName,
         headName: record.headName,
