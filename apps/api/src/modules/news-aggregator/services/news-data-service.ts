@@ -8,12 +8,27 @@ export class NewsDataService {
     return record?.selectors ? (record.selectors as unknown as ScrapeSelectors) : null;
   }
 
-  async upsertScrapeConfig(agencyId: number, selectors: ScrapeSelectors): Promise<void> {
+  async getScrapeConfigRecord(agencyId: number) {
+    return prisma.scrapeConfig.findUnique({ where: { agencyId } });
+  }
+
+  async upsertScrapeConfig(
+    agencyId: number,
+    selectors: ScrapeSelectors,
+    lastAiAnalysedAt?: Date | null,
+  ): Promise<void> {
     const jsonInput = selectors as unknown as Prisma.InputJsonValue;
     await prisma.scrapeConfig.upsert({
       where: { agencyId },
-      update: { selectors: jsonInput },
-      create: { agencyId, selectors: jsonInput },
+      update: {
+        selectors: jsonInput,
+        ...(lastAiAnalysedAt !== undefined ? { lastAiAnalysedAt } : {}),
+      },
+      create: {
+        agencyId,
+        selectors: jsonInput,
+        ...(lastAiAnalysedAt !== undefined ? { lastAiAnalysedAt } : {}),
+      },
     });
   }
 
