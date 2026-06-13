@@ -29,9 +29,9 @@ app.use("/api/auth", authRouter);
 app.use("/api/refresh", refreshRouter);
 app.use(errorHandler);
 
+const newsCron = new NewsCronManager();
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT} port`);
 
-  const newsCron = new NewsCronManager();
   newsCron.initScheduleSync();
 });
