@@ -82,7 +82,7 @@ model ScrapeConfig {
 }
 
 model SystemConfig {
-  key       String   @id @unique
+  key       String   @id
   value     String
   updatedAt DateTime @updatedAt @map("updated_at")
 }
