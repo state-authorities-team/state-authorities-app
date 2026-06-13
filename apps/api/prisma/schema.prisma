@@ -80,3 +80,9 @@ model ScrapeConfig {
 
   @@map("scrape_configs")
 }
+
+model SystemConfig {
+  key       String   @id @unique
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
