@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "../configs/db-config.js";
 import ApiError from "../errors/ApiError.js";
-import { type CreateAgencySchema, createAgencySchema } from "../schemas/agency.schema.js";
+import { type ImportAgencySchema, importAgencySchema } from "../schemas/agency.schema.js";
 import type { getAgencyQuery } from "../types/get-agency-query.js";
 import { parseAndValidate } from "../utils/csv-parser.js";
 import { buildCsvBuffer } from "../utils/csv-writer.js";
@@ -132,9 +132,17 @@ export const exportCsv = async () => {
 };
 
 export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
-  const { validRecords, skippedRows, totalRows } = await parseAndValidate<CreateAgencySchema>(
+  const agencyTypes = await prisma.agencyType.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+  const agencyTypeMap = new Map(agencyTypes.map((agencyType) => [agencyType.name, agencyType.id]));
+
+  const { validRecords, skippedRows, totalRows } = await parseAndValidate<ImportAgencySchema>(
     fileBuffer,
-    createAgencySchema,
+    importAgencySchema,
     (row) => {
       const cleanedRow = Object.fromEntries(
         Object.entries(row).map(([key, value]) => [
@@ -145,19 +153,57 @@ export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
 
       return {
         ...cleanedRow,
-        typeId: cleanedRow.typeId ? Number(cleanedRow.typeId) : undefined,
       };
     },
   );
-  if (validRecords.length > 0) {
-    await prisma.agency.createMany({
-      data: validRecords,
-      skipDuplicates: true,
+  let imported = 0;
+  let skippedByMissingType = 0;
+
+  for (const record of validRecords) {
+    const typeId = agencyTypeMap.get(record.typeName);
+
+    if (!typeId) {
+      skippedByMissingType++;
+      console.warn(
+        `${new Date().toISOString()} [Agency CSV] Skipped agency ${record.name}: type "${record.typeName}" not found`,
+      );
+      continue;
+    }
+
+    await prisma.agency.upsert({
+      where: { name: record.name },
+      update: {
+        website: record.website,
+        shortName: record.shortName,
+        headName: record.headName,
+        headTitle: record.headTitle,
+        description: record.description,
+        address: record.address,
+        phone: record.phone,
+        email: record.email,
+        region: record.region,
+        typeId,
+      },
+      create: {
+        name: record.name,
+        website: record.website,
+        shortName: record.shortName,
+        headName: record.headName,
+        headTitle: record.headTitle,
+        description: record.description,
+        address: record.address,
+        phone: record.phone,
+        email: record.email,
+        region: record.region,
+        typeId,
+      },
     });
+
+    imported++;
   }
   return {
     totalRows,
-    imported: validRecords.length,
-    skipped: skippedRows,
+    imported,
+    skipped: skippedRows + skippedByMissingType,
   };
 };
