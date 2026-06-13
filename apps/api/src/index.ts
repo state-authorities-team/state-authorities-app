@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import errorHandler from "./middlewares/errorHandler.js";
+import { NewsCronManager } from "./modules/news-aggregator/cron/news-cron.js";
 import agencyRouter from "./routes/agencies-routes.js";
 import agencyTypeRouter from "./routes/agency-types-routes.js";
 import authRouter from "./routes/auth-routes.js";
@@ -30,4 +31,7 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT} port`);
+
+  const newsCron = new NewsCronManager();
+  newsCron.initScheduleSync();
 });
