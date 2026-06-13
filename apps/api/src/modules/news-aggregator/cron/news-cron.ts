@@ -64,17 +64,21 @@ export class NewsCronManager {
       console.log(`${loopTime} : [CronManager Worker] Commencing automated state harvesting...`);
 
       const agencies = await prisma.agency.findMany({
-        where: { website: { not: "" } },
+        where: { AND: [{ website: { not: null } }, { website: { not: "" } }] },
         select: { id: true, website: true },
       });
 
       let totalSyncedNews = 0;
       for (const agency of agencies) {
         try {
-          const count = await this.newsImportService.runAutomatedLiveImport(
-            agency.id,
-            agency.website || "",
-          );
+          const website = agency.website;
+          if (!website) {
+            console.log(
+              `[CronManager Worker WARN] Agency with ID ${agency.id} was skipped due website missing`,
+            );
+            continue;
+          }
+          const count = await this.newsImportService.runAutomatedLiveImport(agency.id, website);
           totalSyncedNews += count;
         } catch (agencyError) {
           console.error(
