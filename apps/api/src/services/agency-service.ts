@@ -161,12 +161,13 @@ export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
 
   for (const record of validRecords) {
     const normalizedName = record.name.trim();
-    const typeId = agencyTypeMap.get(record.typeName);
+    const normalizedTypeName = record.typeName.trim();
+    const typeId = agencyTypeMap.get(normalizedTypeName);
 
     if (!typeId) {
       skippedByMissingType++;
       console.warn(
-        `${new Date().toISOString()} [Agency CSV] Skipped agency ${record.name}: type "${record.typeName}" not found`,
+        `${new Date().toISOString()} [Agency CSV] Skipped agency ${record.name}: type "${normalizedTypeName}" not found`,
       );
       continue;
     }
