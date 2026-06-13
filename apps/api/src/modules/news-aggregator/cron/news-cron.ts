@@ -26,7 +26,7 @@ export class NewsCronManager {
 
       const dbCronExpression = config?.value || "0 */3 * * *";
 
-      if (this.currentCronExpression !== dbCronExpression) {
+      if (this.currentCronExpression !== dbCronExpression && cron.validate(dbCronExpression)) {
         const time = new Date().toISOString();
         console.log(
           `${time} : [CronManager] Detected cron schedule mutation from DB. Updating target line to: "${dbCronExpression}"`,
