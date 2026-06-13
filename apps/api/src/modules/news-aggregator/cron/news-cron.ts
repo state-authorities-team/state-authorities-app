@@ -82,10 +82,10 @@ export class NewsCronManager {
             agencyError,
           );
         }
-        console.log(
-          `${new Date().toISOString()} : [CronManager SUCCESS] Synchronization sequence finalized. Imported: ${totalSyncedNews}`,
-        );
       }
+      console.log(
+        `${new Date().toISOString()} : [CronManager SUCCESS] Synchronization sequence finalized. Imported: ${totalSyncedNews}`,
+      );
     } finally {
       this.isSyncRunning = false;
     }
