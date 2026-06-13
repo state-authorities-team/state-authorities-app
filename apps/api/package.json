@@ -27,7 +27,7 @@
     "parse:kmu": "tsx src/modules/parser/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "echo \"No tests present yet\"",
-    "test:news-ai": "tsx src/modules/news-aggregator/test-ai-analyzer.ts"
+    "test:news-pipeline": "tsx src/modules/news-aggregator/test-news-pipeline.ts"
   },
   "keywords": [],
   "author": "",
