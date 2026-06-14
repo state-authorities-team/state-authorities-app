@@ -2,81 +2,9 @@ import { useEffect, useState } from "react";
 import { PageContainer } from "../components/layout/PageContainer";
 import { Icon } from "../components/ui/Icon";
 import styles from "../styles/AdminPage.module.css";
-import type {Institution} from "../types/institution"
-
-const fetchAdminData = (): Promise<Institution[]> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve([
-                {
-                    id: 1,
-                    name: "Державна митна служба України",
-                    type: "Державна служба",
-                    region: "Київська область",
-                    headName: "Тарас Висоцький",
-                    headTitle: "Голова",
-                    description: "Центральний орган виконавчої влади, який реалізує державну митну політику",
-                    address: "м. Київ, вул. Дегтярівська, 11г",
-                    phone: "+380 44 123 45 67",
-                    email: "info@customs.gov.ua",
-                    website: "customs.gov.ua"
-                },
-                {
-                    id: 2,
-                    name: "Кабінет Міністрів України",
-                    type: "Вищий орган виконавчої влади",
-                    region: "Київ",
-                    headName: "Денис Шмигаль",
-                    headTitle: "Прем'єр-міністр",
-                    description: "Вищий орган у системі органів виконавчої влади України",
-                    address: "м. Київ, вул. Грушевського, 12/2",
-                    phone: "1545",
-                    email: "contact@kmu.gov.ua",
-                    website: "www.kmu.gov.ua"
-                },
-                {
-                    id: 3,
-                    name: "Київська міська рада",
-                    type: "Місцеве самоврядування",
-                    region: "м. Київ",
-                    headName: "Віталій Кличко",
-                    headTitle: "Міський голова",
-                    description: "Представницький орган місцевого самоврядування у місті Києві",
-                    address: "м. Київ, вул. Хрещатик, 36",
-                    phone: "+380 44 202 70 00",
-                    email: "info@kmr.gov.ua",
-                    website: "kmr.gov.ua"
-                },
-                {
-                    id: 4,
-                    name: 'Державне підприємство "Дія"',
-                    type: "Державне підприємство",
-                    region: "Київ",
-                    headName: "Євген Федченко",
-                    headTitle: "Керівник",
-                    description: "Державне підприємство, що забезпечує функціонування цифрових державних послуг",
-                    address: "м. Київ, вул. Ділова, 24",
-                    phone: "+380 44 000 00 00",
-                    email: "hello@diia.gov.ua",
-                    website: "diia.gov.ua"
-                },
-                {
-                    id: 5,
-                    name: "Міністерство оборони України",
-                    type: "Міністерство",
-                    region: "Київ",
-                    headName: "Рустем Умєров",
-                    headTitle: "Міністр",
-                    description: "Забезпечує формування та реалізацію державної політики з питань национальної безпеки у воєнній сфері",
-                    address: "м. Київ, Повітрофлотський проспект, 6",
-                    phone: "+380 44 235 68 89",
-                    email: "admou@mil.gov.ua",
-                    website: "www.mil.gov.ua"
-                }
-            ]);
-        }, 300);
-    });
-};
+import type { Institution } from "../types/institution";
+import { getAgencies } from "../api/agencies";
+import type { Agency } from "../types/agency";
 
 function CatalogToolbar() {
     return (
@@ -151,8 +79,28 @@ export function AdminPage() {
         let isMounted = true;
         async function loadAdminData() {
             try {
-                const data = await fetchAdminData();
-                if (isMounted) setInstitutions(data);
+                setIsLoading(true);
+                const response = await getAgencies({ limit: 10 });
+                if (isMounted && response.success && Array.isArray(response.data)) {
+                    const mappedData: Institution[] = response.data.map((agency: Agency) => ({
+                        id: agency.id,
+                        name: agency.name,
+                        type:
+                            typeof agency.agencyType === "object" &&
+                            agency.agencyType !== null
+                                ? agency.agencyType.name
+                                : "Державна установа",
+                        region: agency.region || "Не вказано",
+                        headName: agency.headName || "-",
+                        headTitle: agency.headTitle || "Керівник",
+                        description: agency.description || "-",
+                        address: agency.address || "-",
+                        phone: agency.phone || "-",
+                        email: agency.email || "-",
+                        website: agency.website || "-",
+                    }));
+                    setInstitutions(mappedData);
+                }
             } catch (error) {
                 console.error("Помилка завантаження даних:", error);
             } finally {
@@ -225,17 +173,15 @@ export function AdminPage() {
                             ))
                         )}
 
-                        {!isLoading && (
-                            <div className={styles.adminPagination}>
-                                <button className={styles.pagBtn} disabled>&lt;</button>
-                                <button className={`${styles.pagBtn} ${styles.active}`}>1</button>
-                                <button className={styles.pagBtn}>2</button>
-                                <button className={styles.pagBtn}>3</button>
-                                <span className={styles.pagDots}>...</span>
-                                <button className={styles.pagBtn}>10</button>
-                                <button className={styles.pagBtn}>&gt;</button>
-                            </div>
-                        )}
+                        <div className={styles.adminPagination}>
+                            <button className={styles.pagBtn} disabled>&lt;</button>
+                            <button className={`${styles.pagBtn} ${styles.active}`}>1</button>
+                            <button className={styles.pagBtn}>2</button>
+                            <button className={styles.pagBtn}>3</button>
+                            <span className={styles.pagDots}>...</span>
+                            <button className={styles.pagBtn}>10</button>
+                            <button className={styles.pagBtn}>&gt;</button>
+                        </div>
                     </main>
                 </div>
             </PageContainer>
