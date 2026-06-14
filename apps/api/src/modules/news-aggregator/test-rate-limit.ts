@@ -22,7 +22,9 @@ async function runRateLimitTest() {
         console.log(`[Mock AI] generateContent called. Call count: ${callCount}`);
         if (callCount === 1) {
           console.log("[Mock AI] Throwing 429 RESOURCE_EXHAUSTED error");
-          throw new Error("GoogleGenAIError: [429 RESOURCE_EXHAUSTED] Quota exceeded for metric. Please retry in 2.5s.");
+          throw new Error(
+            "GoogleGenAIError: [429 RESOURCE_EXHAUSTED] Quota exceeded for metric. Please retry in 2.5s.",
+          );
         }
         console.log("[Mock AI] Returning successful response on retry");
         return {
@@ -30,11 +32,11 @@ async function runRateLimitTest() {
             container: "div.news-card",
             title: "h3",
             url: "a",
-            date: "span"
-          })
+            date: "span",
+          }),
         };
-      }
-    }
+      },
+    },
   };
 
   const startTime = Date.now();
@@ -45,9 +47,13 @@ async function runRateLimitTest() {
     console.log(`Total duration: ${duration}ms`);
     // 2.5s delay is parsed as 3s + 1s buffer = 4s sleep. Let's make sure it slept at least 3.9s.
     if (callCount === 2 && selectors.container === "div.news-card" && duration >= 3900) {
-      console.log("✅ TEST 1 PASSED: Successfully retried, respected parsed sleep delay, and got selectors!");
+      console.log(
+        "✅ TEST 1 PASSED: Successfully retried, respected parsed sleep delay, and got selectors!",
+      );
     } else {
-      console.error(`❌ TEST 1 FAILED: Unexpected behavior. Call count: ${callCount}, duration: ${duration}ms`);
+      console.error(
+        `❌ TEST 1 FAILED: Unexpected behavior. Call count: ${callCount}, duration: ${duration}ms`,
+      );
     }
   } catch (err: any) {
     console.error("❌ TEST 1 FAILED: Unexpected error thrown", err);
@@ -63,9 +69,11 @@ async function runRateLimitTest() {
         callCount++;
         console.log(`[Mock AI] generateContent called. Call count: ${callCount}`);
         console.log("[Mock AI] Throwing 429 RESOURCE_EXHAUSTED error");
-        throw new Error("GoogleGenAIError: [429 RESOURCE_EXHAUSTED] Quota exceeded for metric. Please retry in 2.5s.");
-      }
-    }
+        throw new Error(
+          "GoogleGenAIError: [429 RESOURCE_EXHAUSTED] Quota exceeded for metric. Please retry in 2.5s.",
+        );
+      },
+    },
   };
 
   try {
@@ -75,7 +83,9 @@ async function runRateLimitTest() {
   } catch (err: any) {
     console.log(`Caught expected error: ${err.message}`);
     if (callCount === 2) {
-      console.log("✅ TEST 2 PASSED: Tried exactly 2 times (1 initial + 1 retry) and threw the error.");
+      console.log(
+        "✅ TEST 2 PASSED: Tried exactly 2 times (1 initial + 1 retry) and threw the error.",
+      );
     } else {
       console.error(`❌ TEST 2 FAILED: Expected 2 calls, got ${callCount}`);
     }
