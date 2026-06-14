@@ -2,7 +2,12 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 20px;
+  padding: 24px;
+  background-color: var(--fon-1, #ffffff);
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .filtersHeader {
@@ -10,20 +15,19 @@
   align-items: center;
   gap: 12px;
   margin-bottom: 8px;
+  margin-top: 0;
 }
 
 .filterTitle {
-  font-family: var(--font-family);
+  font-family: var(--font-family, sans-serif);
   font-weight: 700;
-  font-size: 32px;
-  color: var(--tekst);
+  font-size: 24px;
+  color: var(--tekst, #1e293b);
   margin: 0;
 }
 
 .filterIcon {
   display: flex;
-  width: 36px;
-  height: 36px;
   color: #64748b;
 }
 
@@ -35,9 +39,9 @@
 
 .labelTitle {
   display: block;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
-  color: var(--tekst);
+  color: var(--tekst, #1e293b);
 }
 
 .searchInputWrapper {
@@ -45,12 +49,42 @@
   width: 100%;
 }
 
-.input {
+.input,
+.select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #334155;
+  background-color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus,
+.select:focus {
+  border: 2px solid var(--kdou-primary, #2563eb);
+  padding: 9px 11px;
+}
+
+.searchInputWrapper input {
   width: 100%;
   padding: 10px 40px 10px 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
   box-sizing: border-box;
+  font-size: 14px;
+  color: #334155;
+  background-color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.searchInputWrapper input:focus {
+  border: 2px solid var(--kdou-primary, #2563eb);
+  padding: 9px 39px 9px 15px;
 }
 
 .searchIcon {
@@ -61,29 +95,25 @@
   pointer-events: none;
   color: #94a3b8;
 }
-.select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
 
 .resetButton {
   margin-top: 10px;
-
-  background: none;
-  border: none;
+  background: transparent;
+  border: 1px solid #dc2626;
+  border-radius: 5px;
   cursor: pointer;
   padding: 10px;
-  transition: opacity 0.2s;
+  transition: all 0.2s ease;
 
-  font-family: var(--font-family);
+  font-family: var(--font-family, sans-serif);
   font-weight: 700;
-  font-size: 20px;
+  font-size: 14px;
   text-align: center;
-  color: var(--tekst);
+  color: #dc2626;
 }
 
 .resetButton:hover {
-  opacity: 0.7;
+  background-color: #fef2f2;
+  border-color: #b91c1c;
+  color: #b91c1c;
 }

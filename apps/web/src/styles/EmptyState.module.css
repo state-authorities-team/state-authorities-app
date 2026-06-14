@@ -1,0 +1,39 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.message {
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 32px;
+  text-align: center;
+  color: var(--kdou-destructive);
+
+  margin: 0 0 24px 0;
+  line-height: 1.3;
+}
+
+.clearButton {
+  background: transparent;
+  border: 2px solid var(--kdou-destructive);
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 10px 24px;
+  font-family: var(--font-family, sans-serif);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--kdou-destructive);
+  transition: all 0.2s ease;
+}
+
+.clearButton:hover {
+  background-color: #fef2f2;
+  opacity: 0.9;
+}

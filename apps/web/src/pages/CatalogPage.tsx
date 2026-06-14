@@ -22,6 +22,7 @@ export function CatalogPage() {
   const [institutions, setInstitutions] = useState<Agency[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<string>("name");
 
   // Пагінаційні стейти
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -37,7 +38,15 @@ export function CatalogPage() {
 
   const debouncedSearch = useDebounce(searchQuery, 500);
 
-  // 1. Завантаження типів агенцій при монтуванні
+  const getSortParams = (sortStr: string) => {
+    if (sortStr.includes("_")) {
+      const [field, order] = sortStr.split("_");
+      return { sortBy: field, sortOrder: order };
+    }
+    return { sortBy: sortStr, sortOrder: "asc" };
+  };
+
+  // 1. Завантаження типів агенцій
   useEffect(() => {
     async function fetchTypes() {
       try {
@@ -54,17 +63,23 @@ export function CatalogPage() {
     fetchTypes();
   }, []);
 
-  // 2. Ізольована функція для ручного перезапуску (onRetry)
   const loadInstitutions = useCallback(
-    async (page: number, typeSlug: string, searchStr: string) => {
+    async (
+      page: number,
+      typeSlug: string,
+      searchStr: string,
+      currentSort: string,
+    ) => {
       setIsLoading(true);
       setError(null);
       try {
+        const sortParams = getSortParams(currentSort);
         const response = await getAgencies({
           page,
           limit: ITEMS_PER_PAGE,
           type: typeSlug || undefined,
           search: searchStr || undefined,
+          ...sortParams,
         });
 
         if (response && response.success) {
@@ -82,6 +97,7 @@ export function CatalogPage() {
     [],
   );
 
+  // 3. Основний ефект стеження за фільтрами
   useEffect(() => {
     let isMounted = true;
 
@@ -89,11 +105,13 @@ export function CatalogPage() {
       setIsLoading(true);
       setError(null);
       try {
+        const sortParams = getSortParams(sortBy);
         const response = await getAgencies({
           page: currentPage,
           limit: ITEMS_PER_PAGE,
           type: selectedType || undefined,
           search: debouncedSearch || undefined,
+          ...sortParams,
         });
 
         if (isMounted) {
@@ -120,7 +138,7 @@ export function CatalogPage() {
     return () => {
       isMounted = false;
     };
-  }, [currentPage, selectedType, debouncedSearch]);
+  }, [currentPage, selectedType, debouncedSearch, sortBy]);
 
   const handleTypeChange = (type: string) => {
     setSelectedType(type);
@@ -131,6 +149,7 @@ export function CatalogPage() {
     setSelectedType("");
     setCurrentPage(1);
     setSearchQuery("");
+    setSortBy("name");
   };
 
   const handleSearchChange = (query: string) => {
@@ -142,23 +161,27 @@ export function CatalogPage() {
     handleResetFilters();
   }, []);
 
-  const mappedInstitutions: Institution[] = institutions.map((agency) => ({
-    id: agency.id,
-    name: agency.name,
-    description: agency.description || "",
-    region: agency.region || "Не вказано",
-
-    type:
-      typeof agency.agencyType === "object" && agency.agencyType !== null
-        ? agency.agencyType.name
-        : "Державна установа",
-    website: agency.website || "",
-    email: agency.email || "",
-    phone: agency.phone || "-",
-    headName: agency.headName || "-",
-    headTitle: agency.headTitle || "Керівник",
-    address: agency.address || "-",
-  }));
+  const mappedInstitutions: Institution[] = institutions.map(
+    (agency: Agency): Institution => {
+      return {
+        id: agency.id,
+        name: agency.name,
+        shortName: agency.shortName || "",
+        description: agency.description || "",
+        region: "",
+        type:
+          agency.agencyType && typeof agency.agencyType === "object"
+            ? agency.agencyType.name
+            : "Державна установа",
+        website: agency.website || "",
+        email: agency.email || "",
+        phone: agency.phone || "-",
+        headName: agency.headName || "Не вказано",
+        headTitle: agency.headTitle || "Керівник",
+        address: agency.address || "-",
+      };
+    },
+  );
 
   return (
     <main className="section">
@@ -179,6 +202,8 @@ export function CatalogPage() {
               onReset={handleResetFilters}
               searchQuery={searchQuery}
               onSearchChange={handleSearchChange}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
             />
           </aside>
 
@@ -189,7 +214,12 @@ export function CatalogPage() {
               <ErrorState
                 message={error}
                 onRetry={() =>
-                  loadInstitutions(currentPage, selectedType, searchQuery)
+                  loadInstitutions(
+                    currentPage,
+                    selectedType,
+                    searchQuery,
+                    sortBy,
+                  )
                 }
               />
             ) : institutions.length === 0 ? (
