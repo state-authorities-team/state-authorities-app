@@ -29,8 +29,9 @@
     "typecheck": "tsc --noEmit",
     "test": "echo \"No tests present yet\"",
     "test:news-pipeline": "tsx src/modules/news-aggregator/test-news-pipeline.ts",
-    "test:news-cooldown": "tsx src/modules/news-aggregator/test-news-cooldown.ts"
-},
+    "test:news-cooldown": "tsx src/modules/news-aggregator/test-news-cooldown.ts",
+    "test:rate-limit": "tsx src/modules/news-aggregator/test-rate-limit.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
