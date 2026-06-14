@@ -1,3 +1,4 @@
+import { sleep } from "../../../utils/sleep.js";
 import { KmuScraperService } from "../../parser/services/kmu-scraper-service.js";
 import { NewsDataService } from "../services/news-data-service.js";
 import type { ScrapeSelectors } from "../types/news-types.js";
@@ -5,6 +6,7 @@ import { NewsAiAnalyzerService } from "./news-ai-analyzer-service.js";
 import { NewsScraperService } from "./news-scraper-service.js";
 
 const AI_ANALYSIS_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24h cooldown guard
+const AI_THROTTLE_DELAY_MS = 4_000; // pause before every request to Gemini
 
 export class NewsImportService {
   private readonly browserScraper = new KmuScraperService();
@@ -33,7 +35,7 @@ export class NewsImportService {
       console.log(
         `${timestamp} : [NewsSync] Target configuration missing. Running LLM extraction...`,
       );
-
+      await sleep(AI_THROTTLE_DELAY_MS); // throttle before first call
       selectors = await this.aiAnalyzer.generateSelectors(html);
       const now = new Date();
       await this.newsDataService.upsertScrapeConfig(agencyId, selectors, now);
@@ -60,7 +62,7 @@ export class NewsImportService {
       console.warn(
         `${timestamp} : [Self-Healing] Zero items matched. Layout change suspected. Re-invoking AI...`,
       );
-
+      await sleep(AI_THROTTLE_DELAY_MS); // throttle before self-healing call
       const freshSelectors = await this.aiAnalyzer.generateSelectors(html);
       await this.newsDataService.upsertScrapeConfig(agencyId, freshSelectors, now);
       newsItems = this.cheerioParser.parseNewsWithConfig(html, freshSelectors, websiteUrl);

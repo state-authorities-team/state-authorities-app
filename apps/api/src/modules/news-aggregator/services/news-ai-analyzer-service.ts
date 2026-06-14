@@ -1,5 +1,31 @@
 import { GoogleGenAI } from "@google/genai";
+import { sleep } from "../../../utils/sleep.js";
 import type { ScrapeSelectors } from "../types/news-types.js";
+
+const MAX_RETRIES = 1;
+const DEFAULT_RETRY_DELAY_MS = 10_000;
+
+const extractRetryDelayMs = (error: unknown): number => {
+  if (!(error instanceof Error)) {
+    return DEFAULT_RETRY_DELAY_MS;
+  }
+  const match = error.message.match(/retry in (\d+(?:\.\d+)?)\s*s/i);
+  if (match?.[1]) {
+    return Math.ceil(parseFloat(match[1])) * 1000 + 1_000; // +1s буфер
+  }
+  return DEFAULT_RETRY_DELAY_MS;
+};
+
+const isRateLimitError = (error: unknown): boolean => {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+  return (
+    error.message.includes("429") ||
+    error.message.includes("RESOURCE_EXHAUSTED") ||
+    error.message.includes("Quota exceeded")
+  );
+};
 
 export class NewsAiAnalyzerService {
   private readonly ai: GoogleGenAI;
@@ -12,12 +38,17 @@ export class NewsAiAnalyzerService {
   }
 
   async generateSelectors(htmlSnapshot: string): Promise<ScrapeSelectors> {
+    return this.generateSelectorsWithRetry(htmlSnapshot, MAX_RETRIES);
+  }
+
+  private async generateSelectorsWithRetry(
+    htmlSnapshot: string,
+    retriesLeft: number,
+  ): Promise<ScrapeSelectors> {
     const timestamp = new Date().toISOString();
 
     const bodyMatch = htmlSnapshot.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-
     const bodyHtml = bodyMatch ? bodyMatch[1] : htmlSnapshot;
-
     const cleanHtml = bodyHtml
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
       .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
@@ -70,10 +101,19 @@ export class NewsAiAnalyzerService {
 
       return parsedSelectors;
     } catch (error) {
+      if (isRateLimitError(error) && retriesLeft > 0) {
+        const delayMs = extractRetryDelayMs(error);
+        console.warn(
+          `${timestamp} : [AI Agent] 429 RESOURCE_EXHAUSTED received. ` +
+            `Waiting ${delayMs}ms before retry (${retriesLeft} attempt(s) left)...`,
+        );
+        await sleep(delayMs);
+        return this.generateSelectorsWithRetry(htmlSnapshot, retriesLeft - 1);
+      }
+
       console.error(
         `${timestamp} : [AI Agent ERROR] Failed to evaluate DOM structure or parse JSON matrix.`,
       );
-
       if (error instanceof Error) {
         console.error(`=> Reason: ${error.message}`);
       }
