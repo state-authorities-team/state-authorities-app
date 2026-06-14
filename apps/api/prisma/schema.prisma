@@ -72,9 +72,10 @@ model News {
 }
 
 model ScrapeConfig {
-  agencyId  Int      @id @map("agency_id")
-  selectors Json
-  updatedAt DateTime @updatedAt @map("updated_at")
+  agencyId         Int       @id @map("agency_id")
+  selectors        Json
+  lastAiAnalysedAt DateTime? @map("last_ai_analysed_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
 
   agency Agency @relation(fields: [agencyId], references: [id], onDelete: Cascade)
 

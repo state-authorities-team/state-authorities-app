@@ -28,8 +28,9 @@
     "parse:kmu": "tsx src/modules/parser/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "echo \"No tests present yet\"",
-    "test:news-pipeline": "tsx src/modules/news-aggregator/test-news-pipeline.ts"
-  },
+    "test:news-pipeline": "tsx src/modules/news-aggregator/test-news-pipeline.ts",
+    "test:news-cooldown": "tsx src/modules/news-aggregator/test-news-cooldown.ts"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
