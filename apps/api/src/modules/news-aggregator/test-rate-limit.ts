@@ -8,6 +8,14 @@ if (!process.env.AI_API_KEY) {
   process.env.AI_API_KEY = "mock-api-key";
 }
 
+interface MockAi {
+  ai: {
+    models: {
+      generateContent: () => Promise<{ text: string }>;
+    };
+  };
+}
+
 async function runRateLimitTest() {
   console.log("=== STARTING RATE LIMIT 429 HANDLING TEST ===");
 
@@ -15,9 +23,9 @@ async function runRateLimitTest() {
 
   // Test Case 1: 429 error followed by a success (should retry and succeed)
   let callCount = 0;
-  (analyzer as any).ai = {
+  (analyzer as unknown as MockAi).ai = {
     models: {
-      generateContent: async (params: any) => {
+      generateContent: async () => {
         callCount++;
         console.log(`[Mock AI] generateContent called. Call count: ${callCount}`);
         if (callCount === 1) {
@@ -55,7 +63,7 @@ async function runRateLimitTest() {
         `❌ TEST 1 FAILED: Unexpected behavior. Call count: ${callCount}, duration: ${duration}ms`,
       );
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("❌ TEST 1 FAILED: Unexpected error thrown", err);
   }
 
@@ -63,9 +71,9 @@ async function runRateLimitTest() {
 
   // Test Case 2: 429 error occurs twice (should exhaust retries and fail)
   callCount = 0;
-  (analyzer as any).ai = {
+  (analyzer as unknown as MockAi).ai = {
     models: {
-      generateContent: async (params: any) => {
+      generateContent: async () => {
         callCount++;
         console.log(`[Mock AI] generateContent called. Call count: ${callCount}`);
         console.log("[Mock AI] Throwing 429 RESOURCE_EXHAUSTED error");
@@ -80,8 +88,9 @@ async function runRateLimitTest() {
     console.log("Starting Test 2: AI fails twice with 429");
     await analyzer.generateSelectors("<html><body><div>News</div></body></html>");
     console.error("❌ TEST 2 FAILED: Expected error to be thrown but it succeeded");
-  } catch (err: any) {
-    console.log(`Caught expected error: ${err.message}`);
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    console.log(`Caught expected error: ${errorMessage}`);
     if (callCount === 2) {
       console.log(
         "✅ TEST 2 PASSED: Tried exactly 2 times (1 initial + 1 retry) and threw the error.",
