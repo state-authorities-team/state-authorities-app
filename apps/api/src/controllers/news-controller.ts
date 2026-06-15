@@ -5,7 +5,7 @@ import { getNewsByAgency } from "../services/news-service.js";
 export const getNewsByAgencyHandler = asyncHandler(async (req: Request, res: Response) => {
   const validatedQuery = res.locals.validatedQuery;
 
-  const result = await getNewsByAgency(Number(req.params.agencyId), {
+  const result = await getNewsByAgency(Number(req.params.id), {
     page: validatedQuery.page,
     limit: validatedQuery.limit,
   });
