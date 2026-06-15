@@ -10,6 +10,7 @@ import {
   getAgencyQuerySchema,
   updateAgencySchema,
 } from "../schemas/agency.schema.js";
+import newsRouter from "./news-routes.js";
 
 const agencyRouter = express.Router();
 
@@ -41,5 +42,7 @@ agencyRouter.put(
   agencyController.update,
 );
 agencyRouter.delete("/:id", requireAuth, checkRole(["ADMIN"]), isValidId, agencyController.remove);
+
+agencyRouter.use("/:id/news", isValidId, newsRouter);
 
 export default agencyRouter;
