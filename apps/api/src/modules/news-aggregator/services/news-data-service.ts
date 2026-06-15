@@ -3,6 +3,14 @@ import prisma from "../../../configs/db-config.js";
 import type { NewsDataInput, ScrapeSelectors } from "../types/news-types.js";
 
 export class NewsDataService {
+  async getSystemConfigValue(key: string): Promise<string | null> {
+    const record = await prisma.systemConfig.findUnique({
+      where: { key },
+    });
+
+    return record?.value ?? null;
+  }
+
   async getScrapeConfig(agencyId: number): Promise<ScrapeSelectors | null> {
     const record = await prisma.scrapeConfig.findUnique({ where: { agencyId } });
     return record?.selectors ? (record.selectors as unknown as ScrapeSelectors) : null;

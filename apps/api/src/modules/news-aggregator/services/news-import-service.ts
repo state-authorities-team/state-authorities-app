@@ -41,7 +41,18 @@ export class NewsImportService {
       await this.newsDataService.upsertScrapeConfig(agencyId, selectors, now);
     }
 
-    let newsItems = this.cheerioParser.parseNewsWithConfig(html, selectors, websiteUrl);
+    const maxParseCountConfig =
+      await this.newsDataService.getSystemConfigValue("NEWS_MAX_PARSE_COUNT");
+    const maxParseCount = Number(maxParseCountConfig);
+    const resolvedMaxParseCount =
+      Number.isInteger(maxParseCount) && maxParseCount > 0 ? maxParseCount : 10;
+
+    let newsItems = this.cheerioParser.parseNewsWithConfig(
+      html,
+      selectors,
+      websiteUrl,
+      resolvedMaxParseCount,
+    );
 
     if (newsItems.length === 0 && hadExistingConfig) {
       const now = new Date();
@@ -65,9 +76,19 @@ export class NewsImportService {
       await sleep(AI_THROTTLE_DELAY_MS); // throttle before self-healing call
       const freshSelectors = await this.aiAnalyzer.generateSelectors(html);
       await this.newsDataService.upsertScrapeConfig(agencyId, freshSelectors, now);
-      newsItems = this.cheerioParser.parseNewsWithConfig(html, freshSelectors, websiteUrl);
+      newsItems = this.cheerioParser.parseNewsWithConfig(
+        html,
+        freshSelectors,
+        websiteUrl,
+        resolvedMaxParseCount,
+      );
     }
 
-    return this.newsDataService.upsertManyNews(newsItems, agencyId);
+    const freshNewsCutoff = Date.now() - 3 * 24 * 60 * 60 * 1000;
+    const freshNewsItems = newsItems.filter(
+      (item) => item.publishedAt.getTime() >= freshNewsCutoff,
+    );
+
+    return this.newsDataService.upsertManyNews(freshNewsItems, agencyId);
   }
 }
