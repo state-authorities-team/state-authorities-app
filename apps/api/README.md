@@ -73,6 +73,12 @@ The codebase strictly adheres to **Separation of Concerns (SoC)** and **Layered 
 | **POST** | `/api/auth/register` | `{ "email": "...", "password": "...", "confirmPassword": "..." }` | Standard Confirmation Data |
 | **POST** | `/api/auth/login`    | `{ "email": "...", "password": "..." }`                           | Secure HTTP-Only Cookie    |
 
+### 🏢 News per Agency
+
+| Method  | Route                    | Description                                               | Allowed Roles | Errors     |
+| ------- | ------------------------ | --------------------------------------------------------- | ------------- | ---------- |
+| **GET** | `/api/agencies/:id/news` | Retrieve paginated and filtered list of news by agency id | Public (`-`)  | `404, 500` |
+
 ---
 
 ## 📦 Data Interchange Payload Formats
