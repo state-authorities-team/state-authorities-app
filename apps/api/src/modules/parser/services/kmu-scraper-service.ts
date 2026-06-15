@@ -14,6 +14,10 @@ export class KmuScraperService {
     const timestamp = new Date().toISOString();
     console.log(`${timestamp} : [Parser][ScrapperService] Launching headless browser...`);
 
+    const targetUrl = url.startsWith("http://") 
+      ? url.replace("http://", "https://") 
+      : url;
+
     const browser = await puppeteer.launch(puppeteerConfig);
     const page = await browser.newPage();
 
@@ -23,9 +27,9 @@ export class KmuScraperService {
       await page.setExtraHTTPHeaders({
         "Upgrade-Insecure-Requests": "1",
       });
-      
+
       try {
-        await page.goto(url, { waitUntil: "domcontentloaded" });
+        await page.goto(targetUrl, { waitUntil: "domcontentloaded" });
       } catch (gotoError) {
         const isBlockedByClient =
           gotoError instanceof Error && gotoError.message.includes("ERR_BLOCKED_BY_CLIENT");
