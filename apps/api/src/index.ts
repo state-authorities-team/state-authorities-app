@@ -32,6 +32,11 @@ app.use(errorHandler);
 const newsCron = new NewsCronManager();
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT} port`);
+  if (!process.env.AI_API_KEY) {
+    console.warn(
+      "⚠️ [WARNING] AI_API_KEY is not defined. The smart news aggregator will operate in standard Cheerio-only mode.",
+    );
+  }
 
   newsCron.initScheduleSync();
 });
