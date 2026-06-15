@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import * as dotenv from "dotenv";
 import type { NewsAiAnalyzerService } from "./services/news-ai-analyzer-service.js";
 import { NewsDataService } from "./services/news-data-service.js";
@@ -11,7 +12,7 @@ const runCooldownTest = async (): Promise<void> => {
   // Stub database record state
   let dbRecord: {
     agencyId: number;
-    selectors: ScrapeSelectors;
+    selectors: Prisma.JsonValue;
     lastAiAnalysedAt: Date | null;
     updatedAt: Date;
   } | null = {
@@ -42,7 +43,7 @@ const runCooldownTest = async (): Promise<void> => {
       `New selectors: ${JSON.stringify(selectors)}, lastAiAnalysedAt: ${lastAiAnalysedAt?.toISOString()}`,
     );
     if (dbRecord) {
-      dbRecord.selectors = selectors;
+      dbRecord.selectors = selectors as unknown as Prisma.JsonValue;
       dbRecord.updatedAt = new Date();
       if (lastAiAnalysedAt !== undefined) {
         dbRecord.lastAiAnalysedAt = lastAiAnalysedAt;
@@ -50,7 +51,7 @@ const runCooldownTest = async (): Promise<void> => {
     } else {
       dbRecord = {
         agencyId,
-        selectors,
+        selectors: selectors as unknown as Prisma.JsonValue,
         lastAiAnalysedAt: lastAiAnalysedAt || null,
         updatedAt: new Date(),
       };

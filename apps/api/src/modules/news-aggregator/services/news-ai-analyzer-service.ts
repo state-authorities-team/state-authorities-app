@@ -6,16 +6,20 @@ import type { ScrapeSelectors } from "../types/news-types.js";
 const MAX_RETRIES = 1;
 
 export class NewsAiAnalyzerService {
-  private readonly ai: GoogleGenAI;
+  private readonly aiClient: GoogleGenAI | null;
 
   constructor() {
-    if (!process.env.AI_API_KEY) {
-      throw new Error("[NewsAiAnalyzerService] AI_API_KEY is not configured.");
+    if (process.env.AI_API_KEY) {
+      this.aiClient = new GoogleGenAI({ apiKey: process.env.AI_API_KEY });
+    } else {
+      this.aiClient = null;
     }
-    this.ai = new GoogleGenAI({ apiKey: process.env.AI_API_KEY });
   }
 
   async generateSelectors(htmlSnapshot: string): Promise<ScrapeSelectors> {
+    if (!this.aiClient) {
+      throw new Error("AI features are disabled: Missing AI_API_KEY in server environment.");
+    }
     return this.generateSelectorsWithRetry(htmlSnapshot, MAX_RETRIES);
   }
 
@@ -61,7 +65,10 @@ export class NewsAiAnalyzerService {
         `${timestamp} : [AI Agent] Sending HTML snapshot to Gemini for structural token analysis...`,
       );
 
-      const response = await this.ai.models.generateContent({
+      if (!this.aiClient) {
+        throw new Error("AI features are disabled: Missing AI_API_KEY in server environment.");
+      }
+      const response = await this.aiClient.models.generateContent({
         model: "gemini-3.1-flash-lite",
         contents: [prompt, cleanHtml],
       });
