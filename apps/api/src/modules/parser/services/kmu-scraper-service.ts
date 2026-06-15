@@ -14,9 +14,7 @@ export class KmuScraperService {
     const timestamp = new Date().toISOString();
     console.log(`${timestamp} : [Parser][ScrapperService] Launching headless browser...`);
 
-    const targetUrl = url.startsWith("http://") 
-      ? url.replace("http://", "https://") 
-      : url;
+    const targetUrl = url.startsWith("http://") ? url.replace("http://", "https://") : url;
 
     const browser = await puppeteer.launch(puppeteerConfig);
     const page = await browser.newPage();
