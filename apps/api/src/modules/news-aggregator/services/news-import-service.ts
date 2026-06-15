@@ -41,9 +41,8 @@ export class NewsImportService {
       await this.newsDataService.upsertScrapeConfig(agencyId, selectors, now);
     }
 
-    const maxParseCountConfig = await this.newsDataService.getSystemConfigValue(
-      "NEWS_MAX_PARSE_COUNT",
-    );
+    const maxParseCountConfig =
+      await this.newsDataService.getSystemConfigValue("NEWS_MAX_PARSE_COUNT");
     const maxParseCount = Number(maxParseCountConfig);
     const resolvedMaxParseCount =
       Number.isInteger(maxParseCount) && maxParseCount > 0 ? maxParseCount : 10;
