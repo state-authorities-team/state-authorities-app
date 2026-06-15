@@ -68,6 +68,11 @@ export class NewsImportService {
       newsItems = this.cheerioParser.parseNewsWithConfig(html, freshSelectors, websiteUrl);
     }
 
-    return this.newsDataService.upsertManyNews(newsItems, agencyId);
+    const freshNewsCutoff = Date.now() - 3 * 24 * 60 * 60 * 1000;
+    const freshNewsItems = newsItems.filter(
+      (item) => item.publishedAt.getTime() >= freshNewsCutoff,
+    );
+
+    return this.newsDataService.upsertManyNews(freshNewsItems, agencyId);
   }
 }
