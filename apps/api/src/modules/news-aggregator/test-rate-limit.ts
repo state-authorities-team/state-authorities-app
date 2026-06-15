@@ -9,11 +9,11 @@ if (!process.env.AI_API_KEY) {
 }
 
 interface MockAi {
-  ai: {
+  aiClient: {
     models: {
       generateContent: () => Promise<{ text: string }>;
     };
-  };
+  } | null;
 }
 
 async function runRateLimitTest() {
@@ -23,7 +23,7 @@ async function runRateLimitTest() {
 
   // Test Case 1: 429 error followed by a success (should retry and succeed)
   let callCount = 0;
-  (analyzer as unknown as MockAi).ai = {
+  (analyzer as unknown as MockAi).aiClient = {
     models: {
       generateContent: async () => {
         callCount++;
@@ -71,7 +71,7 @@ async function runRateLimitTest() {
 
   // Test Case 2: 429 error occurs twice (should exhaust retries and fail)
   callCount = 0;
-  (analyzer as unknown as MockAi).ai = {
+  (analyzer as unknown as MockAi).aiClient = {
     models: {
       generateContent: async () => {
         callCount++;
