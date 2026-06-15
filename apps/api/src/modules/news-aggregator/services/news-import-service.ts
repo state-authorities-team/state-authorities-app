@@ -36,9 +36,19 @@ export class NewsImportService {
         `${timestamp} : [NewsSync] Target configuration missing. Running LLM extraction...`,
       );
       await sleep(AI_THROTTLE_DELAY_MS); // throttle before first call
-      selectors = await this.aiAnalyzer.generateSelectors(html);
-      const now = new Date();
-      await this.newsDataService.upsertScrapeConfig(agencyId, selectors, now);
+      try {
+        selectors = await this.aiAnalyzer.generateSelectors(html);
+        const now = new Date();
+        await this.newsDataService.upsertScrapeConfig(agencyId, selectors, now);
+      } catch (error) {
+        if (error instanceof Error && error.message.includes("Missing AI_API_KEY")) {
+          console.warn(
+            `[NewsSync CRITICAL] Skipping agency ${agencyId} because AI analyzer is unavailable`,
+          );
+          return 0;
+        }
+        throw error;
+      }
     }
 
     const maxParseCountConfig =
@@ -74,14 +84,22 @@ export class NewsImportService {
         `${timestamp} : [Self-Healing] Zero items matched. Layout change suspected. Re-invoking AI...`,
       );
       await sleep(AI_THROTTLE_DELAY_MS); // throttle before self-healing call
-      const freshSelectors = await this.aiAnalyzer.generateSelectors(html);
-      await this.newsDataService.upsertScrapeConfig(agencyId, freshSelectors, now);
-      newsItems = this.cheerioParser.parseNewsWithConfig(
-        html,
-        freshSelectors,
-        websiteUrl,
-        resolvedMaxParseCount,
-      );
+      try {
+        const freshSelectors = await this.aiAnalyzer.generateSelectors(html);
+        await this.newsDataService.upsertScrapeConfig(agencyId, freshSelectors, now);
+        newsItems = this.cheerioParser.parseNewsWithConfig(
+          html,
+          freshSelectors,
+          websiteUrl,
+          resolvedMaxParseCount,
+        );
+      } catch (error) {
+        if (error instanceof Error && error.message.includes("Missing AI_API_KEY")) {
+          console.warn(`[Self-Healing Locked] Failed to heal layout due to missing AI key`);
+          return 0;
+        }
+        throw error;
+      }
     }
 
     const freshNewsCutoff = Date.now() - 3 * 24 * 60 * 60 * 1000;
