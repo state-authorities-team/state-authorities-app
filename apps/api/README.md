@@ -1,272 +1,261 @@
 # 📄 State Authorities API
 
-This is the core service responsible for managing state authorities entity records, handling user authentication, and providing data to the frontend application.
+This is the core backend microservice responsible for managing state authorities entity records, handling secure user authentication, and orchestrating the autonomous AI-driven public news aggregation engine.
+
+---
 
 ## 🛠 Tech Stack
 
-- **Runtime:** Node.js (v20+)
-- **Language:** TypeScript
-- **Framework:** Express
-- **ORM:** Prisma
-- **Database:** PostgreSQL
-- **Linter/Formatter:** Biome
+### Core Runtime & Framework
+
+- **Runtime Environment:** Node.js (v24+)
+- **Language Compiler:** TypeScript (Strict Mode)
+- **Application Framework:** Express.js (Service-Repository Architecture)
+
+### Data Management & AI
+
+- **Database Engine:** PostgreSQL (Cloud Instance Hosted)
+- **Object-Relational Mapping (ORM):** Prisma Client
+- **Artificial Intelligence Layer:** Google Gemini API (`gemini-3.1-flash-lite` via `@google/genai`)
+
+### Code Quality & Tooling
+
+- **All-in-One Linter & Formatter:** Biome (Replacing ESLint + Prettier)
+- **Process Automation:** `node-cron` (Dynamic Runtime Hot-Reloading Scheduler)
+- **Headless I/O Scraping:** Puppeteer (`puppeteer-core` with Chromium runtime anchors)
 
 ---
 
-## 🛠 Tooling: Biome
+## 🏗 Modular Architecture & Data Flow
 
-We use **Biome** as our all-in-one tool for linting, formatting, and organizing imports. It is significantly faster than the traditional ESLint + Prettier stack and ensures a consistent codebase.
-
-- **Official Documentation:** [Biomejs.dev](https://biomejs.dev/guides/getting-started/)
-- **VS Code Extension:** [Biome for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=biomejs.biome)
-
-> **Important:** To ensure the best development experience, please install the VS Code extension and enable "Format on Save" in your editor settings.
+The codebase strictly adheres to **Separation of Concerns (SoC)** and **Layered Architecture** principles. Direct SQL mapping is completely isolated into dedicated repositories, separating database infrastructure from core operational business workflows.
 
 ---
 
-## 🗄️ Database: Prisma
+## 📡 Endpoints
 
-We use **Prisma** as our Next-generation Node.js and TypeScript ORM. It ensures type-safety when interacting with the database and simplifies schema management.
+### 🏢 State Agencies Management
 
-- **Official Documentation:** [Prisma.io Docs](https://www.prisma.io/docs)
-- **VS Code Extension:** [Prisma for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma)
+| Method     | Route                      | Description                                                     | Allowed Roles | Errors                     |
+| ---------- | -------------------------- | --------------------------------------------------------------- | ------------- | -------------------------- |
+| **GET**    | `/api/agencies`            | Retrieve paginated and filtered list of agencies                | Public (`-`)  | `500`                      |
+| **GET**    | `/api/agencies/:id`        | Fetch specific public agency record by ID                       | Public (`-`)  | `400`, `404`               |
+| **POST**   | `/api/agencies`            | Insert a new state agency profile manually                      | `ADMIN`       | `400`, `401`, `403`        |
+| **PUT**    | `/api/agencies/:id`        | Update structural metadata of an existing agency                | `ADMIN`       | `400`, `401`, `403`, `404` |
+| **DELETE** | `/api/agencies/:id`        | Hard delete an agency record from the infrastructure            | `ADMIN`       | `401`, `403`, `404`        |
+| **POST**   | `/api/agencies/import-csv` | Stream and bulk-ingest agency records via standard CSV template | `ADMIN`       | `400`, `401`, `403`        |
 
-> **Important:** Please install the Prisma extension to enable syntax highlighting, automated formatting for `.prisma` files, and powerful IntelliSense for schema modeling.
+#### 🔍 Agencies Filter Queries
+
+`GET /api/agencies?page=1&limit=20&type=ministry&search=цифрової`
+
+- `page`: Track sequence page pointer (Default: `1`).
+- `limit`: Output constraint window per query page (Default: `20`).
+- `type`: Filter collection exclusively by target agency type slug.
+- `search`: Fuzzy search indexing across titles, regions, and descriptions.
+
+### 🗂️ Agency Structural Classifications
+
+| Method  | Route               | Description                                               | Allowed Roles |
+| ------- | ------------------- | --------------------------------------------------------- | ------------- |
+| **GET** | `/api/agency-types` | Fetch lists of available categories (e.g., Ministry, ODA) | Public (`-`)  |
+
+### 🤖 Smart News Aggregator Sync Controls
+
+| Method | Route          | Description                                       | Allowed Roles | Errors |
+| ------ | -------------- | ------------------------------------------------- | ------------- | ------ |
+| POST   | `/api/refresh` | Trigger KMU catalog scraping and DB sync pipeline | 401, 403, 429 | ADMIN  |
+
+### 🔐 Security & Credential Registry
+
+| Method   | Route                | Request Body Requirements                                         | Token Output Location      |
+| -------- | -------------------- | ----------------------------------------------------------------- | -------------------------- |
+| **POST** | `/api/auth/register` | `{ "email": "...", "password": "...", "confirmPassword": "..." }` | Standard Confirmation Data |
+| **POST** | `/api/auth/login`    | `{ "email": "...", "password": "..." }`                           | Secure HTTP-Only Cookie    |
 
 ---
 
-## KMU Catalog Scraping & Import Pipeline Module
+## 📦 Data Interchange Payload Formats
 
-A robust, enterprise-grade data engineering pipeline designed to autonomously gather, sanitize, and persist official public authority records from the Cabinet of Ministers of Ukraine (**Кабінет Міністрів України — КМУ**).
-
-This module adheres to **Layered Architecture** principles, segregating data extraction (I/O), pure business domain parsing transformations, and relational database persistence into isolated, maintainable structures.
-
-See **[Parser Module](/src/modules/parser/README.md)**
-
-## 📡 Routes
-
-### Agencies
-
-| Method | Route                    | Description                                       | Errors             | Auth  |
-|--------|--------------------------|---------------------------------------------------|--------------------|-------|
-| GET    | /api/agencies            | Get all agencies                                  |                    | -     |
-| POST   | /api/agencies            | Create agency                                     | 400, 404, 401, 403 | ADMIN |
-| PUT    | /api/agencies/:id        | Update agency                                     | 400, 404, 401, 403 | ADMIN |
-| DELETE | /api/agencies/:id        | Delete agency                                     | 404, 401, 403      | ADMIN |
-| GET    | /api/agencies/:id        | Get agency by id                                  | 400, 404           | -     |
-| POST   | /api/agencies/import-csv | Import agencies from CSV file                     | 400, 401, 403      | ADMIN |
-| POST   | /api/refresh             | Trigger KMU catalog scraping and DB sync pipeline | 401, 403, 429      | ADMIN |
-
-#### 🔍 Query Parameters
-
-| Param  | Description                      |
-| ------ | -------------------------------- |
-| page   | Page number (default: 1)         |
-| limit  | Items per page (default: 20)     |
-| type   | Filter by agency type slug field |
-| search | Search by all fields             |
-
-Example:
-`GET /api/agencies?page=1&limit=5&type=ministry&search=ministry`
-
-### Agency-types
-
-| Method | Route             | Description      |
-| ------ | ----------------- | ---------------- |
-| GET    | /api/agency-types | Get all agencies |
-
-### Authorization and Registration
-
-| Method | Route              | Description                                     |
-| ------ | ------------------ | ----------------------------------------------- |
-| POST   | /api/auth/register | Register user                                   |
-| POST   | /api/auth/login    | Sign in for user, provides jwt token in cookies |
-
-Format:
-
-```json
-{
-  "email": "required valid email",
-  "password": "min 6 characters",
-  "confirmPassword": "as password"
-}
-```
-
-## Responses
-
-### Bad response
-
-```json
-{
-  "success": false,
-  "statusCode": 500,
-  "message": "Internal error message",
-  "errors": [] /// for validation errors
-}
-```
-
-### Get all response
+### 🟢 Standard Collection Output (200 OK)
 
 ```json
 {
   "success": true,
-  "count": 10,
-  "total": 10,
-  "totalPages": 1,
+  "count": 1,
+  "total": 120,
+  "totalPages": 6,
   "currentPage": 1,
-  "data": []
+  "data": [
+    {
+      "id": 144,
+      "name": "Міністерство цифрової трансформації України",
+      "shortName": "Мінцифра",
+      "website": "https://thedigital.gov.ua/"
+    }
+  ]
 }
 ```
 
-### Success response
-
-```json
-{
-  "success": true,
-  "data": "some agencie instance here or null if deletion"
-}
-```
-
-## CSV file for Agencies example
-
-| Column name | Correct type | Value in CSV file |
-| ----------- | ------------ | ----------------- |
-| name        | string       | Required          |
-| shortName   | string       | Optional          |
-| typeId      | number       | Required          |
-| headName    | string       | Optional          |
-| headTitle   | string       | Optional          |
-| description | string       | Optional          |
-| address     | string       | Optional          |
-| email       | string       | Optional          |
-| website     | string       | Optional          |
-| region      | string       | Optional          |
-
-**If parsed Agency instance from CSV file fails validation it will not be added in database**
-
-### Successful response
+### 🟢 CSV Data Ingestion Outcome
 
 ```json
 {
   "success": true,
   "message": "CSV file was processed successfully",
   "data": {
-    "totalRows": 3,
-    "imported": 1,
-    "skipped": 2
+    "totalRows": 25,
+    "imported": 21,
+    "skipped": 4
   }
 }
 ```
 
-## 🚀 Quick Start
+### 🔴 Standard Error Envelope (4xx / 5xx)
 
-### 1. Environment Setup
+```json
+{
+  "success": false,
+  "statusCode": 400,
+  "message": "Validation failed",
+  "errors": [
+    {
+      "field": "password",
+      "message": "Password must be at least 6 characters long"
+    }
+  ]
+}
+```
 
-Ensure you have Node.js.
+---
 
-Create a `.env` file in the `/backend` directory (copy from the template):
+## 🚀 Quick Start & Environment Ingestion
+
+### 1. Environment Configurations
+
+Instantiate a local workspace parameter profile by duplicating the distribution template:
 
 ```bash
 cp .env.example .env
 ```
 
-`Set PORT to 3000`
+Open `.env` and fill out the infrastructure connection assignments:
 
-SET **DATABASE_URL**:
+```ini
+PORT=3000
 
-- You need to have database called **state_authorities** or change it in the URL
-- Replace with your **username** and **password**
-- Set port(default is **5432**)
+# Connection string pointing directly to your primary Hosted Cloud PostgreSQL database
+DATABASE_URL="postgresql://<db_user>:<db_password>@<cloud_host>:5432/state_authorities?schema=public"
 
-Example: `postgresql://<user>:<password>@localhost:<port>/state_authorities`
+# Connection string optimized for connection pooling setups
+DIRECT_URL="postgresql://<db_user>:<db_password>@<cloud_host>:5432/state_authorities?schema=public"
 
-SET **DIRECT_URL**:
+# Google Gemini API key credentials
+AI_API_KEY="AIzaSy..."
 
-- Same as **DATABASE_URL** but with `pooler` option
+# JWT cryptographic key to sign and verify tokens on server
+JWT_SECRET="test..."
+```
 
-### 2. Install Dependencies
+### 2. Dependency Resolution
+
+Execute a clean project package configuration alignment:
 
 ```bash
 npm install
 ```
 
-### 3. Generate prisma client
+### 3. Synchronize Schema Dependencies
+
+Pull and establish strongly typed data object definitions based on the current Prisma mapping rules without applying local generation loops:
 
 ```bash
 npx prisma generate
 ```
 
-### 4. Launch the Application
+### 4. Deploy Production Database Schemas
+
+Apply existing migration tracking states directly onto your active remote cloud instance:
+
+```bash
+npx prisma migrate deploy
+```
+
+### 5. Boot Up the Engine
 
 ```bash
 npm run dev
 ```
 
-> You also can use `npx prisma studio` to open an open-source, visual database editor that provides a graphical user interface (GUI) to explore, manage, and edit data within Prisma projects.
-
-The server will be running at: `http://localhost:3000`
-
-Use `http://localhost:3000/api/agencies` endpoint to get a list of all agencies (we don't have any agencies at the moment).
+The microservice will initialize local bindings at: `http://localhost:3000`
 
 ---
 
-## 📜 Available Scripts
+Ось оновлений блок документації, який детально описує структуру, призначення та використання таблиці налаштувань **`SystemConfig`**.
 
-| Script              | Description                                                                    |
-| ------------------- | ------------------------------------------------------------------------------ |
-| `npm run dev`       | Starts the server in development mode with hot-reload (using tsx).             |
-| `npm run build`     | Compiles TypeScript code into production-ready JavaScript (output to `dist/`). |
-| `npm run start`     | Runs the compiled project from the `dist/` directory.                          |
-| `npm run lint`      | Checks the code for linting and formatting issues using Biome.                 |
-| `npm run lint:fix`  | Automatically fixes linting errors and formats the code via Biome.             |
-| `npm run format`    | Automatically formats the code via Biome.                                      |
-| `npm run parse:kmu` | Automatically parse, load and save in DB data about agencies from `kmu.gov.ua` |
+Ти можеш вставити цей розділ у файл `README.md` одразу після секції **«🏗 Modular Architecture & Data Flow»** перед таблицею з ендпоїнтами.
 
 ---
 
-## 📐 Code Convention
+## ⚙️ Dynamic Infrastructure Settings (`SystemConfig`)
 
-We use **Biome** to enforce a unified coding style. Use `npm run lint` and `npm run format` before commit.
+To eliminate hardcoded values and prevent redundant application server reboots on production environments, the system utilizes a unified database-driven configuration ledger called `SystemConfig`.
 
-### 1. General Principles
+This key-value matrix allows system administrators to adjust critical runtime orchestration parameters (like background sync schedules or scraping volume caps) on the fly directly via the database.
 
-- **Language:** Use English for all code (variable names, function names, comments).
-- **Architecture:** Follow a service-layer pattern. Controllers handle HTTP requests, while Services contain business logic and database interactions.
-- **Typing:** Using `any` is strictly prohibited. If a type is unknown, use `unknown`.
+### 📋 Database Schema Layout
 
-### 2. Naming Conventions
-
-- **Classes / Types:** `PascalCase` (e.g., `UserService`).
-- **Variables / Functions:** `camelCase` (e.g., `getUserById`).
-- **Files:** `kebab-case` (e.g., `auth-controller.ts`).
-- **Constants:** `UPPER_SNAKE_CASE` (e.g., `MAX_RETRY_ATTEMPTS`).
-
-### 3. Database Guidelines (Prisma)
-
-- Always run `npx prisma migrate dev` after modifying `schema.prisma`.
-- Always run `npx prisma generate` after modifying `schema.prisma`.
-- Avoid raw SQL queries unless the required operation cannot be achieved via Prisma's API.
-
-### 4. Git Flow
-
-- Ensure `npm run lint` passes before pushing any code.
-
----
-
-## 🏗 Project Structure
-
-```text
-src/
-├── controllers/    # Request handling & input validation
-├── services/       # Business logic & Prisma operations
-├── middlewares/    # Authentication, logging, error handling
-├── routes/         # API endpoint definitions
-├── types/          # TypeScript interfaces and types
-├── utils/          # Shared utility functions
-└── index.ts        # Application entry point
+```prisma
+model SystemConfig {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
 
 ```
 
+### 🗃️ Active Core Parameters Ingestion Matrix
+
+| Configuration Key Tag | Production Purpose Description                                                                            | Default Target Value              | Live Validation Constraint Rules                                          |
+| --------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------- |
+| `NEWS_SYNC_CRON`      | Controls the background task interval execution cadence for the main news synchronization engine threads. | `"0 */3 * * *"` _(Every 3 hours)_ | Must pass strict `cron.validate()` evaluation syntax profiles at runtime. |
+
+### 🔄 Dynamic Lifecycle Evaluation (Hot-Reload Mechanic)
+
+The background orchestrator manager (`NewsCronManager`) triggers an isolated, ultra-lightweight database inspection heartbeat loop every 5 minutes:
+
+1. **Polls Ledger Matrix**: Runs a high-performance primary-key index read query: `prisma.systemConfig.findUnique({ where: { key: "NEWS_SYNC_CRON" } })`.
+2. **Syntax Validation Guard**: If the expression string has mutated from the active memory value, it is vetted against the library validator. Invalid syntax aborts the reload loop safely without disrupting running tasks.
+3. **Graceful Thread Teardown**: Upon successful validation, the active scheduling thread reference is detached via `.stop()`, cleared from the Node.js Event Loop to prevent memory leaks, and replaced immediately with the new schedule bounds **at runtime**.
+
+## 📜 Available Command Scripts
+
+| Target Alias Command         | Internal Sub-Routine Context Execution Target                                                         |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `npm run dev`                | Boots up the local environment server instance with hot-reload listening using `tsx`.                 |
+| `npm run build`              | Compiles source code structures into target native JavaScript nodes inside the `/dist` container.     |
+| `npm run start`              | Fires up production workloads reading from the pre-compiled native JavaScript `/dist` folder.         |
+| `npm run lint`               | Inspects code styles, complexity trends, and structural setups via Biome static code analysis.        |
+| `npm run lint:fix`           | Automatically rewrites formatting errors and resolves import alignments through Biome rules.          |
+| `npm run format`             | Enforces uniform layout rules on all standard codebase assets instantly.                              |
+| `npm run test:news-pipeline` | Runs the test pipeline using mocks to test self-healing and parsing logic without updating real data. |
+| `test:news-cooldown`         | Runs a mock-based test suite for testing cooldown guard behavior                                      |
+
 ---
 
-> **Note for the Backend Team:** Please maintain clean logs. Do not leave `console.log` statements in the code; use the built-in logging utility instead.
+## 📐 Strict Coding Conventions & Design Bounds
+
+### 1. General Strict Bounds
+
+- **Strict Typing Isolation:** The use of `any` is strictly prohibited. If an arbitrary incoming object layout cannot be fully determined, it must be bound to `unknown` and passed through functional runtime type guard filters.
+- **Complexity Thresholds:** To prevent deep conditional structures, individual method blocks must keep clean logic layouts. They should not exceed a **cyclomatic complexity ceiling score of 15**, as enforced by the local Biome engine rules.
+- **Asynchronous Flow Control:** All browser lifecycle interactions (`puppeteer`) and internal I/O operations must be fully guarded through deterministic `await` invocations. No promises should float unhandled outside the engine execution stacks.
+
+### 2. Standard Naming Alignments
+
+- **Class Contexts / DTO Interfaces:** PascalCase pattern format definitions (`NewsImportService`, `ScrapeSelectors`).
+- **Variables / Service Routines:** camelCase pattern format definitions (`syncAgencyNews`, `targetUrl`).
+- **File Asset Containers:** kebab-case standard structural format separators (`news-repository.ts`, `db-config.ts`).
+- **Immutables / System Configuration Key Tags:** UPPER_SNAKE_CASE pattern layouts (`NEWS_SYNC_CRON`, `MAX_RETRY_ATTEMPTS`).
+
+---
