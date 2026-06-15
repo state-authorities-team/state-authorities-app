@@ -14,13 +14,31 @@ export class KmuScraperService {
     const timestamp = new Date().toISOString();
     console.log(`${timestamp} : [Parser][ScrapperService] Launching headless browser...`);
 
+    let targetUrl = url.trim();
+    try {
+      const parsed = new URL(
+        targetUrl.match(/^[a-zA-Z]+:\/\//) ? targetUrl : `https://${targetUrl}`,
+      );
+      if (parsed.protocol === "http:") {
+        parsed.protocol = "https:";
+      }
+      targetUrl = parsed.toString();
+    } catch (e) {
+      targetUrl = targetUrl.replace(/^http:\/\//i, "https://");
+    }
+
     const browser = await puppeteer.launch(puppeteerConfig);
-    const page = await browser.newPage();
 
     try {
+      const page = await browser.newPage();
       console.log(`${timestamp} : [Parser][ScrapperService] Navigating to live URL...`);
+
+      await page.setExtraHTTPHeaders({
+        "Upgrade-Insecure-Requests": "1",
+      });
+
       try {
-        await page.goto(url, { waitUntil: "domcontentloaded" });
+        await page.goto(targetUrl, { waitUntil: "domcontentloaded" });
       } catch (gotoError) {
         const isBlockedByClient =
           gotoError instanceof Error && gotoError.message.includes("ERR_BLOCKED_BY_CLIENT");
