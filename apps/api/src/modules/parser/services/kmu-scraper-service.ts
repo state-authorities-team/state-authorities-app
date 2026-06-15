@@ -14,12 +14,23 @@ export class KmuScraperService {
     const timestamp = new Date().toISOString();
     console.log(`${timestamp} : [Parser][ScrapperService] Launching headless browser...`);
 
-    const targetUrl = url.startsWith("http://") ? url.replace("http://", "https://") : url;
+    let targetUrl = url.trim();
+    try {
+      const parsed = new URL(
+        targetUrl.match(/^[a-zA-Z]+:\/\//) ? targetUrl : `https://${targetUrl}`,
+      );
+      if (parsed.protocol === "http:") {
+        parsed.protocol = "https:";
+      }
+      targetUrl = parsed.toString();
+    } catch (e) {
+      targetUrl = targetUrl.replace(/^http:\/\//i, "https://");
+    }
 
     const browser = await puppeteer.launch(puppeteerConfig);
-    const page = await browser.newPage();
 
     try {
+      const page = await browser.newPage();
       console.log(`${timestamp} : [Parser][ScrapperService] Navigating to live URL...`);
 
       await page.setExtraHTTPHeaders({
