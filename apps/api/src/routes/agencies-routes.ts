@@ -43,6 +43,6 @@ agencyRouter.put(
 );
 agencyRouter.delete("/:id", requireAuth, checkRole(["ADMIN"]), isValidId, agencyController.remove);
 
-agencyRouter.use("/:agencyId/news", newsRouter);
+agencyRouter.use("/:agencyId/news", isValidId, newsRouter);
 
 export default agencyRouter;
