@@ -19,6 +19,11 @@ export class KmuScraperService {
 
     try {
       console.log(`${timestamp} : [Parser][ScrapperService] Navigating to live URL...`);
+
+      await page.setExtraHTTPHeaders({
+        "Upgrade-Insecure-Requests": "1",
+      });
+      
       try {
         await page.goto(url, { waitUntil: "domcontentloaded" });
       } catch (gotoError) {
