@@ -1,31 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
+import { extractRetryDelayMs, isRateLimitError } from "../../../utils/rate-limit.js";
 import { sleep } from "../../../utils/sleep.js";
 import type { ScrapeSelectors } from "../types/news-types.js";
 
 const MAX_RETRIES = 1;
-const DEFAULT_RETRY_DELAY_MS = 10_000;
-
-const extractRetryDelayMs = (error: unknown): number => {
-  if (!(error instanceof Error)) {
-    return DEFAULT_RETRY_DELAY_MS;
-  }
-  const match = error.message.match(/retry in (\d+(?:\.\d+)?)\s*s/i);
-  if (match?.[1]) {
-    return Math.ceil(parseFloat(match[1])) * 1000 + 1_000; // +1s буфер
-  }
-  return DEFAULT_RETRY_DELAY_MS;
-};
-
-const isRateLimitError = (error: unknown): boolean => {
-  if (!(error instanceof Error)) {
-    return false;
-  }
-  return (
-    error.message.includes("429") ||
-    error.message.includes("RESOURCE_EXHAUSTED") ||
-    error.message.includes("Quota exceeded")
-  );
-};
 
 export class NewsAiAnalyzerService {
   private readonly ai: GoogleGenAI;
