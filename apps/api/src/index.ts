@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import { setupSwaggerDocs } from "./configs/swagger-config.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { NewsCronManager } from "./modules/news-aggregator/cron/news-cron.js";
 import agencyRouter from "./routes/agencies-routes.js";
@@ -23,6 +24,7 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+setupSwaggerDocs(app);
 app.use("/api/agencies", agencyRouter);
 app.use("/api/agency-types", agencyTypeRouter);
 app.use("/api/auth", authRouter);
