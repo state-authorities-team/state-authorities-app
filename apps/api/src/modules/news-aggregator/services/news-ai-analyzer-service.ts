@@ -1,17 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
-import { z } from "zod";
 import { extractRetryDelayMs, isRateLimitError } from "../../../utils/rate-limit.js";
 import { sleep } from "../../../utils/sleep.js";
-import type { ScrapeSelectors } from "../types/news-types.js";
+import { type ScrapeSelectors, scrapeSelectorsSchema } from "../schemas/scrape-selectors.schema.js";
 
 const MAX_RETRIES = 1;
-
-const scrapeSelectorsSchema = z.object({
-  container: z.string().min(1),
-  title: z.string().min(1),
-  url: z.string().min(1),
-  date: z.string(),
-});
 
 export class NewsAiAnalyzerService {
   private readonly aiClient: GoogleGenAI | null;

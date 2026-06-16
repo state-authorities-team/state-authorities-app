@@ -1,8 +1,9 @@
 import type { Prisma } from "@prisma/client";
 import { sleep } from "../../../utils/sleep.js";
 import { KmuScraperService } from "../../parser/services/kmu-scraper-service.js";
+import type { ScrapeSelectors } from "../schemas/scrape-selectors.schema.js";
 import { NewsDataService } from "../services/news-data-service.js";
-import type { NewsDataInput, ScrapeSelectors } from "../types/news-types.js";
+import type { NewsDataInput } from "../types/news-types.js";
 import { NewsAiAnalyzerService } from "./news-ai-analyzer-service.js";
 import { NewsScraperService } from "./news-scraper-service.js";
 
