@@ -85,6 +85,9 @@ export class NewsImportService {
 
     try {
       const selectors = await this.aiAnalyzer.generateSelectors(html);
+      if (!selectors) {
+        return null;
+      }
       const now = new Date();
       await this.newsDataService.upsertScrapeConfig(agencyId, selectors, now);
       return selectors;
@@ -129,6 +132,9 @@ export class NewsImportService {
 
     try {
       const freshSelectors = await this.aiAnalyzer.generateSelectors(html);
+      if (!freshSelectors) {
+        return null;
+      }
       await this.newsDataService.upsertScrapeConfig(agencyId, freshSelectors, now);
       return this.cheerioParser.parseNewsWithConfig(
         html,
