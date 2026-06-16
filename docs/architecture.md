@@ -1,17 +1,17 @@
 # Architecture Diagrams
 
-Живі архітектурні діаграми бізнес-процесів проєкту `state-authorities`.
-Рендеряться нативно у GitHub завдяки підтримці Mermaid.js.
+Live architectural diagrams of the business processes for the `state-authorities` project.
+These diagrams render natively on GitHub thanks to Mermaid.js support.
 
 ---
 
 ## Diagram 1: Cron Hot-Reload Configuration Process
 
-Описує 5-хвилинний watchdog-цикл `NewsCronManager`, який слідкує за змінами
-`SystemConfig.NEWS_SYNC_CRON` у БД та м'яко перезапускає `node-cron`-задачу
-без перезавантаження сервера.
+Describes the 5-minute watchdog cycle of `NewsCronManager`, which monitors changes to
+`SystemConfig.NEWS_SYNC_CRON` in the database and gracefully restarts the `node-cron` task
+without restarting the server.
 
-**Пов'язані файли:**
+**Related files:**
 - [`src/modules/news-aggregator/cron/news-cron.ts`](../apps/api/src/modules/news-aggregator/cron/news-cron.ts)
 - [`src/index.ts`](../apps/api/src/index.ts)
 
@@ -55,11 +55,11 @@ sequenceDiagram
 
 ## Diagram 2: News Collection Pipeline with Self-Healing
 
-Описує повний цикл `NewsImportService.runAutomatedLiveImport()`: від Puppeteer-скрапінгу
-до збереження новин у БД, включаючи логіку самолікування через Gemini та 24-годинний
-cooldown guard для обмеження звернень до AI API.
+Describes the complete lifecycle of `NewsImportService.runAutomatedLiveImport()`: from Puppeteer scraping
+to saving news items in the database, including self-healing logic powered by Gemini and a 24-hour
+cooldown guard to limit AI API requests.
 
-**Пов'язані файли:**
+**Related files:**
 - [`src/modules/news-aggregator/services/news-import-service.ts`](../apps/api/src/modules/news-aggregator/services/news-import-service.ts)
 - [`src/modules/news-aggregator/services/news-ai-analyzer-service.ts`](../apps/api/src/modules/news-aggregator/services/news-ai-analyzer-service.ts)
 - [`src/modules/news-aggregator/services/news-scraper-service.ts`](../apps/api/src/modules/news-aggregator/services/news-scraper-service.ts)
@@ -107,11 +107,11 @@ flowchart TD
     UPSERT --> RETURN_COUNT([return syncedCount])
 ```
 
-### Self-Healing: ключова логіка
+### Self-Healing: Key Logic
 
-| Стан | Поведінка |
+| State | Behavior |
 |---|---|
-| Немає `configRecord` у БД | Перший запуск: AI генерує селектори, зберігає з `lastAiAnalysedAt = now` |
-| `configRecord` є, `items > 0` | Штатний парсинг, AI не викликається |
-| `configRecord` є, `items == 0`, cooldown активний (`< 24h`) | Self-healing заблоковано, повертає `0` |
-| `configRecord` є, `items == 0`, cooldown минув (`>= 24h`) | AI re-аналізує HTML, оновлює селектори, повторний парсинг |
+| No `configRecord` in the DB | First run: AI generates selectors, saves them with `lastAiAnalysedAt = now` |
+| `configRecord` exists, `items > 0` | Standard parsing, AI is not called |
+| `configRecord` exists, `items == 0`, cooldown is active (`< 24h`) | Self-healing is locked, returns `0` |
+| `configRecord` exists, `items == 0`, cooldown expired (`>= 24h`) | AI re-analyzes HTML, updates selectors, parses again |
