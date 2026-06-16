@@ -1,6 +1,6 @@
 import { Readable } from "node:stream";
 import { type Options, parse } from "csv-parse";
-import { type ZodType, z } from "zod";
+import type { ZodType } from "zod";
 import type { CsvTypeCastFn, ParseCsvResult } from "../types/csv-parser-types.js";
 
 const csvParseOptions: Options = {
