@@ -1,0 +1,2546 @@
+{
+  "info": {
+    "_postman_id": "fd6050fa-7241-4b14-9b16-f23f18337cf1",
+    "name": "State Authorities API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51485606",
+    "_collection_link": "https://go.postman.co/collection/51485606-fd6050fa-7241-4b14-9b16-f23f18337cf1?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authorization",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin@test.org\",\r\n    \"password\": \"test1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"admin@test.org\",\r\n    \"password\": \"test1234\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Set-Cookie",
+                  "value": "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzgxNjE4NjI0LCJleHAiOjE3ODIyMjM0MjR9.O33c_Dc9GOzFRXiIznH7Kpna_RiPBWhX9ltJhmIcUKE; Max-Age=604800; Path=/; Expires=Tue, 23 Jun 2026 14:03:44 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "72"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"48-xHgo9CPJLU5VA42sDWR4XMEYhlA\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:03:44 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 1,\n        \"email\": \"admin@test.org\",\n        \"role\": \"ADMIN\"\n    }\n}"
+            },
+            {
+              "name": "Invalid credentials",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"admin@test.org\",\r\n    \"password\": \"test123\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "86"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"56-lkHUhoyW6BearalnjojLLzlmNhQ\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:06:38 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Invalid email or password\",\n    \"statusCode\": 401,\n    \"errors\": null\n}"
+            },
+            {
+              "name": "Validation failed",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"admintest.org\",\r\n    \"password\": \"test1234\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "127"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"7f-MBfNVhJtTldutXNulYgBL+7wXF4\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:07:27 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Validation failed\",\n    \"statusCode\": 400,\n    \"errors\": [\n        {\n            \"field\": \"email\",\n            \"message\": \"Invalid email address\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Registration",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"test@test.org\",\r\n    \"password\": \"test1234\",\r\n    \"confirmPassword\": \"test1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Validation failed",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"admintest.org\",\r\n    \"password\": \"test1234\",\r\n    \"confirmPassword\": \"test1234\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/register",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "127"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"7f-MBfNVhJtTldutXNulYgBL+7wXF4\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:08:31 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Validation failed\",\n    \"statusCode\": 400,\n    \"errors\": [\n        {\n            \"field\": \"email\",\n            \"message\": \"Invalid email address\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Email conflict",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"admin@test.org\",\r\n    \"password\": \"test1234\",\r\n    \"confirmPassword\": \"test1234\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/register",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "106"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"6a-CSP7Ntn0CpgURJs2xbvVL08Ssvo\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:09:26 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"User with email admin@test.org already exists\",\n    \"statusCode\": 400,\n    \"errors\": null\n}"
+            },
+            {
+              "name": "Successful registration",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"test@test.org\",\r\n    \"password\": \"test1234\",\r\n    \"confirmPassword\": \"test1234\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/register",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "70"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"46-yM5vViMkJSnhCwa0MT5P9mBa7e4\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:10:24 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 2,\n        \"email\": \"test@test.org\",\n        \"role\": \"USER\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful logout",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/auth/logout",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "logout"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Set-Cookie",
+                  "value": "token=; Max-Age=0; Path=/; Expires=Tue, 16 Jun 2026 14:11:12 GMT; HttpOnly; SameSite=Lax"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "45"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2d-ECkabfGmRd2VjPXUf3qSGjj4le4\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:11:12 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Logout completed\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Agencies",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/agencies?page=s",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "agencies"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "s"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful without pagination",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "localhost:3000/api/agencies",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "api",
+                    "agencies"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "10334"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"285e-HgMQj5y36OdwM2/qKstNc7igCCY\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:15:36 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"count\": 20,\n    \"total\": 136,\n    \"totalPages\": 7,\n    \"currentPage\": 1,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Міністерство енергетики України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/minekoenergo-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.737Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.918Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Державне агентство України з управління зоною відчуження\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://dazv.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.742Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.923Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Державна інспекція енергетичного нагляду України\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://sies.gov.ua\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.743Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.925Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 4,\n            \"name\": \"Міністерство молоді та спорту України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-molodi-ta-sportu-ukrayini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.745Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.926Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 5,\n            \"name\": \"Міністерство цифрової трансформації України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-cifrovoyi-transformaciyi\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.746Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.927Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Міністерство економіки, довкілля та сільського господарства України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-ekonomiky-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.747Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.928Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 7,\n            \"name\": \"Державне агентство України з розвитку меліорації, рибного господарства та продовольчих програм\",\n            \"shortName\": null,\n            \"typeId\": 4,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://darg.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.748Z\",\n            \"updatedAt\": \"2026-06-08T09:16:29.021Z\",\n            \"agencyType\": {\n                \"id\": 4,\n                \"name\": \"Державне агентство\",\n                \"slug\": \"derzhavne-ahentstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 8,\n            \"name\": \"Державна служба експортного контролю України\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"http://www.dsecu.gov.ua\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.749Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.931Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 9,\n            \"name\": \"Державна служба України з питань праці\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"http://dsp.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.750Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.932Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 10,\n            \"name\": \"Державне агентство з управління резервами Укрaїни\",\n            \"shortName\": null,\n            \"typeId\": 4,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://daur.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.751Z\",\n            \"updatedAt\": \"2026-06-08T09:16:29.020Z\",\n            \"agencyType\": {\n                \"id\": 4,\n                \"name\": \"Державне агентство\",\n                \"slug\": \"derzhavne-ahentstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 11,\n            \"name\": \"Державна екологічна інспекція України\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.dei.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.753Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.935Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 12,\n            \"name\": \"Державна служба геології та надр України\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.geo.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.755Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.937Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 13,\n            \"name\": \"Державне агентство водних ресурсів України\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.davr.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.756Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.939Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 14,\n            \"name\": \"Державне агентство лісових ресурсів України\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://forest.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.757Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.940Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 15,\n            \"name\": \"Міністерство внутрішніх справ України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-vnutrishnikh-sprav-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.759Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.941Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 16,\n            \"name\": \"Національна поліція України\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.npu.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.761Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.942Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 17,\n            \"name\": \"Адміністрація Державної прикордонної служби України\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"http://dpsu.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.763Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.943Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 18,\n            \"name\": \"Державна міграційна служба України\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://dmsu.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.764Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.945Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 19,\n            \"name\": \"Державна служба України з надзвичайних ситуацій\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"http://www.dsns.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.765Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.946Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 20,\n            \"name\": \"Міністерство закордонних справ України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-zakordonnikh-sprav-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.766Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.947Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        }\n    ]\n}"
+            },
+            {
+              "name": "Successful with pagination",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "localhost:3000/api/agencies?page=1&limit=3",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "api",
+                    "agencies"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "3"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1607"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"647-+3mTS/IgmZxg8pPvQaZbkDoMu88\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:15:58 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"count\": 3,\n    \"total\": 136,\n    \"totalPages\": 46,\n    \"currentPage\": 1,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Міністерство енергетики України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/minekoenergo-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.737Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.918Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Державне агентство України з управління зоною відчуження\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://dazv.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.742Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.923Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Державна інспекція енергетичного нагляду України\",\n            \"shortName\": null,\n            \"typeId\": 2,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://sies.gov.ua\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.743Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.925Z\",\n            \"agencyType\": {\n                \"id\": 2,\n                \"name\": \"Міністерство (підпорядковані)\",\n                \"slug\": \"ministerstvo-pidporyadkovani\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        }\n    ]\n}"
+            },
+            {
+              "name": "Successful with filter",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "localhost:3000/api/agencies?type=ministerstvo",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "api",
+                    "agencies"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "ministerstvo"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "8805"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2265-EhxVADlQiWaBiqaQ4efltQz/k9Y\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:16:52 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"count\": 17,\n    \"total\": 17,\n    \"totalPages\": 1,\n    \"currentPage\": 1,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Міністерство енергетики України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/minekoenergo-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.737Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.918Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 4,\n            \"name\": \"Міністерство молоді та спорту України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-molodi-ta-sportu-ukrayini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.745Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.926Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 5,\n            \"name\": \"Міністерство цифрової трансформації України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-cifrovoyi-transformaciyi\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.746Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.927Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Міністерство економіки, довкілля та сільського господарства України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-ekonomiky-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.747Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.928Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 15,\n            \"name\": \"Міністерство внутрішніх справ України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-vnutrishnikh-sprav-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.759Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.941Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 20,\n            \"name\": \"Міністерство закордонних справ України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-zakordonnikh-sprav-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.766Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.947Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 21,\n            \"name\": \"Міністерство розвитку громад та територій України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-infrastrukturi-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.767Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.949Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 28,\n            \"name\": \"Міністерство культури  України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://mincult.gov.ua/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.776Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.958Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 31,\n            \"name\": \"Міністерство оборони України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-oboroni-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.780Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.962Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 33,\n            \"name\": \"Міністерство освіти і науки України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-osviti-i-nauki-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.782Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.965Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 36,\n            \"name\": \"Міністерство охорони здоров'я України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-okhoroni-zdorovya-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.785Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.969Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 39,\n            \"name\": \"Міністерство соціальної політики, сім'ї та єдності України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-sotsialnoi-politiki-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.790Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.973Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 43,\n            \"name\": \"Міністерство у справах ветеранів України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-u-spravah-veteraniv-ukrayini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.795Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.978Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 44,\n            \"name\": \"Міністерство фінансів України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://mof.gov.ua/uk/\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.796Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.979Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 51,\n            \"name\": \"Міністерство юстиції України\",\n            \"shortName\": null,\n            \"typeId\": 1,\n            \"headName\": null,\n            \"headTitle\": null,\n            \"description\": null,\n            \"address\": null,\n            \"phone\": null,\n            \"email\": null,\n            \"website\": \"https://www.kmu.gov.ua/catalog/ministerstvo-yustitsii-ukraini\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-08T09:01:11.804Z\",\n            \"updatedAt\": \"2026-06-08T09:16:28.986Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 502,\n            \"name\": \"Міністерство цифровізації України\",\n            \"shortName\": \"Минцифра\",\n            \"typeId\": 1,\n            \"headName\": \"Федоров М. А.\",\n            \"headTitle\": \"Міністр\",\n            \"description\": \"Формування державної політики у сфері цифровізації.\",\n            \"address\": \"м. Київ вул. Ділова 24\",\n            \"phone\": \"+380442067811\",\n            \"email\": \"info@digital.gov.ua\",\n            \"website\": \"https://digital.gov.ua\",\n            \"region\": \"Київ\",\n            \"createdAt\": \"2026-06-10T17:02:09.334Z\",\n            \"updatedAt\": \"2026-06-10T17:02:09.334Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        },\n        {\n            \"id\": 505,\n            \"name\": \"Міністерство охорони здоров'я\",\n            \"shortName\": \"МОЗ\",\n            \"typeId\": 1,\n            \"headName\": \"Ляшко В. К.\",\n            \"headTitle\": \"Міністр\",\n            \"description\": \"Головний орган у системі охорони здоров'я.\",\n            \"address\": \"м. Київ вул. Грушевського 7\",\n            \"phone\": \"+380442536194\",\n            \"email\": \"moz@moz.gov.ua\",\n            \"website\": \"https://moz.gov.ua\",\n            \"region\": null,\n            \"createdAt\": \"2026-06-10T17:02:09.334Z\",\n            \"updatedAt\": \"2026-06-10T17:02:09.334Z\",\n            \"agencyType\": {\n                \"id\": 1,\n                \"name\": \"Міністерство\",\n                \"slug\": \"ministerstvo\",\n                \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n            }\n        }\n    ]\n}"
+            },
+            {
+              "name": "Failed validation",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "localhost:3000/api/agencies?page=s",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "api",
+                    "agencies"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "s"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "149"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"95-m+pfcYhjs+kmLdb4w0Ldryu9IR8\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:17:19 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Validation failed\",\n    \"statusCode\": 400,\n    \"errors\": [\n        {\n            \"field\": \"page\",\n            \"message\": \"Invalid input: expected number, received NaN\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Strategic Development Agency\",\r\n  \"shortName\": \"SDA\",\r\n  \"typeId\": 5,\r\n  \"headName\": \"Andrii Melnyk\",\r\n  \"headTitle\": \"Director General\",\r\n  \"description\": \"Agency focused on regional strategic development projects.\",\r\n  \"address\": \"21 Independence St, Kyiv\",\r\n  \"phone\": \"+380441112233\",\r\n  \"email\": \"office@sda.gov.ua\",\r\n  \"website\": \"https://sda.gov.ua\",\r\n  \"region\": \"Kyiv\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "localhost:3000/api/agencies",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "agencies"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful create valid and authorized as admin",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Strategic Development Agency\",\r\n  \"shortName\": \"SDA\",\r\n  \"typeId\": 5,\r\n  \"headName\": \"Andrii Melnyk\",\r\n  \"headTitle\": \"Director General\",\r\n  \"description\": \"Agency focused on regional strategic development projects.\",\r\n  \"address\": \"21 Independence St, Kyiv\",\r\n  \"phone\": \"+380441112233\",\r\n  \"email\": \"office@sda.gov.ua\",\r\n  \"website\": \"https://sda.gov.ua\",\r\n  \"region\": \"Kyiv\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:3000/api/agencies",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "api",
+                    "agencies"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "585"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"249-wOIXVqEKnaowYmLsK4w9GIwnosM\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:19:02 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 509,\n        \"name\": \"Strategic Development Agency\",\n        \"shortName\": \"SDA\",\n        \"typeId\": 5,\n        \"headName\": \"Andrii Melnyk\",\n        \"headTitle\": \"Director General\",\n        \"description\": \"Agency focused on regional strategic development projects.\",\n        \"address\": \"21 Independence St, Kyiv\",\n        \"phone\": \"+380441112233\",\n        \"email\": \"office@sda.gov.ua\",\n        \"website\": \"https://sda.gov.ua\",\n        \"region\": \"Kyiv\",\n        \"createdAt\": \"2026-06-16T14:19:02.698Z\",\n        \"updatedAt\": \"2026-06-16T14:19:02.698Z\",\n        \"agencyType\": {\n            \"id\": 5,\n            \"name\": \"Державна інспекція\",\n            \"slug\": \"derzhavna-inspektsiya\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        }\n    }\n}"
+            },
+            {
+              "name": "Validation failed",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"\",\r\n  \"shortName\": \"SDA\",\r\n  \"typeId\": 5,\r\n  \"headName\": \"Andrii Melnyk\",\r\n  \"headTitle\": \"Director General\",\r\n  \"description\": \"Agency focused on regional strategic development projects.\",\r\n  \"address\": \"21 Independence St, Kyiv\",\r\n  \"phone\": \"+380441112233\",\r\n  \"email\": \"office@sda.gov.ua\",\r\n  \"website\": \"https://sda.gov.ua\",\r\n  \"region\": \"Kyiv\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:3000/api/agencies",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "api",
+                    "agencies"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "121"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"79-yNhchVGhYQkmutvNsy8o4GRpsfQ\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:20:02 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Validation failed\",\n    \"statusCode\": 400,\n    \"errors\": [\n        {\n            \"field\": \"name\",\n            \"message\": \"Name is required\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Strategic Development Agency\",\r\n  \"shortName\": \"SDA\",\r\n  \"typeId\": 5,\r\n  \"headName\": \"Andrii Melnyk\",\r\n  \"headTitle\": \"Director General\",\r\n  \"description\": \"Agency focused on regional strategic development projects.\",\r\n  \"address\": \"21 Independence St, Kyiv\",\r\n  \"phone\": \"+380441112233\",\r\n  \"email\": \"office@sda.gov.ua\",\r\n  \"website\": \"https://sda.gov.ua\",\r\n  \"region\": \"Kyiv\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:3000/api/agencies",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "api",
+                    "agencies"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "73"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"49-IoUib2I4Y1eRXUeyQCXr5y4tdgo\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:20:38 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Unauthorized\",\n    \"statusCode\": 401,\n    \"errors\": null\n}"
+            },
+            {
+              "name": "Forbidden when logged as user",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Strategic Development Agency\",\r\n  \"shortName\": \"SDA\",\r\n  \"typeId\": 5,\r\n  \"headName\": \"Andrii Melnyk\",\r\n  \"headTitle\": \"Director General\",\r\n  \"description\": \"Agency focused on regional strategic development projects.\",\r\n  \"address\": \"21 Independence St, Kyiv\",\r\n  \"phone\": \"+380441112233\",\r\n  \"email\": \"office@sda.gov.ua\",\r\n  \"website\": \"https://sda.gov.ua\",\r\n  \"region\": \"Kyiv\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:3000/api/agencies",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "api",
+                    "agencies"
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "117"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"75-RoxMi4J2qLD1P0YjUFQx+dGotuE\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:21:48 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. You do not have the required permissions.\",\n    \"statusCode\": 403,\n    \"errors\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "localhost:3000/api/agencies/11111",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "agencies",
+                "11111"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Forbidden when logged as user",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "localhost:3000/api/agencies/509",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "api",
+                    "agencies",
+                    "509"
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "117"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"75-RoxMi4J2qLD1P0YjUFQx+dGotuE\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:25:02 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. You do not have the required permissions.\",\n    \"statusCode\": 403,\n    \"errors\": null\n}"
+            },
+            {
+              "name": "Successful deletion",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "localhost:3000/api/agencies/509",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "api",
+                    "agencies",
+                    "509"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "28"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"1c-ng1iKOQSNw2obB7yJyIC6RDUM6g\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:26:13 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": null\n}"
+            },
+            {
+              "name": "Not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "localhost:3000/api/agencies/11111",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3000",
+                  "path": [
+                    "api",
+                    "agencies",
+                    "11111"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "91"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"5b-YXsR5yLg6oASGP0J3sB02nfITNo\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:26:43 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Agency with id 11111 not found\",\n    \"statusCode\": 404,\n    \"errors\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"website\": \"test.org\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/agencies/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agencies",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "508"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful update",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"website\": \"https://www.test.org\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "508"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "638"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"27e-0CEXmn5bzCSfTO4iTxTrDyN+nTs\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:31:08 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 508,\n        \"name\": \"Державна екологічна інспекція\",\n        \"shortName\": \"Держекоінспекція\",\n        \"typeId\": 4,\n        \"headName\": \"Федоренко І. О.\",\n        \"headTitle\": \"Голова\",\n        \"description\": \"Контроль у сфері охорони довкілля.\",\n        \"address\": null,\n        \"phone\": null,\n        \"email\": \"info@dei.gov.ua\",\n        \"website\": \"https://www.test.org\",\n        \"region\": \"Вся Україна\",\n        \"createdAt\": \"2026-06-10T17:02:09.334Z\",\n        \"updatedAt\": \"2026-06-16T14:31:08.194Z\",\n        \"agencyType\": {\n            \"id\": 4,\n            \"name\": \"Державне агентство\",\n            \"slug\": \"derzhavne-ahentstvo\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        }\n    }\n}"
+            },
+            {
+              "name": "Not found",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"website\": \"https://www.test.org\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "5081"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "90"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"5a-asjAQVcEYclA1E58edLQ91CaVf0\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:31:38 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Agency with id 5081 not found\",\n    \"statusCode\": 404,\n    \"errors\": null\n}"
+            },
+            {
+              "name": "Update",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"website\": \"test.org\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "508"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "127"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"7f-WiBa4PeCeUaiMZDthGFENmCSsgA\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:32:08 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Validation failed\",\n    \"statusCode\": 400,\n    \"errors\": [\n        {\n            \"field\": \"website\",\n            \"message\": \"Invalid website URL\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agencies/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agencies",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "s"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful retrieving",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "508"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "638"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"27e-0CEXmn5bzCSfTO4iTxTrDyN+nTs\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:33:30 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 508,\n        \"name\": \"Державна екологічна інспекція\",\n        \"shortName\": \"Держекоінспекція\",\n        \"typeId\": 4,\n        \"headName\": \"Федоренко І. О.\",\n        \"headTitle\": \"Голова\",\n        \"description\": \"Контроль у сфері охорони довкілля.\",\n        \"address\": null,\n        \"phone\": null,\n        \"email\": \"info@dei.gov.ua\",\n        \"website\": \"https://www.test.org\",\n        \"region\": \"Вся Україна\",\n        \"createdAt\": \"2026-06-10T17:02:09.334Z\",\n        \"updatedAt\": \"2026-06-16T14:31:08.194Z\",\n        \"agencyType\": {\n            \"id\": 4,\n            \"name\": \"Державне агентство\",\n            \"slug\": \"derzhavne-ahentstvo\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        }\n    }\n}"
+            },
+            {
+              "name": "Not found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "5022"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "90"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"5a-7Pa6Dg7jGoyzC1BvyuGjVzPCB+o\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:34:01 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Agency with id 5022 not found\",\n    \"statusCode\": 404,\n    \"errors\": null\n}"
+            },
+            {
+              "name": "Validation failed",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "s"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "81"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"51-WFYo1ypwJMNtoyxmUD8MPrkzWaI\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:34:23 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Invalid id\",\n    \"statusCode\": 400,\n    \"errors\": [\n        \"Invalid id\"\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Import CSV",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "0795ab5e-b02c-4f56-852f-e03a90a88a93",
+                  "src": "YUzY5ck9c/agency_test.csv"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/agencies/import-csv",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agencies",
+                "import-csv"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success import",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "0795ab5e-b02c-4f56-852f-e03a90a88a93",
+                      "src": "YUzY5ck9c/agency_test.csv"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/import-csv",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    "import-csv"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "116"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"74-o8sLi3fEo+FubZEUhRQ09nkMf9M\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 16:52:36 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"CSV file was processed successfully\",\n    \"data\": {\n        \"totalRows\": 136,\n        \"imported\": 136,\n        \"skipped\": 0\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Export CSV",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agencies/export",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agencies",
+                "export"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success export",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/export",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    "export"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/csv; charset=utf-8"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=\"agencies_2026-06-16T16-49-18-944Z.csv\""
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "25578"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"63ea-MW0KRzUT/xaZqedfcC3MMuSjFyA\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 16:49:18 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "id,name,website,typeName,createdAt\r\n\"43\",\"Міністерство у справах ветеранів України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-u-spravah-veteraniv-ukrayini\",\"Міністерство\",\"2026-06-08T09:01:11.795Z\"\r\n\"10\",\"Державне агентство з управління резервами Укрaїни\",\"https://daur.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.751Z\"\r\n\"39\",\"Міністерство соціальної політики, сім'ї та єдності України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-sotsialnoi-politiki-ukraini\",\"Міністерство\",\"2026-06-08T09:01:11.790Z\"\r\n\"1\",\"Міністерство енергетики України\",\"https://www.kmu.gov.ua/catalog/minekoenergo-ukraini\",\"Міністерство\",\"2026-06-08T09:01:11.737Z\"\r\n\"31\",\"Міністерство оборони України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-oboroni-ukraini\",\"Міністерство\",\"2026-06-08T09:01:11.780Z\"\r\n\"27\",\"Державне агентство відновлення та розвитку інфраструктури України\",\"https://restoration.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.774Z\"\r\n\"12\",\"Державна служба геології та надр України\",\"https://www.geo.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.755Z\"\r\n\"9\",\"Державна служба України з питань праці\",\"http://dsp.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.750Z\"\r\n\"34\",\"Національна комісія зі стандартів державної мови\",\"https://mova.gov.ua/\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.783Z\"\r\n\"37\",\"Національна служба здоров'я України\",\"http://nszu.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.786Z\"\r\n\"2\",\"Державне агентство України з управління зоною відчуження\",\"https://dazv.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.742Z\"\r\n\"36\",\"Міністерство охорони здоров'я України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-okhoroni-zdorovya-ukraini\",\"Міністерство\",\"2026-06-08T09:01:11.785Z\"\r\n\"3\",\"Державна інспекція енергетичного нагляду України\",\"https://sies.gov.ua\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.743Z\"\r\n\"4\",\"Міністерство молоді та спорту України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-molodi-ta-sportu-ukrayini\",\"Міністерство\",\"2026-06-08T09:01:11.745Z\"\r\n\"5\",\"Міністерство цифрової трансформації України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-cifrovoyi-transformaciyi\",\"Міністерство\",\"2026-06-08T09:01:11.746Z\"\r\n\"32\",\"Державне космічне агентство України\",\"https://www.nkau.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.781Z\"\r\n\"33\",\"Міністерство освіти і науки України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-osviti-i-nauki-ukraini\",\"Міністерство\",\"2026-06-08T09:01:11.782Z\"\r\n\"7\",\"Державне агентство України з розвитку меліорації, рибного господарства та продовольчих програм\",\"https://darg.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.748Z\"\r\n\"8\",\"Державна служба експортного контролю України\",\"http://www.dsecu.gov.ua\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.749Z\"\r\n\"13\",\"Державне агентство водних ресурсів України\",\"https://www.davr.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.756Z\"\r\n\"14\",\"Державне агентство лісових ресурсів України\",\"https://forest.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.757Z\"\r\n\"15\",\"Міністерство внутрішніх справ України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-vnutrishnikh-sprav-ukraini\",\"Міністерство\",\"2026-06-08T09:01:11.759Z\"\r\n\"16\",\"Національна поліція України\",\"https://www.npu.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.761Z\"\r\n\"17\",\"Адміністрація Державної прикордонної служби України\",\"http://dpsu.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.763Z\"\r\n\"18\",\"Державна міграційна служба України\",\"https://dmsu.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.764Z\"\r\n\"19\",\"Державна служба України з надзвичайних ситуацій\",\"http://www.dsns.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.765Z\"\r\n\"20\",\"Міністерство закордонних справ України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-zakordonnikh-sprav-ukraini\",\"Міністерство\",\"2026-06-08T09:01:11.766Z\"\r\n\"21\",\"Міністерство розвитку громад та територій України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-infrastrukturi-ukraini\",\"Міністерство\",\"2026-06-08T09:01:11.767Z\"\r\n\"29\",\"Державне агентство України з питань мистецтв та мистецької освіти\",\"https://arts.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.778Z\"\r\n\"30\",\"Державне агентство України з питань кіно\",\"https://usfa.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.779Z\"\r\n\"38\",\"Державна служба України з лікарських засобів та контролю за наркотиками\",\"http://diklz.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.787Z\"\r\n\"11\",\"Державна екологічна інспекція України\",\"https://www.dei.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.753Z\"\r\n\"28\",\"Міністерство культури  України\",\"https://mincult.gov.ua/\",\"Міністерство\",\"2026-06-08T09:01:11.776Z\"\r\n\"23\",\"Державна інспекція архітектури та містобудування України\",\"https://diam.gov.ua/\",\"Державна інспекція\",\"2026-06-08T09:01:11.770Z\"\r\n\"24\",\"Державна авіаційна служба України\",\"https://avia.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.771Z\"\r\n\"35\",\"Державна служба якості освіти України\",\"http://sqe.gov.ua\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.784Z\"\r\n\"22\",\"Державне агентство розвитку туризму України\",\"https://www.tourism.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.769Z\"\r\n\"25\",\"Державна служба морського і внутрішнього водного транспорту та судноплавства України\",\"https://marad.gov.ua/ua\",\"Державна служба\",\"2026-06-08T09:01:11.772Z\"\r\n\"26\",\"Державна служба України з безпеки на транспорті\",\"http://dsbt.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.773Z\"\r\n\"41\",\"Державна служба України у справах дітей\",\"\",\"Державна служба\",\"2026-06-08T09:01:11.793Z\"\r\n\"42\",\"Пенсійний фонд України\",\"http://www.pfu.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.794Z\"\r\n\"44\",\"Міністерство фінансів України\",\"https://mof.gov.ua/uk/\",\"Міністерство\",\"2026-06-08T09:01:11.796Z\"\r\n\"50\",\"Державна служба фінансового моніторингу України\",\"https://fiu.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.803Z\"\r\n\"52\",\"Державна архівна службa України\",\"http://www.archives.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.805Z\"\r\n\"46\",\"Державна аудиторська служба України\",\"https://dasu.gov.ua/\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.799Z\"\r\n\"59\",\"Державна авіаційна службa України\",\"https://avia.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.813Z\"\r\n\"66\",\"Державна служба Укрaїни з питань геодезії, картографії та кадастру\",\"http://land.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.820Z\"\r\n\"95\",\"Державна інспекція ядерного регулювання Укрaїни\",\"https://snriu.gov.ua\",\"Державна інспекція\",\"2026-06-08T09:01:11.847Z\"\r\n\"40\",\"Національна соціальна сервісна служба України\",\"https://nssu.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.791Z\"\r\n\"83\",\"Державне агентство водних ресурсів Укрaїни\",\"https://www.davr.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.836Z\"\r\n\"84\",\"Державне агентство лісових ресурсів Укрaїни\",\"https://forest.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.837Z\"\r\n\"67\",\"Державна служба геології та надр Укрaїни\",\"http://geo.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.821Z\"\r\n\"65\",\"Державна служба України з питань безпечності харчових продуктів та захисту споживачів\",\"https://dpss.gov.ua/\",\"ЦОВВ\",\"2026-06-08T09:01:11.820Z\"\r\n\"48\",\"Державна податкова служба України\",\"https://tax.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.801Z\"\r\n\"49\",\"Державна казначейська служба України\",\"http://www.treasury.gov.ua/\",\"Міністерство (підпорядковані)\",\"2026-06-08T09:01:11.802Z\"\r\n\"51\",\"Міністерство юстиції України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-yustitsii-ukraini\",\"Міністерство\",\"2026-06-08T09:01:11.804Z\"\r\n\"61\",\"Державна казначейська служба Укрaїни\",\"http://www.treasury.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.815Z\"\r\n\"62\",\"Державна міграційна служба Укрaїни\",\"https://dmsu.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.816Z\"\r\n\"97\",\"Національна комісія, що здійснює державне регулювання у сферах енергетики та комунальних послуг\",\"https://www.nerc.gov.ua/\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.849Z\"\r\n\"64\",\"Державна служба Укрaїни з безпеки на транспорті\",\"http://dsbt.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.818Z\"\r\n\"98\",\"Національна комісія, що здійснює державне регулювання у сферах електронних комунікацій, радіочастотного спектра та надання послуг поштового зв’язку\",\"https://nkek.gov.ua/\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.850Z\"\r\n\"77\",\"Державне агентство України ПлейСіті\",\"https://playcity.gov.ua/\",\"ЦОВВ\",\"2026-06-08T09:01:11.831Z\"\r\n\"68\",\"Державна служба Укрaїни з питань праці\",\"http://dsp.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.822Z\"\r\n\"69\",\"Державна служба статистики Укрaїни\",\"https://stat.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.823Z\"\r\n\"70\",\"Державна служба Укрaїни з лікарських засобів та контролю за наркотиками\",\"http://dls.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.824Z\"\r\n\"71\",\"Державна служба Укрaїни з надзвичайних ситуацій\",\"http://www.dsns.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.825Z\"\r\n\"72\",\"Державна служба фінансового моніторингу Укрaїни\",\"https://fiu.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.826Z\"\r\n\"73\",\"Державна служба експортного контролю Укрaїни\",\"http://dsecu.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.827Z\"\r\n\"74\",\"Державна регуляторна служба Укрaїни\",\"http://www.drs.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.828Z\"\r\n\"75\",\"Державна служба якості освіти Укрaїни\",\"http://sqe.gov.ua\",\"Державна служба\",\"2026-06-08T09:01:11.829Z\"\r\n\"92\",\"Національне агентство з питань запобігання корупції\",\"https://nazk.gov.ua/uk/\",\"ЦОВВ\",\"2026-06-08T09:01:11.845Z\"\r\n\"93\",\"Державна екологічна інспекція Укрaїни\",\"http://www.dei.gov.ua/\",\"Державна інспекція\",\"2026-06-08T09:01:11.845Z\"\r\n\"87\",\"Державне агентство Укрaїни з питань кіно\",\"https://usfa.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.840Z\"\r\n\"88\",\"Державне агентство Укрaїни з управління зоною відчуження\",\"http://dazv.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.841Z\"\r\n\"90\",\"Національне агентство Укрaїни з питань виявлення, розшуку та управління активами, одержаними від корупційних тa інших злочинів\",\"https://arma.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.843Z\"\r\n\"91\",\"Національне агентство Укрaїни з питань державної cлужби\",\"https://nads.gov.ua/\",\"Державне агентство\",\"2026-06-08T09:01:11.844Z\"\r\n\"53\",\"Державна служба України з етнополітики та свободи совісті\",\"https://dess.gov.ua/\",\"ЦОВВ\",\"2026-06-08T09:01:11.806Z\"\r\n\"45\",\"Державна митна служба України\",\"https://customs.gov.ua/\",\"Державна служба\",\"2026-06-08T09:01:11.798Z\"\r\n\"96\",\"Державна інспекція енергетичного нагляду Укрaїни\",\"https://sies.gov.ua/\",\"Державна інспекція\",\"2026-06-08T09:01:11.848Z\"\r\n\"78\",\"Державне агентство з енергоефективності та енергозбереження України\",\"https://saee.gov.ua/\",\"ЦОВВ\",\"2026-06-08T09:01:11.832Z\"\r\n\"47\",\"Агентство з управління державним боргом України\",\"\",\"Державне агентство\",\"2026-06-08T09:01:11.800Z\"\r\n\"120\",\"Український інститут національної пам’яті\",\"https://comin.gov.ua/\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.871Z\"\r\n\"113\",\"Державна інспекція ядерного регулювання України\",\"https://snriu.gov.ua/\",\"ЦОВВ\",\"2026-06-08T09:01:11.865Z\"\r\n\"124\",\"Адміністрація Державної служби спеціального зв’язку та захисту інформації України\",\"https://cip.gov.ua/ua\",\"ЦОВВ\",\"2026-06-08T09:01:11.875Z\"\r\n\"104\",\"Антимонопольний комітет України\",\"https://amcu.gov.ua/\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.856Z\"\r\n\"114\",\"Державна служба України з питань геодезії, картографії та кадастру\",\"https://land.gov.ua/\",\"ЦОВВ\",\"2026-06-08T09:01:11.866Z\"\r\n\"105\",\"Адміністрація Державної прикордонної служби Укрaїни\",\"http://dpsu.gov.ua/\",\"Інші ЦОВВ\",\"2026-06-08T09:01:11.857Z\"\r\n\"141\",\"Вінницька обласна державна адміністрація\",\"http://www.vin.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.892Z\"\r\n\"125\",\"Державна служба статистики України\",\"https://stat.gov.ua/\",\"ЦОВВ\",\"2026-06-08T09:01:11.876Z\"\r\n\"101\",\"Бюро економічної безпеки України\",\"https://esbu.gov.ua/\",\"ЦОВВ\",\"2026-06-08T09:01:11.853Z\"\r\n\"106\",\"Національна поліція Укрaїни\",\"https://www.npu.gov.ua/\",\"Інші ЦОВВ\",\"2026-06-08T09:01:11.858Z\"\r\n\"142\",\"Волинська обласна державна адміністрація\",\"http://voladm.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.893Z\"\r\n\"107\",\"Український інститут національної пам'яті\",\"https://uinp.gov.ua/\",\"Інші ЦОВВ\",\"2026-06-08T09:01:11.859Z\"\r\n\"109\",\"Фонд державного майна України\",\"https://www.spfu.gov.ua/\",\"ЦОВВ\",\"2026-06-08T09:01:11.861Z\"\r\n\"147\",\"Запорізька обласна державна адміністрація\",\"http://www.zoda.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.897Z\"\r\n\"143\",\"Дніпропетровська обласна державна адміністрація\",\"http://adm.dp.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.894Z\"\r\n\"128\",\"Державна регуляторна служба України\",\"https://drs.gov.ua/\",\"ЦОВВ\",\"2026-06-08T09:01:11.880Z\"\r\n\"148\",\"Івано-Франківська обласна державна адміністрація\",\"http://www.if.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.898Z\"\r\n\"149\",\"Київська обласна державна адміністрація\",\"http://koda.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.899Z\"\r\n\"150\",\"Кіровоградська обласна державна адміністрація\",\"http://www.kr-admin.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.900Z\"\r\n\"103\",\"Державний комітет телебачення і радіомовлення України\",\"https://comin.gov.ua/\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.855Z\"\r\n\"100\",\"Національне антикорупційне бюро України\",\"https://nabu.gov.ua/\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.852Z\"\r\n\"151\",\"Луганська обласна державна адміністрація\",\"https://lova.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.901Z\"\r\n\"144\",\"Донецька обласна державна адміністрація\",\"http://dn.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.895Z\"\r\n\"136\",\"Національне агентство Укрaїни з питань запобігання корупції\",\"https://nazk.gov.ua/\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.888Z\"\r\n\"152\",\"Львівська обласна державна адміністрація\",\"http://loda.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.902Z\"\r\n\"153\",\"Миколаївська обласна державна адміністрація\",\"http://www.mk.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.903Z\"\r\n\"154\",\"Одеська обласна державна адміністрація\",\"https://oda.od.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.904Z\"\r\n\"155\",\"Полтавська обласна державна адміністрація\",\"https://poda.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.904Z\"\r\n\"145\",\"Житомирська обласна державна адміністрація\",\"https://oda.zht.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.896Z\"\r\n\"102\",\"Адміністрація Державної служби спеціального зв'язку та захисту інформації України\",\"https://cip.gov.ua/ua\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.854Z\"\r\n\"126\",\"Національне агентство України з питань виявлення, розшуку та управління активами, одержаними від корупційних та інших злочинів\",\"https://arma.gov.ua/\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.877Z\"\r\n\"138\",\"Фонд державного майна Укрaїни\",\"http://www.spfu.gov.ua/\",\"ЦОВВ зі спеціальним статусом\",\"2026-06-08T09:01:11.890Z\"\r\n\"108\",\"Пенсійний фонд Укрaїни\",\"http://www.pfu.gov.ua/\",\"Інші ЦОВВ\",\"2026-06-08T09:01:11.860Z\"\r\n\"146\",\"Закарпатська обласна державна адміністрація\",\"https://carpathia.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.896Z\"\r\n\"112\",\"Національне агентство з питань державної служби України\",\"https://nads.gov.ua/\",\"ЦОВВ\",\"2026-06-08T09:01:11.864Z\"\r\n\"508\",\"Державна екологічна інспекція\",\"https://www.test.org\",\"Державне агентство\",\"2026-06-10T17:02:09.334Z\"\r\n\"6\",\"Міністерство економіки, довкілля та сільського господарства України\",\"https://www.kmu.gov.ua/catalog/ministerstvo-ekonomiky-ukraini\",\"Міністерство\",\"2026-06-08T09:01:11.747Z\"\r\n\"156\",\"Рівненська обласна державна адміністрація\",\"http://www.rv.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.905Z\"\r\n\"157\",\"Сумська обласна державна адміністрація\",\"http://sm.gov.ua\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.906Z\"\r\n\"158\",\"Тернопільська обласна державна адміністрація\",\"https://oda.te.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.907Z\"\r\n\"159\",\"Харківська обласна державна адміністрація\",\"http://kharkivoda.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.908Z\"\r\n\"160\",\"Херсонська обласна державна адміністрація\",\"https://khoda.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.909Z\"\r\n\"161\",\"Хмельницька обласна державна адміністрація\",\"http://www.adm.km.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.910Z\"\r\n\"162\",\"Черкаська обласна державна адміністрація\",\"http://ck-oda.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.911Z\"\r\n\"163\",\"Чернівецька обласна державна адміністрація\",\"https://bukoda.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.912Z\"\r\n\"164\",\"Чернігівська обласна державна адміністрація\",\"http://cg.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.912Z\"\r\n\"165\",\"Київська міська державна адміністрація\",\"http://kievcity.gov.ua/\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.913Z\"\r\n\"166\",\"Рада міністрів Автономної Республіки Крим\",\"\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.914Z\"\r\n\"167\",\"Севастопольська міська державна адміністрація\",\"\",\"Місцеві органи влади\",\"2026-06-08T09:01:11.915Z\"\r\n\"502\",\"Міністерство цифровізації України\",\"https://digital.gov.ua\",\"Міністерство\",\"2026-06-10T17:02:09.334Z\"\r\n\"503\",\"Державна служба статистики\",\"https://stat.gov.ua\",\"Міністерство (підпорядковані)\",\"2026-06-10T17:02:09.334Z\"\r\n\"504\",\"Державне агентство кіно\",\"\",\"Державна служба\",\"2026-06-10T17:02:09.334Z\"\r\n\"505\",\"Міністерство охорони здоров'я\",\"https://moz.gov.ua\",\"Міністерство\",\"2026-06-10T17:02:09.334Z\"\r\n\"506\",\"Київська міська рада\",\"\",\"Державна інспекція\",\"2026-06-10T17:02:09.334Z\"\r\n\"507\",\"Державна податкова служба\",\"\",\"Міністерство (підпорядковані)\",\"2026-06-10T17:02:09.334Z\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AgencyTypes",
+      "item": [
+        {
+          "name": "Get all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agency-types",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agency-types"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful get all",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agency-types",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agency-types"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1320"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"528-SVSVsOHLyjeAmaKlPJyQ/j5iQo0\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:13:27 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"count\": 11,\n    \"total\": 11,\n    \"totalPages\": 1,\n    \"currentPage\": 1,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Міністерство\",\n            \"slug\": \"ministerstvo\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Міністерство (підпорядковані)\",\n            \"slug\": \"ministerstvo-pidporyadkovani\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Державна служба\",\n            \"slug\": \"derzhavna-sluzhba\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        },\n        {\n            \"id\": 4,\n            \"name\": \"Державне агентство\",\n            \"slug\": \"derzhavne-ahentstvo\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        },\n        {\n            \"id\": 5,\n            \"name\": \"Державна інспекція\",\n            \"slug\": \"derzhavna-inspektsiya\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Комісія\",\n            \"slug\": \"komisiya\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        },\n        {\n            \"id\": 7,\n            \"name\": \"Бюро\",\n            \"slug\": \"byuro\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        },\n        {\n            \"id\": 8,\n            \"name\": \"Інші ЦОВВ\",\n            \"slug\": \"inshi-tsovv\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        },\n        {\n            \"id\": 9,\n            \"name\": \"ЦОВВ\",\n            \"slug\": \"tsovv\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        },\n        {\n            \"id\": 10,\n            \"name\": \"ЦОВВ зі спеціальним статусом\",\n            \"slug\": \"tsovv-zi-spetsialnym-statusom\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        },\n        {\n            \"id\": 11,\n            \"name\": \"Місцеві органи влади\",\n            \"slug\": \"mistsevi-orhany-vlady\",\n            \"createdAt\": \"2026-06-10T19:48:15.727Z\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Import CSV",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "0795ab5e-b02c-4f56-852f-e03a90a88a93",
+                  "value": null
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/agency-types/import-csv",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agency-types",
+                "import-csv"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export CSV",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agency-types/export",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agency-types",
+                "export"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success export",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agency-types/export",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agency-types",
+                    "export"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/csv; charset=utf-8"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=\"agency_types_2026-06-16T16-50-01-158Z.csv\""
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "937"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"3a9-GzXseNiDXpsdyKd+3Jg+xKIzp5k\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 16:50:01 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "id,name,slug,createdAt\r\n\"1\",\"Міністерство\",\"ministerstvo\",\"2026-06-10T19:48:15.727Z\"\r\n\"2\",\"Міністерство (підпорядковані)\",\"ministerstvo-pidporyadkovani\",\"2026-06-10T19:48:15.727Z\"\r\n\"3\",\"Державна служба\",\"derzhavna-sluzhba\",\"2026-06-10T19:48:15.727Z\"\r\n\"4\",\"Державне агентство\",\"derzhavne-ahentstvo\",\"2026-06-10T19:48:15.727Z\"\r\n\"5\",\"Державна інспекція\",\"derzhavna-inspektsiya\",\"2026-06-10T19:48:15.727Z\"\r\n\"6\",\"Комісія\",\"komisiya\",\"2026-06-10T19:48:15.727Z\"\r\n\"7\",\"Бюро\",\"byuro\",\"2026-06-10T19:48:15.727Z\"\r\n\"8\",\"Інші ЦОВВ\",\"inshi-tsovv\",\"2026-06-10T19:48:15.727Z\"\r\n\"9\",\"ЦОВВ\",\"tsovv\",\"2026-06-10T19:48:15.727Z\"\r\n\"10\",\"ЦОВВ зі спеціальним статусом\",\"tsovv-zi-spetsialnym-statusom\",\"2026-06-10T19:48:15.727Z\"\r\n\"11\",\"Місцеві органи влади\",\"mistsevi-orhany-vlady\",\"2026-06-10T19:48:15.727Z\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Parser Feed",
+      "item": [
+        {
+          "name": "Trigger KMU Parser",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "refresh"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success agency updated by parser",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/refresh",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "refresh"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "43"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2b-b8LFN3e3L2X2iMRoAf9egfjJfpA\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 16:54:29 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"syncedCount\": 167\n    }\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/refresh",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "refresh"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "73"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"49-IoUib2I4Y1eRXUeyQCXr5y4tdgo\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 17:01:04 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Unauthorized\",\n    \"statusCode\": 401,\n    \"errors\": null\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "News",
+      "item": [
+        {
+          "name": "Get all by agency",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agencies/:agencyId/news",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agencies",
+                ":agencyId",
+                "news"
+              ],
+              "variable": [
+                {
+                  "key": "agencyId",
+                  "value": "2711"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful retrieving without pagination",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/:agencyId/news",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    ":agencyId",
+                    "news"
+                  ],
+                  "variable": [
+                    {
+                      "key": "agencyId",
+                      "value": "27"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "3419"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"d5b-dRaD7jZjZObYE6BdV/Zc4EsgMls\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:37:58 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"count\": 8,\n    \"total\": 8,\n    \"totalPages\": 1,\n    \"currentPage\": 1,\n    \"data\": [\n        {\n            \"id\": 7,\n            \"title\": \"Завершили ремонт картами на ділянці об’їзду в Теребовлі на Тернопільщині\",\n            \"description\": null,\n            \"content\": null,\n            \"url\": \"https://restoration.gov.ua/blog/zavershyly-remont-kartamy-na-dilyanczi-obyizdu-v-terebovli-na-ternopilshhyni/\",\n            \"publishedAt\": \"2026-12-05T22:00:00.000Z\",\n            \"agencyId\": 27,\n            \"createdAt\": \"2026-06-13T15:01:20.548Z\"\n        },\n        {\n            \"id\": 6,\n            \"title\": \"Поточні ремонти на дорогах державного значення: з початку року відремонтовано 14,7 млн м² дорожнього полотна\",\n            \"description\": null,\n            \"content\": null,\n            \"url\": \"https://restoration.gov.ua/blog/potochni-remonty-na-dorogah-derzhavnogo-znachennya-z-pochatku-roku-vidremontovano-147-mln-m%c2%b2-dorozhnogo-polotna/\",\n            \"publishedAt\": \"2026-12-05T22:00:00.000Z\",\n            \"agencyId\": 27,\n            \"createdAt\": \"2026-06-13T15:01:20.544Z\"\n        },\n        {\n            \"id\": 8,\n            \"title\": \"Відкриваємо рух ділянкою дороги Н-02 у Тернопільській області\",\n            \"description\": null,\n            \"content\": null,\n            \"url\": \"https://restoration.gov.ua/blog/vidkryvayemo-ruh-dilyankoyu-dorogy-n-02-u-ternopilskij-oblasti/\",\n            \"publishedAt\": \"2026-11-05T22:00:00.000Z\",\n            \"agencyId\": 27,\n            \"createdAt\": \"2026-06-13T15:01:20.549Z\"\n        },\n        {\n            \"id\": 9,\n            \"title\": \"Розбудовуємо прикордонну інфраструктуру на Вінниччині\",\n            \"description\": null,\n            \"content\": null,\n            \"url\": \"https://restoration.gov.ua/blog/rozbudovuyemo-prykordonnu-infrastrukturu-na-vinnychchyni/\",\n            \"publishedAt\": \"2026-11-05T22:00:00.000Z\",\n            \"agencyId\": 27,\n            \"createdAt\": \"2026-06-13T15:01:20.551Z\"\n        },\n        {\n            \"id\": 2682,\n            \"title\": \"Ольга — начальник цеху з виробництва дорожніх знаків одного з підрядників Агентства відновлення\",\n            \"description\": null,\n            \"content\": null,\n            \"url\": \"https://restoration.gov.ua/blog/olga-nachalnyk-czehu-z-vyrobnycztva-dorozhnih-znakiv-odnogo-z-pidryadnykiv-agentstva-vidnovlennya/\",\n            \"publishedAt\": \"2026-06-16T12:00:40.135Z\",\n            \"agencyId\": 27,\n            \"createdAt\": \"2026-06-16T12:00:40.138Z\"\n        },\n        {\n            \"id\": 1246,\n            \"title\": \"Будуємо нове житло у Гостомелі\",\n            \"description\": null,\n            \"content\": null,\n            \"url\": \"https://restoration.gov.ua/blog/buduyemo-nove-zhytlo-u-gostomeli/\",\n            \"publishedAt\": \"2026-06-16T12:00:40.135Z\",\n            \"agencyId\": 27,\n            \"createdAt\": \"2026-06-15T12:01:06.080Z\"\n        },\n        {\n            \"id\": 1248,\n            \"title\": \"Ремонти доріг державного значення: відновлено вже 15 млн м² покриття\",\n            \"description\": null,\n            \"content\": null,\n            \"url\": \"https://restoration.gov.ua/blog/remonty-dorig-derzhavnogo-znachennya-vidnovleno-vzhe-15-mln-m%c2%b2-pokryttya/\",\n            \"publishedAt\": \"2026-06-16T12:00:40.135Z\",\n            \"agencyId\": 27,\n            \"createdAt\": \"2026-06-15T12:01:06.086Z\"\n        },\n        {\n            \"id\": 1249,\n            \"title\": \"Щотижневий дайджест моніторингу закупівель будівельних матеріалів для зведення фізичного захисту об’єктів критичної інфраструктури\",\n            \"description\": null,\n            \"content\": null,\n            \"url\": \"https://restoration.gov.ua/blog/shhotyzhnevyj-dajdzhest-monitoryngu-zakupivel-budivelnyh-materialiv-dlya-zvedennya-fizychnogo-zahystu-obyektiv-krytychnoyi-infrastruktury-21/\",\n            \"publishedAt\": \"2026-06-15T12:01:06.080Z\",\n            \"agencyId\": 27,\n            \"createdAt\": \"2026-06-15T12:01:06.087Z\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Successful retrieving with pagination",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/:agencyId/news?page=2&limit=3",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    ":agencyId",
+                    "news"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "2"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "3"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "key": "agencyId",
+                      "value": "27"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "1174"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"496-rQEjPC+scGMicu65yF/6AOU1g48\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:38:34 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"count\": 3,\n    \"total\": 8,\n    \"totalPages\": 3,\n    \"currentPage\": 2,\n    \"data\": [\n        {\n            \"id\": 9,\n            \"title\": \"Розбудовуємо прикордонну інфраструктуру на Вінниччині\",\n            \"description\": null,\n            \"content\": null,\n            \"url\": \"https://restoration.gov.ua/blog/rozbudovuyemo-prykordonnu-infrastrukturu-na-vinnychchyni/\",\n            \"publishedAt\": \"2026-11-05T22:00:00.000Z\",\n            \"agencyId\": 27,\n            \"createdAt\": \"2026-06-13T15:01:20.551Z\"\n        },\n        {\n            \"id\": 2682,\n            \"title\": \"Ольга — начальник цеху з виробництва дорожніх знаків одного з підрядників Агентства відновлення\",\n            \"description\": null,\n            \"content\": null,\n            \"url\": \"https://restoration.gov.ua/blog/olga-nachalnyk-czehu-z-vyrobnycztva-dorozhnih-znakiv-odnogo-z-pidryadnykiv-agentstva-vidnovlennya/\",\n            \"publishedAt\": \"2026-06-16T12:00:40.135Z\",\n            \"agencyId\": 27,\n            \"createdAt\": \"2026-06-16T12:00:40.138Z\"\n        },\n        {\n            \"id\": 1246,\n            \"title\": \"Будуємо нове житло у Гостомелі\",\n            \"description\": null,\n            \"content\": null,\n            \"url\": \"https://restoration.gov.ua/blog/buduyemo-nove-zhytlo-u-gostomeli/\",\n            \"publishedAt\": \"2026-06-16T12:00:40.135Z\",\n            \"agencyId\": 27,\n            \"createdAt\": \"2026-06-15T12:01:06.080Z\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Bad pagination",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/:agencyId/news?page=2&limit=s",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    ":agencyId",
+                    "news"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "2"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "s"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "key": "agencyId",
+                      "value": "27"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "122"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"7a-kGGi5Ee8bmTMT2Fhw/0Q4zdOs9Y\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:38:57 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Validation failed\",\n    \"statusCode\": 400,\n    \"errors\": [\n        {\n            \"field\": \"limit\",\n            \"message\": \"Must be a number\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Not found agency",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agencies/:agencyId/news",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agencies",
+                    ":agencyId",
+                    "news"
+                  ],
+                  "variable": [
+                    {
+                      "key": "agencyId",
+                      "value": "2711"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "94"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"5e-atAtB2iCQZXtJGD5ODrlX4bgz5I\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 16 Jun 2026 14:39:14 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Agency with id 2711 was not found\",\n    \"statusCode\": 404,\n    \"errors\": null\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
