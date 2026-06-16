@@ -1,0 +1,280 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "State Authorities API",
+    "description": "Core backend service for managing state authorities profiles and autonomous news aggregation.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": ["Authorization"],
+        "summary": "Register a new user account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "example": "1" },
+                        "email": { "type": "string", "format": "email", "example": "admin@gov.ua" },
+                        "role": { "type": "string", "example": "user" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": { "type": "string", "example": "Validation failed" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Authorization"],
+        "summary": "Sign in and receive session cookie",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful authentication. Returns secure HTTP-Only cookie",
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string",
+                  "example": "token=eingHgnO...; Path=/; HttpOnly; Secure; SameSite=lax"
+                },
+                "description": "Secure session JSON Web Token"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "example": "1" },
+                        "email": { "type": "string", "format": "email", "example": "admin@gov.ua" },
+                        "role": { "type": "string", "example": "user" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": { "type": "string", "example": "Validation failed" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "field": { "type": "string", "example": "email" },
+                        "error": { "type": "string", "example": "Invalid email address" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credential provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": { "type": "string", "example": "Invalid email or password" }
+                  }
+                }
+              }
+            }
+          },
+
+          "500": {
+            "description": "JWT Secret is not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": { "type": "string", "example": "JWT_SECRET is not configured" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/refresh": {
+      "post": {
+        "tags": ["KMU Parser"],
+        "summary": "Force manual execution of the full kmu scraping loop",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync pipeline completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "syncedCount": { "type": "integer", "example": 20 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unathorized - Missing or broken token cookie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": { "type": "string", "example": "Unauthorized" }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": {
+                      "type": "string",
+                      "example": "Access denied. You do not have the required permissions."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate Limited - KMU pipeline already is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": {
+                      "type": "string",
+                      "example": "KMU import pipeline is already running. Please try again later"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "token",
+        "description": "Secure HTTP-Only JWT authentication token stored in cookies."
+      }
+    },
+    "schemas": {
+      "RegisterInput": {
+        "type": "object",
+        "required": ["email", "password", "confirmPassword"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "admin@gov.ua" },
+          "password": { "type": "string", "minLength": 6, "example": "securePassword123" },
+          "confirmPassword": {
+            "type": "string",
+            "minLength": 6,
+            "example": "securePassword123"
+          }
+        }
+      },
+      "LoginInput": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "admin@gov.ua" },
+          "password": { "type": "string", "minLength": 6, "example": "securePassword123" }
+        }
+      }
+    }
+  }
+}
