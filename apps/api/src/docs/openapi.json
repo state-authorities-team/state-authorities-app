@@ -197,20 +197,6 @@
               }
             }
           },
-          "401": {
-            "description": "Unathorized - Missing or broken token cookie",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": { "type": "boolean", "example": false },
-                    "message": { "type": "string", "example": "Unauthorized" }
-                  }
-                }
-              }
-            }
-          },
           "500": {
             "description": "Internal server error during session clearance"
           }
