@@ -1,9 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
+import { z } from "zod";
 import { extractRetryDelayMs, isRateLimitError } from "../../../utils/rate-limit.js";
 import { sleep } from "../../../utils/sleep.js";
 import type { ScrapeSelectors } from "../types/news-types.js";
 
 const MAX_RETRIES = 1;
+
+const scrapeSelectorsSchema = z.object({
+  container: z.string().min(1),
+  title: z.string().min(1),
+  url: z.string().min(1),
+  date: z.string(),
+});
 
 export class NewsAiAnalyzerService {
   private readonly aiClient: GoogleGenAI | null;
@@ -16,7 +24,7 @@ export class NewsAiAnalyzerService {
     }
   }
 
-  async generateSelectors(htmlSnapshot: string): Promise<ScrapeSelectors> {
+  async generateSelectors(htmlSnapshot: string): Promise<ScrapeSelectors | null> {
     if (!this.aiClient) {
       throw new Error("AI features are disabled: Missing AI_API_KEY in server environment.");
     }
@@ -26,7 +34,7 @@ export class NewsAiAnalyzerService {
   private async generateSelectorsWithRetry(
     htmlSnapshot: string,
     retriesLeft: number,
-  ): Promise<ScrapeSelectors> {
+  ): Promise<ScrapeSelectors | null> {
     const timestamp = new Date().toISOString();
 
     const bodyMatch = htmlSnapshot.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
@@ -71,6 +79,9 @@ export class NewsAiAnalyzerService {
       const response = await this.aiClient.models.generateContent({
         model: "gemini-3.1-flash-lite",
         contents: [prompt, cleanHtml],
+        config: {
+          responseMimeType: "application/json",
+        },
       });
       const responseText = response.text?.trim() || "";
 
@@ -78,13 +89,16 @@ export class NewsAiAnalyzerService {
         throw new Error("Received an empty text stream response from the AI model.");
       }
 
-      const parsedSelectors = JSON.parse(responseText) as ScrapeSelectors;
+      const validation = scrapeSelectorsSchema.safeParse(JSON.parse(responseText));
 
-      if (!parsedSelectors.container || !parsedSelectors.title || !parsedSelectors.url) {
-        throw new Error("AI response format validation failed. Some core CSS targets are missing.");
+      if (!validation.success) {
+        console.warn(
+          `${timestamp} : [AI Agent Warning] Selector discovery failed for this specific layout`,
+        );
+        return null;
       }
 
-      return parsedSelectors;
+      return validation.data;
     } catch (error) {
       if (isRateLimitError(error) && retriesLeft > 0) {
         const delayMs = extractRetryDelayMs(error);
