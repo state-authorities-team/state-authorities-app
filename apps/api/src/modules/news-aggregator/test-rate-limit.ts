@@ -8,12 +8,14 @@ if (!process.env.AI_API_KEY) {
   process.env.AI_API_KEY = "mock-api-key";
 }
 
-interface MockAi {
-  aiClient: {
-    models: {
-      generateContent: () => Promise<{ text: string }>;
-    };
-  } | null;
+interface MockAiClient {
+  models: {
+    generateContent: (args: {
+      model: string;
+      contents: string | string[];
+      config?: Record<string, unknown>;
+    }) => Promise<{ text: string }>;
+  };
 }
 
 async function runRateLimitTest() {
@@ -21,9 +23,9 @@ async function runRateLimitTest() {
 
   const analyzer = new NewsAiAnalyzerService();
 
-  // Test Case 1: 429 error followed by a success (should retry and succeed)
   let callCount = 0;
-  (analyzer as unknown as MockAi).aiClient = {
+
+  (analyzer as unknown as { aiClient: MockAiClient | null }).aiClient = {
     models: {
       generateContent: async () => {
         callCount++;
@@ -51,6 +53,12 @@ async function runRateLimitTest() {
   try {
     const selectors = await analyzer.generateSelectors("<html><body><div>News</div></body></html>");
     const duration = Date.now() - startTime;
+
+    if (!selectors) {
+      console.error("❌ TEST 1 FAILED: generateSelectors returned null");
+      return;
+    }
+
     console.log(`\nResult selectors: ${JSON.stringify(selectors)}`);
     console.log(`Total duration: ${duration}ms`);
     // 2.5s delay is parsed as 3s + 1s buffer = 4s sleep. Let's make sure it slept at least 3.9s.
@@ -71,7 +79,7 @@ async function runRateLimitTest() {
 
   // Test Case 2: 429 error occurs twice (should exhaust retries and fail)
   callCount = 0;
-  (analyzer as unknown as MockAi).aiClient = {
+  (analyzer as unknown as { aiClient: MockAiClient | null }).aiClient = {
     models: {
       generateContent: async () => {
         callCount++;
