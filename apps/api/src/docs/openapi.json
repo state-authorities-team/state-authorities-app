@@ -163,7 +163,7 @@
         }
       }
     },
-    "/api/logout": {
+    "/api/auth/logout": {
       "post": {
         "tags": ["Authorization"],
         "summary": "Log out from the system and clear session cookie",
