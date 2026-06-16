@@ -413,6 +413,25 @@
         }
       }
     },
+    "/api/agencies/export": {
+      "get": {
+        "tags": ["Agencies"],
+        "summary": "Export all agencies to a CSV file",
+        "responses": {
+          "200": {
+            "description": "A CSV file containing agency records",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/agencies/{id}": {
       "get": {
         "tags": ["Agencies"],
@@ -547,7 +566,7 @@
                   "type": "object",
                   "properties": {
                     "success": { "type": "boolean", "example": true },
-                    "data": { "type": "null", "example": null }
+                    "data": { "type": "object", "nullable": true, "example": null }
                   }
                 }
               }
@@ -709,6 +728,79 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/agency-types/export": {
+      "get": {
+        "tags": ["Agency Types"],
+        "summary": "Export all agency categories to a CSV file",
+        "responses": {
+          "200": {
+            "description": "A CSV file containing agency type records",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agency-types/import-csv": {
+      "post": {
+        "tags": ["Agency Types"],
+        "summary": "Import agency categories from a CSV file",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "CSV file containing agency types to import"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CSV processing completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": {
+                      "type": "string",
+                      "example": "CSV file was imported successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "totalRows": { "type": "integer", "example": 10 },
+                        "imported": { "type": "integer", "example": 8 },
+                        "skipped": { "type": "integer", "example": 2 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Missing file or not a text/csv file"
           }
         }
       }
