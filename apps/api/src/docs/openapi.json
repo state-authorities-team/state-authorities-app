@@ -86,7 +86,7 @@
               "Set-Cookie": {
                 "schema": {
                   "type": "string",
-                  "example": "token=eingHgnO...; Path=/; HttpOnly; Secure; SameSite=Strict"
+                  "example": "token=eingHgnO...; Path=/; HttpOnly; Secure; SameSite=lax"
                 },
                 "description": "Secure session JSON Web Token"
               }
