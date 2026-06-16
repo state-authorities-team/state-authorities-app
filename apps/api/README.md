@@ -197,12 +197,6 @@ The microservice will initialize local bindings at: `http://localhost:3000`
 
 ---
 
-Ось оновлений блок документації, який детально описує структуру, призначення та використання таблиці налаштувань **`SystemConfig`**.
-
-Ти можеш вставити цей розділ у файл `README.md` одразу після секції **«🏗 Modular Architecture & Data Flow»** перед таблицею з ендпоїнтами.
-
----
-
 ## ⚙️ Dynamic Infrastructure Settings (`SystemConfig`)
 
 To eliminate hardcoded values and prevent redundant application server reboots on production environments, the system utilizes a unified database-driven configuration ledger called `SystemConfig`.
