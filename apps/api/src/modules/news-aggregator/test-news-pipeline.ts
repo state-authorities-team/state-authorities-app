@@ -1,7 +1,8 @@
 import * as dotenv from "dotenv";
+import type { ScrapeSelectors } from "./schemas/scrape-selectors.schema.js";
 import { NewsDataService } from "./services/news-data-service.js";
 import { NewsImportService } from "./services/news-import-service.js";
-import type { NewsDataInput, ScrapeSelectors } from "./types/news-types.js";
+import type { NewsDataInput } from "./types/news-types.js";
 
 dotenv.config();
 

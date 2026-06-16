@@ -1,8 +1,9 @@
 import type { Prisma } from "@prisma/client";
 import { sleep } from "../../../utils/sleep.js";
 import { KmuScraperService } from "../../parser/services/kmu-scraper-service.js";
+import type { ScrapeSelectors } from "../schemas/scrape-selectors.schema.js";
 import { NewsDataService } from "../services/news-data-service.js";
-import type { NewsDataInput, ScrapeSelectors } from "../types/news-types.js";
+import type { NewsDataInput } from "../types/news-types.js";
 import { NewsAiAnalyzerService } from "./news-ai-analyzer-service.js";
 import { NewsScraperService } from "./news-scraper-service.js";
 
@@ -85,6 +86,9 @@ export class NewsImportService {
 
     try {
       const selectors = await this.aiAnalyzer.generateSelectors(html);
+      if (!selectors) {
+        return null;
+      }
       const now = new Date();
       await this.newsDataService.upsertScrapeConfig(agencyId, selectors, now);
       return selectors;
@@ -129,6 +133,9 @@ export class NewsImportService {
 
     try {
       const freshSelectors = await this.aiAnalyzer.generateSelectors(html);
+      if (!freshSelectors) {
+        return null;
+      }
       await this.newsDataService.upsertScrapeConfig(agencyId, freshSelectors, now);
       return this.cheerioParser.parseNewsWithConfig(
         html,

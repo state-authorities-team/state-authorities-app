@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "../../../configs/db-config.js";
-import type { NewsDataInput, ScrapeSelectors } from "../types/news-types.js";
+import type { ScrapeSelectors } from "../schemas/scrape-selectors.schema.js";
+import type { NewsDataInput } from "../types/news-types.js";
 
 export class NewsDataService {
   async getSystemConfigValue(key: string): Promise<string | null> {
