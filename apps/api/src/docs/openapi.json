@@ -282,6 +282,436 @@
           }
         }
       }
+    },
+    "/api/agencies": {
+      "get": {
+        "tags": ["Agencies"],
+        "summary": "Get a paginated list of state agencies",
+        "description": "Returns a list of agencies with optional query filters and pagination info",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1, "minimum": 1 },
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 20, "minimum": 1, "maximum": 100 },
+            "description": "Number of agencies per page"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Slug of the agency type to filter by"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Search term matching agency name, shortName, or description"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved paginated agencies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "count": { "type": "integer", "example": 1 },
+                    "total": { "type": "integer", "example": 10 },
+                    "totalPages": { "type": "integer", "example": 5 },
+                    "currentPage": { "type": "integer", "example": 1 },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Agency" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Agencies"],
+        "summary": "Create a new agency profile",
+        "security": [{ "cookieAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "typeId"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Міністерство цифрової трансформації України"
+                  },
+                  "typeId": { "type": "integer", "example": 2 },
+                  "shortName": { "type": "string", "example": "Мінцифра" },
+                  "headName": { "type": "string", "example": "Федоров Михайло Альбертович" },
+                  "headTitle": { "type": "string", "example": "Віце-прем'єр-міністр" },
+                  "description": {
+                    "type": "string",
+                    "example": "Центральний орган виконавчої влади..."
+                  },
+                  "address": { "type": "string", "example": "вул. Ділова, 24" },
+                  "phone": { "type": "string", "example": "+38 (044) 206-79-01" },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "hello@thedigital.gov.ua"
+                  },
+                  "website": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://thedigital.gov.ua"
+                  },
+                  "region": { "type": "string", "example": "Київ" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Agency profile successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/Agency" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN role"
+          },
+          "404": {
+            "description": "Agency type not found"
+          },
+          "409": {
+            "description": "Agency name already exists"
+          }
+        }
+      }
+    },
+    "/api/agencies/{id}": {
+      "get": {
+        "tags": ["Agencies"],
+        "summary": "Get agency profile by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "Agency ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agency profile details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/Agency" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID parameter format"
+          },
+          "404": {
+            "description": "Agency not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Agencies"],
+        "summary": "Update an agency profile",
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "Agency ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Міністерство цифрової трансформації України"
+                  },
+                  "typeId": { "type": "integer", "example": 2 },
+                  "shortName": { "type": "string", "example": "Мінцифра" },
+                  "headName": { "type": "string", "example": "Федоров Михайло Альбертович" },
+                  "headTitle": { "type": "string", "example": "Віце-прем'єр-міністр" },
+                  "description": { "type": "string", "example": "Опис..." },
+                  "address": { "type": "string", "example": "вул. Ділова, 24" },
+                  "phone": { "type": "string", "example": "+38 (044) 206-79-01" },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "hello@thedigital.gov.ua"
+                  },
+                  "website": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://thedigital.gov.ua"
+                  },
+                  "region": { "type": "string", "example": "Київ" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agency profile successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/Agency" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN role"
+          },
+          "404": {
+            "description": "Agency or Agency type not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Agencies"],
+        "summary": "Delete an agency profile",
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "Agency ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agency profile successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "type": "null", "example": null }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN role"
+          },
+          "404": {
+            "description": "Agency not found"
+          }
+        }
+      }
+    },
+    "/api/agencies/import-csv": {
+      "post": {
+        "tags": ["Agencies"],
+        "summary": "Import agencies from a CSV file",
+        "security": [{ "cookieAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "CSV file containing agency records to import/update"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CSV processing completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": {
+                      "type": "string",
+                      "example": "CSV file was processed successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "totalRows": { "type": "integer", "example": 10 },
+                        "imported": { "type": "integer", "example": 8 },
+                        "skipped": { "type": "integer", "example": 2 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Missing file or not a text/csv file"
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN role"
+          }
+        }
+      }
+    },
+    "/api/agencies/{id}/news": {
+      "get": {
+        "tags": ["Agencies", "News"],
+        "summary": "Get news feed for a specific agency",
+        "description": "Returns a paginated list of news articles aggregated for this agency, ordered by publish date descending.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "Agency ID"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1, "minimum": 1 },
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10, "minimum": 1 },
+            "description": "Number of news articles per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved paginated news list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "count": { "type": "integer", "example": 2 },
+                    "total": { "type": "integer", "example": 10 },
+                    "totalPages": { "type": "integer", "example": 5 },
+                    "currentPage": { "type": "integer", "example": 1 },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/News" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID parameter format"
+          },
+          "404": {
+            "description": "Agency not found"
+          }
+        }
+      }
+    },
+    "/api/agency-types": {
+      "get": {
+        "tags": ["Agency Types"],
+        "summary": "Get all agency categories",
+        "description": "Returns a list of all agency types/categories, wrapping the array in a paginated style response with total count equal to dataset length",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved agency types list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "count": { "type": "integer", "example": 3 },
+                    "total": { "type": "integer", "example": 3 },
+                    "totalPages": { "type": "integer", "example": 1 },
+                    "currentPage": { "type": "integer", "example": 1 },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/AgencyType" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -313,6 +743,102 @@
         "properties": {
           "email": { "type": "string", "format": "email", "example": "admin@gov.ua" },
           "password": { "type": "string", "minLength": 6, "example": "securePassword123" }
+        }
+      },
+      "AgencyType": {
+        "type": "object",
+        "required": ["id", "name", "slug", "createdAt"],
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "Міністерство" },
+          "slug": { "type": "string", "example": "ministerstvo" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-16T12:00:00.000Z"
+          }
+        }
+      },
+      "Agency": {
+        "type": "object",
+        "required": ["id", "name", "typeId", "createdAt", "updatedAt"],
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "Міністерство цифрової трансформації України" },
+          "shortName": { "type": "string", "nullable": true, "example": "Мінцифра" },
+          "typeId": { "type": "integer", "example": 2 },
+          "headName": {
+            "type": "string",
+            "nullable": true,
+            "example": "Федоров Михайло Альбертович"
+          },
+          "headTitle": { "type": "string", "nullable": true, "example": "Віце-прем'єр-міністр" },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Центральний орган виконавчої влади..."
+          },
+          "address": { "type": "string", "nullable": true, "example": "вул. Ділова, 24, м. Київ" },
+          "phone": { "type": "string", "nullable": true, "example": "+38 (044) 206-79-01" },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "example": "hello@thedigital.gov.ua"
+          },
+          "website": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://thedigital.gov.ua"
+          },
+          "region": { "type": "string", "nullable": true, "example": "Київ" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-16T12:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-16T12:00:00.000Z"
+          },
+          "agencyType": { "$ref": "#/components/schemas/AgencyType" }
+        }
+      },
+      "News": {
+        "type": "object",
+        "required": ["id", "title", "url", "agencyId", "createdAt"],
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "title": { "type": "string", "example": "Мінцифра запускає новий сервіс у Дії" },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Короткий опис новини про запуск сервісу."
+          },
+          "content": {
+            "type": "string",
+            "nullable": true,
+            "example": "Повний текст новини про запуск сервісу..."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://thedigital.gov.ua/news/diya-new-service"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-06-16T10:00:00.000Z"
+          },
+          "agencyId": { "type": "integer", "example": 1 },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-16T10:05:00.000Z"
+          }
         }
       }
     }
