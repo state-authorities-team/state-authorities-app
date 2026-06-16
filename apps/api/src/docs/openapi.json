@@ -163,6 +163,46 @@
         }
       }
     },
+    "/api/auth/logout": {
+      "post": {
+        "tags": ["Authorization"],
+        "summary": "Log out from the system and clear session cookie",
+        "description": "Clears the secure HTTP-Only authentication cookie by setting its max age to 0",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully logged out. Browser will clear the token cookie.",
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string",
+                  "example": "token=; Path=/; Expires=; MAX-AGE=0; HttpOnly; Secure; SameSite=lax"
+                },
+                "description": "Instruction for the browser to wipe the secure token cookie."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Logout completed" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error during session clearance"
+          }
+        }
+      }
+    },
     "/api/refresh": {
       "post": {
         "tags": ["KMU Parser"],

@@ -62,9 +62,9 @@ The codebase strictly adheres to **Separation of Concerns (SoC)** and **Layered 
 
 ### 🤖 Smart News Aggregator Sync Controls
 
-| Method | Route          | Description                                       | Allowed Roles | Errors |
-| ------ | -------------- | ------------------------------------------------- | ------------- | ------ |
-| POST   | `/api/refresh` | Trigger KMU catalog scraping and DB sync pipeline | 401, 403, 429 | ADMIN  |
+| Method | Route          | Description                                       | Errors        | Allowed Roles |
+| ------ | -------------- | ------------------------------------------------- | ------------- | ------------- |
+| POST   | `/api/refresh` | Trigger KMU catalog scraping and DB sync pipeline | 401, 403, 429 | ADMIN         |
 
 ### 🔐 Security & Credential Registry
 
@@ -72,6 +72,7 @@ The codebase strictly adheres to **Separation of Concerns (SoC)** and **Layered 
 | -------- | -------------------- | ----------------------------------------------------------------- | -------------------------- |
 | **POST** | `/api/auth/register` | `{ "email": "...", "password": "...", "confirmPassword": "..." }` | Standard Confirmation Data |
 | **POST** | `/api/auth/login`    | `{ "email": "...", "password": "..." }`                           | Secure HTTP-Only Cookie    |
+| **POST** | `/api/auth/logout`   |                                                                   | Set token max-age to 0     |
 
 ### 🏢 News per Agency
 
