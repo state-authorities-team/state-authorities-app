@@ -68,7 +68,7 @@ export class NewsImportService {
       (item) => item.publishedAt.getTime() >= freshNewsCutoff,
     );
 
-    const upsertedCount = this.newsDataService.upsertManyNews(freshNewsItems, agencyId);
+    const upsertedCount = await this.newsDataService.upsertManyNews(freshNewsItems, agencyId);
     logger.info(
       `Pipeline finished for agency ${agencyId}. Upserted records count: ${upsertedCount}`,
     );
