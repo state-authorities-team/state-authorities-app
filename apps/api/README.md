@@ -14,7 +14,7 @@ This is the core backend microservice responsible for managing state authorities
 
 ### Data Management & AI
 
-- **Database Engine:** PostgreSQL (Cloud Instance Hosted)
+- **Database Engine:** PostgreSQL (Cloud Instance Hosted on Neon/Supabase; no local container in compose)
 - **Object-Relational Mapping (ORM):** Prisma Client
 - **Artificial Intelligence Layer:** Google Gemini API (`gemini-3.1-flash-lite` via `@google/genai`)
 
@@ -136,7 +136,7 @@ The codebase strictly adheres to **Separation of Concerns (SoC)** and **Layered 
 
 ---
 
-## 🚀 Quick Start & Environment Ingestion
+## 🚀 Quick Start & Environment Configuration
 
 ### 1. Environment Configurations
 
@@ -146,55 +146,48 @@ Instantiate a local workspace parameter profile by duplicating the distribution 
 cp .env.example .env
 ```
 
-Open `.env` and fill out the infrastructure connection assignments:
+Open `.env` and fill out the configuration parameters. Refer to the table below for detailed descriptions:
 
-```ini
-PORT=3000
+| Key              | Description                                                                                                                                                                                                                                                               | Example / Default                                                                  |
+|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| `PORT`           | Local server port assignment.                                                                                                                                                                                                                                             | `3000`                                                                             |
+| `DATABASE_URL`   | Cloud database (Neon/Supabase) connection string utilizing transaction/connection pooling. Recommended for general application usage.                                                                                                                                     | `postgresql://<user>:<password>@<pooler_host>:5432/state_authorities?pooling=true` |
+| `DIRECT_URL`     | Direct connection string to the PostgreSQL cloud database instance bypassing the connection pooler. **Must be provided** to run database migrations, as connection poolers (e.g. PgBouncer / Supavisor) do not support DDL-based migration queries and transaction locks. | `postgresql://<user>:<password>@<direct_host>:5432/state_authorities`              |
+| `FRONTEND_URL`   | Allowed origin URL for CORS configuration.                                                                                                                                                                                                                                | `http://localhost:5173` (for local)                                                |
+| `JWT_SECRET`     | Secret key used to sign and verify JSON Web Tokens (JWT).                                                                                                                                                                                                                 | `some_secure_random_string`                                                        |
+| `JWT_EXPIRES_IN` | Token validity duration.                                                                                                                                                                                                                                                  | `7d`                                                                               |
+| `AI_API_KEY`     | Google Gemini API key credential. Used for translating crawled news, identifying news categories/sentiment, and handling dynamic selector self-healing.                                                                                                                   | `AIzaSy...`                                                                        |
+| `NODE_ENV`       | Application environment identifier.                                                                                                                                                                                                                                       | `dev`                                                                              |
 
-# Connection string pointing directly to your primary Hosted Cloud PostgreSQL database
-DATABASE_URL="postgresql://<db_user>:<db_password>@<cloud_host>:5432/state_authorities?schema=public"
+### 2. Step-by-Step Launch Guide
 
-# Connection string optimized for connection pooling setups
-DIRECT_URL="postgresql://<db_user>:<db_password>@<cloud_host>:5432/state_authorities?schema=public"
+Follow these sequential steps to boot the backend environment:
 
-# Google Gemini API key credentials
-AI_API_KEY="AIzaSy..."
-
-# JWT cryptographic key to sign and verify tokens on server
-JWT_SECRET="test..."
-```
-
-### 2. Dependency Resolution
-
-Execute a clean project package configuration alignment:
-
+#### 1. Install Dependencies
+Resolve packages and dependencies defined in the package manager layout:
 ```bash
 npm install
 ```
 
-### 3. Synchronize Schema Dependencies
-
-Pull and establish strongly typed data object definitions based on the current Prisma mapping rules without applying local generation loops:
-
+#### 2. Generate Prisma Client
+Generate the strongly typed Prisma client matching the current schema layouts:
 ```bash
 npx prisma generate
 ```
 
-### 4. Deploy Production Database Schemas
-
-Apply existing migration tracking states directly onto your active remote cloud instance:
-
+#### 3. Deploy Database Migrations
+Apply existing migrations to the active database (requires `DIRECT_URL` defined in `.env` to bypass poolers):
 ```bash
 npx prisma migrate deploy
 ```
 
-### 5. Boot Up the Engine
-
+#### 4. Start Development Server
+Start the local server instance with active hot-reloads via `tsx`:
 ```bash
 npm run dev
 ```
 
-The microservice will initialize local bindings at: `http://localhost:3000`
+The microservice API will be live at: `http://localhost:3000`
 
 ---
 
@@ -210,16 +203,16 @@ This key-value matrix allows system administrators to adjust critical runtime or
 model SystemConfig {
   key       String   @id
   value     String
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
-
 ```
 
 ### 🗃️ Active Core Parameters Ingestion Matrix
 
-| Configuration Key Tag | Production Purpose Description                                                                            | Default Target Value              | Live Validation Constraint Rules                                          |
-| --------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------- |
-| `NEWS_SYNC_CRON`      | Controls the background task interval execution cadence for the main news synchronization engine threads. | `"0 */3 * * *"` _(Every 3 hours)_ | Must pass strict `cron.validate()` evaluation syntax profiles at runtime. |
+| Configuration Key      | Description                                                                                                                                                                    | Default Value                   | Validation & Constraint Rules                                                        |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------|--------------------------------------------------------------------------------------|
+| `NEWS_SYNC_CRON`       | Controls the background task interval execution cadence for the main news synchronization engine threads. Watchdog inspects this every 5 minutes and hot-reloads the cron job. | `"0 */3 * * *"` (Every 3 hours) | Must be a valid cron expression syntax (validated via `cron.validate()` at runtime). |
+| `NEWS_MAX_PARSE_COUNT` | Restricts the maximum number of news articles extracted and imported per catalog synchronization run for each agency.                                                          | `10`                            | Must be a positive integer. If not set or invalid, defaults to `10`.                 |
 
 ### 🔄 Dynamic Lifecycle Evaluation (Hot-Reload Mechanic)
 
@@ -229,18 +222,25 @@ The background orchestrator manager (`NewsCronManager`) triggers an isolated, ul
 2. **Syntax Validation Guard**: If the expression string has mutated from the active memory value, it is vetted against the library validator. Invalid syntax aborts the reload loop safely without disrupting running tasks.
 3. **Graceful Thread Teardown**: Upon successful validation, the active scheduling thread reference is detached via `.stop()`, cleared from the Node.js Event Loop to prevent memory leaks, and replaced immediately with the new schedule bounds **at runtime**.
 
+---
+
 ## 📜 Available Command Scripts
 
-| Target Alias Command         | Internal Sub-Routine Context Execution Target                                                         |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+These are the scripts defined in `package.json` that are used to develop, build, test, and audit the application:
+
+| Script Command               | Description                                                                                           |
+|------------------------------|-------------------------------------------------------------------------------------------------------|
 | `npm run dev`                | Boots up the local environment server instance with hot-reload listening using `tsx`.                 |
-| `npm run build`              | Compiles source code structures into target native JavaScript nodes inside the `/dist` container.     |
-| `npm run start`              | Fires up production workloads reading from the pre-compiled native JavaScript `/dist` folder.         |
+| `npm run build`              | Compiles TypeScript source structures into native JavaScript inside the `/dist` output folder.        |
+| `npm run start`              | Fires up production workloads reading from the pre-compiled `/dist` folder.                           |
 | `npm run lint`               | Inspects code styles, complexity trends, and structural setups via Biome static code analysis.        |
 | `npm run lint:fix`           | Automatically rewrites formatting errors and resolves import alignments through Biome rules.          |
-| `npm run format`             | Enforces uniform layout rules on all standard codebase assets instantly.                              |
+| `npm run format`             | Enforces uniform layout and styling rules on all standard codebase assets instantly using Biome.      |
+| `npm run parse:kmu`          | Runs KMU web portal scraping/parsing directly for manual debugging of catalog structures.             |
+| `npm run typecheck`          | Validates TypeScript types and safety constraints without compilation output.                         |
 | `npm run test:news-pipeline` | Runs the test pipeline using mocks to test self-healing and parsing logic without updating real data. |
-| `test:news-cooldown`         | Runs a mock-based test suite for testing cooldown guard behavior                                      |
+| `npm run test:news-cooldown` | Runs a mock-based test suite for testing cooldown guard behavior.                                     |
+| `npm run test:rate-limit`    | Runs a mock-based test suite for testing scraping rate limits and cooldown guards.                    |
 
 ---
 
@@ -258,5 +258,3 @@ The background orchestrator manager (`NewsCronManager`) triggers an isolated, ul
 - **Variables / Service Routines:** camelCase pattern format definitions (`syncAgencyNews`, `targetUrl`).
 - **File Asset Containers:** kebab-case standard structural format separators (`news-repository.ts`, `db-config.ts`).
 - **Immutables / System Configuration Key Tags:** UPPER_SNAKE_CASE pattern layouts (`NEWS_SYNC_CRON`, `MAX_RETRY_ATTEMPTS`).
-
----
