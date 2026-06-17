@@ -1,3 +1,5 @@
+import css from "../../styles/EmptyState.module.css";
+
 interface EmptyStateProps {
   title?: string;
   message?: string;
@@ -5,20 +7,17 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({
-  title = "Нічого не знайдено",
-  message = "За вашим запитом не знайдено жодної державної установи.",
+  message = "За вашим запитом нічого не знайдено!",
   onClearFilters,
 }: EmptyStateProps) {
   return (
-    <div className="empty-state card">
-      <div className="empty-icon">🔍</div>
-      <h3>{title}</h3>
-      <p>{message}</p>
+    <div className={css.container}>
+      <p className={css.message}>{message}</p>
       {onClearFilters && (
         <button
           type="button"
           onClick={onClearFilters}
-          className="clear-filters-button"
+          className={css.clearButton}
         >
           Скинути фільтри
         </button>

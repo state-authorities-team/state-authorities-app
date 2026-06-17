@@ -2,7 +2,7 @@ import { Icon } from "../ui/Icon";
 import type { Institution } from "../../types/institution";
 
 type InstitutionCardProps = {
-  institution: Institution & { count?: number };
+  institution: Institution;
 };
 
 export function InstitutionCard({ institution }: InstitutionCardProps) {
@@ -18,7 +18,9 @@ export function InstitutionCard({ institution }: InstitutionCardProps) {
   };
 
   const formatHeadName = (fullName: string) => {
-    if (!fullName || fullName === "-") return "";
+    if (!fullName || fullName === "-" || fullName === "Не вказано")
+      return "Не вказано";
+
     const parts = fullName.trim().split(/\s+/);
     if (parts.length >= 2) {
       return `${parts[0]} ${parts[1]}`;
@@ -28,16 +30,12 @@ export function InstitutionCard({ institution }: InstitutionCardProps) {
 
   return (
     <article className="institution-card card">
-      {/* ЛІВА ЧАСТИНА (ТЕГИ ЗВЕРХУ, НАЗВА ТА ОПИС ЗНИЗУ) */}
+      {/* ЛІВА ЧАСТИНА */}
       <div className="card-left-content">
         <div className="tags-row">
           <div className="tag-item type-tag">
             <Icon name={getTypeIcon(institution.type)} className="meta-icon" />
             <span>{institution.type}</span>
-          </div>
-          <div className="tag-item region-tag">
-            <Icon name="Regions" className="meta-icon" />
-            <span>{institution.region}</span>
           </div>
         </div>
 
@@ -47,7 +45,7 @@ export function InstitutionCard({ institution }: InstitutionCardProps) {
         </div>
       </div>
 
-      {/* ПРАВА ЧАСТИНА (САЙТ, КЕРІВНИК, СПІВРОБІТНИКИ) */}
+      {/* ПРАВА ЧАСТИНА (САЙТ ТА КЕРІВНИК) */}
       <div className="card-right-content">
         {/* 1. Сайт */}
         {institution.website && institution.website !== "-" && (
@@ -62,18 +60,9 @@ export function InstitutionCard({ institution }: InstitutionCardProps) {
           </a>
         )}
 
-        {/* 2. Керівник (без по батькові) */}
-        {institution.headName && institution.headName !== "-" && (
-          <div className="right-meta-item">
-            <Icon name="Worker" className="meta-icon leader-icon" />
-            <span>{formatHeadName(institution.headName)}</span>
-          </div>
-        )}
-
-        {/* 3. Кількість співробітників */}
         <div className="right-meta-item">
-          <Icon name="Workers" className="meta-icon" />
-          <span>{institution.count || 142} співробітників</span>
+          <Icon name="Worker" className="meta-icon leader-icon" />
+          <span>{formatHeadName(institution.headName)}</span>
         </div>
       </div>
     </article>

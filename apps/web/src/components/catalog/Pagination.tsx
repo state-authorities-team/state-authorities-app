@@ -1,3 +1,4 @@
+
 import styles from "../../styles/Pagination.module.css";
 
 interface PaginationProps {
@@ -21,7 +22,36 @@ export function Pagination({
     if (currentPage < totalPages) onPageChange(currentPage + 1);
   };
 
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+
+    const boundaryRange = 1;
+
+    pages.push(1);
+
+    if (currentPage - boundaryRange > 2) {
+      pages.push("ellipsis-start");
+    }
+
+    const startPage = Math.max(2, currentPage - boundaryRange);
+    const endPage = Math.min(totalPages - 1, currentPage + boundaryRange);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    if (currentPage + boundaryRange < totalPages - 1) {
+      pages.push("ellipsis-end");
+    }
+
+    if (totalPages > 1) {
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
+  const pageElements = getPageNumbers();
 
   return (
     <div className={styles.pagination}>
@@ -33,15 +63,28 @@ export function Pagination({
         {"<"}
       </button>
 
-      {pages.map((page) => (
-        <button
-          key={page}
-          className={`${styles.pageButton} ${currentPage === page ? styles.active : ""}`}
-          onClick={() => onPageChange(page)}
-        >
-          {page}
-        </button>
-      ))}
+      {pageElements.map((item, index) => {
+        if (typeof item === "string") {
+          return (
+            <span key={`ellipsis-${index}`} className={styles.ellipsis}>
+              ...
+            </span>
+          );
+        }
+
+        return (
+          <button
+            key={`page-${item}`}
+            className={`${styles.pageButton} ${
+              currentPage === item ? styles.active : ""
+            }`}
+            onClick={() => onPageChange(item)}
+            disabled={currentPage === item}
+          >
+            {item}
+          </button>
+        );
+      })}
 
       <button
         className={styles.navButton}

@@ -11,6 +11,8 @@ type CatalogFiltersProps = {
   onReset: () => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  sortBy: string;
+  onSortChange: (sort: string) => void;
 };
 
 export function CatalogFilters({
@@ -22,19 +24,23 @@ export function CatalogFilters({
   onReset,
   searchQuery,
   onSearchChange,
+  sortBy,
+  onSortChange,
 }: CatalogFiltersProps) {
   return (
-    <aside className={`card ${css.filtersPanel}`}>
+    <aside className={css.filtersPanel}>
       <h2 className={css.filtersHeader}>
         <Icon name="Filter" size={36} className={css.filterIcon} />
         <span className={css.filterTitle}>Фільтри</span>
       </h2>
+
       <div className={css.fieldGroup}>
         <span className={css.labelTitle}>Пошук</span>
         <div className={css.searchInputWrapper}>
           <input
             id="search"
             type="text"
+            className={css.input}
             placeholder="Назва установи..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
@@ -70,11 +76,15 @@ export function CatalogFilters({
       </div>
 
       <div className={css.fieldGroup}>
-        <span className={css.labelTitle}>Регіон</span>
-        <select className={css.select}>
-          <option>Усі регіони</option>
-          <option>Київ</option>
-          <option>Львів</option>
+        <span className={css.labelTitle}>Сортування</span>
+        <select
+          className={css.select}
+          value={sortBy}
+          onChange={(e) => onSortChange(e.target.value)}
+        >
+          <option value="name">За назвою</option>
+          <option value="createdAt_desc">Спочатку нові</option>
+          <option value="createdAt_asc">Спочатку старі</option>
         </select>
       </div>
 

@@ -1,19 +1,19 @@
+import css from "../../styles/ErrorState.module.css";
+
 interface ErrorStateProps {
   message?: string;
   onRetry?: () => void;
 }
 
 export function ErrorState({
-  message = "Щось пішло не так при завантаженні даних.",
+  message = "Виникла помилка при завантаженні даних. Спробуйте пізніше!",
   onRetry,
 }: ErrorStateProps) {
   return (
-    <div className="error-state card">
-      <div className="error-icon">⚠️</div>
-      <h3>Помилка завантаження</h3>
-      <p>{message}</p>
+    <div className={css.container}>
+      <p className={css.message}>{message}</p>
       {onRetry && (
-        <button type="button" onClick={onRetry} className="retry-button">
+        <button type="button" onClick={onRetry} className={css.retryButton}>
           Повторити спробу
         </button>
       )}
