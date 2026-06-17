@@ -1,23 +1,38 @@
 import { GoogleGenAI } from "@google/genai";
-import type { ScrapeSelectors } from "../types/news-types.js";
+import { logger as baseLogger } from "../../../configs/logger-config.js";
+import { extractRetryDelayMs, isRateLimitError } from "../../../utils/rate-limit.js";
+import { sleep } from "../../../utils/sleep.js";
+import { type ScrapeSelectors, scrapeSelectorsSchema } from "../schemas/scrape-selectors.schema.js";
+
+const logger = baseLogger.child({ service: "AiAnalyzer" });
+
+const MAX_RETRIES = 1;
 
 export class NewsAiAnalyzerService {
-  private readonly ai: GoogleGenAI;
+  private readonly aiClient: GoogleGenAI | null;
 
   constructor() {
-    if (!process.env.AI_API_KEY) {
-      throw new Error("[NewsAiAnalyzerService] AI_API_KEY is not configured.");
+    if (process.env.AI_API_KEY) {
+      this.aiClient = new GoogleGenAI({ apiKey: process.env.AI_API_KEY });
+    } else {
+      this.aiClient = null;
+      logger.warn("AI features are disabled: Missing AI_API_KEY in server environment.");
     }
-    this.ai = new GoogleGenAI({ apiKey: process.env.AI_API_KEY });
   }
 
-  async generateSelectors(htmlSnapshot: string): Promise<ScrapeSelectors> {
-    const timestamp = new Date().toISOString();
+  async generateSelectors(htmlSnapshot: string): Promise<ScrapeSelectors | null> {
+    if (!this.aiClient) {
+      throw new Error("AI features are disabled: Missing AI_API_KEY in server environment.");
+    }
+    return this.generateSelectorsWithRetry(htmlSnapshot, MAX_RETRIES);
+  }
 
+  private async generateSelectorsWithRetry(
+    htmlSnapshot: string,
+    retriesLeft: number,
+  ): Promise<ScrapeSelectors | null> {
     const bodyMatch = htmlSnapshot.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-
     const bodyHtml = bodyMatch ? bodyMatch[1] : htmlSnapshot;
-
     const cleanHtml = bodyHtml
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
       .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
@@ -48,13 +63,17 @@ export class NewsAiAnalyzerService {
     `;
 
     try {
-      console.log(
-        `${timestamp} : [AI Agent] Sending HTML snapshot to Gemini for structural token analysis...`,
-      );
+      logger.debug("Sending HTML snapshot to Gemini for structural token analysis...");
 
-      const response = await this.ai.models.generateContent({
+      if (!this.aiClient) {
+        throw new Error("AI features are disabled: Missing AI_API_KEY in server environment.");
+      }
+      const response = await this.aiClient.models.generateContent({
         model: "gemini-3.1-flash-lite",
         contents: [prompt, cleanHtml],
+        config: {
+          responseMimeType: "application/json",
+        },
       });
       const responseText = response.text?.trim() || "";
 
@@ -62,21 +81,31 @@ export class NewsAiAnalyzerService {
         throw new Error("Received an empty text stream response from the AI model.");
       }
 
-      const parsedSelectors = JSON.parse(responseText) as ScrapeSelectors;
+      const validation = scrapeSelectorsSchema.safeParse(JSON.parse(responseText));
 
-      if (!parsedSelectors.container || !parsedSelectors.title || !parsedSelectors.url) {
-        throw new Error("AI response format validation failed. Some core CSS targets are missing.");
+      if (!validation.success) {
+        logger.warn(
+          "Selector discovery failed or returned non-compliant matrix layout for this specific layout.",
+          { errors: validation.error.format() },
+        );
+        return null;
       }
 
-      return parsedSelectors;
+      return validation.data;
     } catch (error) {
-      console.error(
-        `${timestamp} : [AI Agent ERROR] Failed to evaluate DOM structure or parse JSON matrix.`,
-      );
-
-      if (error instanceof Error) {
-        console.error(`=> Reason: ${error.message}`);
+      if (isRateLimitError(error) && retriesLeft > 0) {
+        const delayMs = extractRetryDelayMs(error);
+        logger.warn(
+          `429 RESOURCE_EXHAUSTED received. Waiting ${delayMs}ms before retry (${retriesLeft} attempt(s) left)...`,
+        );
+        await sleep(delayMs);
+        return this.generateSelectorsWithRetry(htmlSnapshot, retriesLeft - 1);
       }
+
+      logger.error(
+        "Failed to evaluate DOM structure or parse target JSON matrix through Gemini API layer.",
+        error,
+      );
       throw error;
     }
   }

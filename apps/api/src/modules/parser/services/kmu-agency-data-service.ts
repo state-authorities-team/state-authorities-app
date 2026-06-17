@@ -1,5 +1,8 @@
 import type { PrismaClient } from "@prisma/client";
+import { logger as baseLogger } from "../../../configs/logger-config.js";
 import type { ParsedAgencyRow } from "../types/kmu-types.js";
+
+const logger = baseLogger.child({ service: "KmuAgencyDataService" });
 
 export class KmuAgencyDataService {
   async synchronizeAgencies(
@@ -13,9 +16,7 @@ export class KmuAgencyDataService {
       const typeId = typeMap.get(record.typeName);
 
       if (!typeId) {
-        console.warn(
-          `${new Date().toISOString()} : [Parser][AgencyService] Skipped agency ${record.name}: type "${record.typeName}" not found`,
-        );
+        logger.warn(`Skipped agency ${record.name}: type "${record.typeName}" not found`);
         continue;
       }
 

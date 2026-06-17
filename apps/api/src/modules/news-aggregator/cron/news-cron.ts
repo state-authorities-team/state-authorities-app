@@ -1,6 +1,9 @@
 import cron from "node-cron";
 import prisma from "../../../configs/db-config.js";
+import { logger as baseLogger } from "../../../configs/logger-config.js";
 import { NewsImportService } from "../services/news-import-service.js";
+
+const logger = baseLogger.child({ service: "CronManager" });
 
 export class NewsCronManager {
   private readonly newsImportService = new NewsImportService();
@@ -9,10 +12,14 @@ export class NewsCronManager {
   private isSyncRunning = false;
 
   initScheduleSync(): void {
-    const timestamp = new Date().toISOString();
-    console.log(`${timestamp} : [CronManager] Initializing dynamic-cron watcher thread...`);
+    logger.info("Initializing dynamic-cron watcher thread...");
 
-    this.refreshSchedule().catch((err) => console.error("Initial cron setup failed:", err));
+    this.refreshSchedule().catch((err: unknown) =>
+      logger.error(
+        "Initial cron setup failed:",
+        err instanceof Error ? err : new Error(String(err)),
+      ),
+    );
     cron.schedule("*/5 * * * *", async () => {
       await this.refreshSchedule();
     });
@@ -27,15 +34,14 @@ export class NewsCronManager {
       const dbCronExpression = config?.value || "0 */3 * * *";
 
       if (this.currentCronExpression !== dbCronExpression && cron.validate(dbCronExpression)) {
-        const time = new Date().toISOString();
-        console.log(
-          `${time} : [CronManager] Detected cron schedule mutation from DB. Updating target line to: "${dbCronExpression}"`,
+        logger.info(
+          `Detected cron schedule mutation from DB. Updating target line to: "${dbCronExpression}"`,
         );
 
         this.updateCronJob(dbCronExpression);
       }
     } catch (error) {
-      console.error("[CronManager ERROR] Failed to fetch layout from SystemConfig schema:", error);
+      logger.error("Failed to fetch layout from SystemConfig schema:", error);
     }
   }
 
@@ -50,18 +56,14 @@ export class NewsCronManager {
   }
 
   private async executeSyncPipeline(): Promise<void> {
-    const loopTime = new Date().toISOString();
-
     if (this.isSyncRunning) {
-      console.warn(
-        `${loopTime} : [CronManager] Pipeline intersection blocked. Processing loop is busy.`,
-      );
+      logger.warn("Pipeline intersection blocked. Processing loop is busy.");
       return;
     }
 
     try {
       this.isSyncRunning = true;
-      console.log(`${loopTime} : [CronManager Worker] Commencing automated state harvesting...`);
+      logger.info("Commencing automated state harvesting...");
 
       const agencies = await prisma.agency.findMany({
         where: { AND: [{ website: { not: null } }, { website: { not: "" } }] },
@@ -73,22 +75,19 @@ export class NewsCronManager {
         try {
           const website = agency.website;
           if (!website) {
-            console.log(
-              `[CronManager Worker WARN] Agency with ID ${agency.id} was skipped due website missing`,
+            logger.debug(
+              `Agency with ID ${agency.id} was skipped due to missing website attribute.`,
             );
             continue;
           }
           const count = await this.newsImportService.runAutomatedLiveImport(agency.id, website);
           totalSyncedNews += count;
         } catch (agencyError) {
-          console.error(
-            `[CronManager Worker ERROR] Agency ID ${agency.id} sync collapsed:`,
-            agencyError,
-          );
+          logger.error(`Agency ID ${agency.id} sync pipeline collapsed:`, agencyError);
         }
       }
-      console.log(
-        `${new Date().toISOString()} : [CronManager SUCCESS] Synchronization sequence finalized. Imported: ${totalSyncedNews}`,
+      logger.info(
+        `Synchronization sequence finalized successfully. Total imported records: ${totalSyncedNews}`,
       );
     } finally {
       this.isSyncRunning = false;
