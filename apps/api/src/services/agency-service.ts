@@ -168,7 +168,9 @@ export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
 
     if (!typeId) {
       skippedByMissingType++;
-      logger.warn(`[CSV Import] Skipped agency ${record.name}: type "${normalizedTypeName}" not found`)
+      logger.warn(
+        `[CSV Import] Skipped agency ${record.name}: type "${normalizedTypeName}" not found`,
+      );
       continue;
     }
 

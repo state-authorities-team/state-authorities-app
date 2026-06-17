@@ -5,7 +5,7 @@ import { puppeteerConfig } from "../config/puppeteer-config.js";
 const logger = baseLogger.child({ service: "KmuScrapperService" });
 
 export class KmuScraperService {
-    async fetchCatalogHtml(url: string): Promise<string> {
+  async fetchCatalogHtml(url: string): Promise<string> {
     logger.debug("Launching headless browser...");
 
     let targetUrl = url.trim();
