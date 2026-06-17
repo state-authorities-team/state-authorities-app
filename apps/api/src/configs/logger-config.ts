@@ -10,8 +10,9 @@ const logLevels = {
   debug: 4,
 };
 
-const devFormat = printf(({ level, message, timestamp, stack }) => {
-  return `${timestamp} [${level}]: ${stack || message}`;
+const devFormat = printf(({ level, message, timestamp, stack, service }) => {
+  const serviceTag = service ? `\x1b[36m[${service}]\x1b[0m ` : "";
+  return `${timestamp} [${level}]: ${serviceTag}${stack || message}`;
 });
 
 export const logger = createLogger({
