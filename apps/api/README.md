@@ -39,6 +39,7 @@ The codebase strictly adheres to **Separation of Concerns (SoC)** and **Layered 
 | Method     | Route                      | Description                                                     | Allowed Roles | Errors                     |
 | ---------- | -------------------------- | --------------------------------------------------------------- | ------------- | -------------------------- |
 | **GET**    | `/api/agencies`            | Retrieve paginated and filtered list of agencies                | Public (`-`)  | `500`                      |
+| **GET**    | `/api/agencies/export`     | Export all state agencies as a CSV file                         | Public (`-`)  | `500`                      |
 | **GET**    | `/api/agencies/:id`        | Fetch specific public agency record by ID                       | Public (`-`)  | `400`, `404`               |
 | **POST**   | `/api/agencies`            | Insert a new state agency profile manually                      | `ADMIN`       | `400`, `401`, `403`        |
 | **PUT**    | `/api/agencies/:id`        | Update structural metadata of an existing agency                | `ADMIN`       | `400`, `401`, `403`, `404` |
@@ -56,9 +57,11 @@ The codebase strictly adheres to **Separation of Concerns (SoC)** and **Layered 
 
 ### 🗂️ Agency Structural Classifications
 
-| Method  | Route               | Description                                               | Allowed Roles |
-| ------- | ------------------- | --------------------------------------------------------- | ------------- |
-| **GET** | `/api/agency-types` | Fetch lists of available categories (e.g., Ministry, ODA) | Public (`-`)  |
+| Method   | Route                          | Description                                                    | Allowed Roles | Errors       |
+| -------- | ------------------------------ | -------------------------------------------------------------- | ------------- | ------------ |
+| **GET**  | `/api/agency-types`            | Fetch lists of available categories (e.g., Ministry, ODA)      | Public (`-`)  | `500`        |
+| **GET**  | `/api/agency-types/export`     | Export all agency structural classifications as a CSV file     | Public (`-`)  | `500`        |
+| **POST** | `/api/agency-types/import-csv` | Stream and bulk-ingest agency classifications via CSV template | Public (`-`)  | `400`, `500` |
 
 ### 🤖 Smart News Aggregator Sync Controls
 
@@ -79,6 +82,13 @@ The codebase strictly adheres to **Separation of Concerns (SoC)** and **Layered 
 | Method  | Route                    | Description                                               | Allowed Roles | Errors     |
 | ------- | ------------------------ | --------------------------------------------------------- | ------------- | ---------- |
 | **GET** | `/api/agencies/:id/news` | Retrieve paginated and filtered list of news by agency id | Public (`-`)  | `404, 500` |
+
+### 🩺 Monitoring & API Documentation
+
+| Method  | Route          | Description                                                    | Allowed Roles | Errors |
+| ------- | -------------- | -------------------------------------------------------------- | ------------- | ------ |
+| **GET** | `/api/health`  | Check server status, process uptime, and database connectivity | Public (`-`)  | `503`  |
+| **GET** | `/api-docs`    | Swagger UI interactive API documentation (OpenAPI Specification)| Public (`-`)  | `404`  |
 
 ---
 
@@ -148,16 +158,16 @@ cp .env.example .env
 
 Open `.env` and fill out the configuration parameters. Refer to the table below for detailed descriptions:
 
-| Key              | Description                                                                                                                                                                                                                                                               | Example / Default                                                                  |
-|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| `PORT`           | Local server port assignment.                                                                                                                                                                                                                                             | `3000`                                                                             |
-| `DATABASE_URL`   | Cloud database (Neon/Supabase) connection string utilizing transaction/connection pooling. Recommended for general application usage.                                                                                                                                     | `postgresql://<user>:<password>@<pooler_host>:5432/state_authorities?pooling=true` |
-| `DIRECT_URL`     | Direct connection string to the PostgreSQL cloud database instance bypassing the connection pooler. **Must be provided** to run database migrations, as connection poolers (e.g. PgBouncer / Supavisor) do not support DDL-based migration queries and transaction locks. | `postgresql://<user>:<password>@<direct_host>:5432/state_authorities`              |
-| `FRONTEND_URL`   | Allowed origin URL for CORS configuration.                                                                                                                                                                                                                                | `http://localhost:5173` (for local)                                                |
-| `JWT_SECRET`     | Secret key used to sign and verify JSON Web Tokens (JWT).                                                                                                                                                                                                                 | `some_secure_random_string`                                                        |
-| `JWT_EXPIRES_IN` | Token validity duration.                                                                                                                                                                                                                                                  | `7d`                                                                               |
-| `AI_API_KEY`     | Google Gemini API key credential. Used for translating crawled news, identifying news categories/sentiment, and handling dynamic selector self-healing.                                                                                                                   | `AIzaSy...`                                                                        |
-| `NODE_ENV`       | Application environment identifier.                                                                                                                                                                                                                                       | `dev`                                                                              |
+| Key              | Description                                                                                                                                                                                                                                                                                                                               | Example / Default                                                                  |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| `PORT`           | Local server port assignment.                                                                                                                                                                                                                                                                                                             | `3000`                                                                             |
+| `DATABASE_URL`   | Cloud database (Neon/Supabase) connection string utilizing transaction/connection pooling. Recommended for general application usage.                                                                                                                                                                                                     | `postgresql://<user>:<password>@<pooler_host>:5432/state_authorities?pooling=true` |
+| `DIRECT_URL`     | Direct connection string to the PostgreSQL cloud database instance bypassing the connection pooler. **Must be provided** to run database migrations (as connection poolers do not support DDL-based queries). **Important:** This connection string must NOT contain any pooling parameters (such as `pooling=true` or `pgbouncer=true`). | `postgresql://<user>:<password>@<direct_host>:5432/state_authorities`              |
+| `FRONTEND_URL`   | Allowed origin URL for CORS configuration.                                                                                                                                                                                                                                                                                                | `http://localhost:5173` (for local)                                                |
+| `JWT_SECRET`     | Secret key used to sign and verify JSON Web Tokens (JWT).                                                                                                                                                                                                                                                                                 | `some_secure_random_string`                                                        |
+| `JWT_EXPIRES_IN` | Token validity duration.                                                                                                                                                                                                                                                                                                                  | `7d`                                                                               |
+| `AI_API_KEY`     | Google Gemini API key credential. Used for translating crawled news, identifying news categories/sentiment, and handling dynamic selector self-healing.                                                                                                                                                                                   | `AIzaSy...`                                                                        |
+| `NODE_ENV`       | Application environment identifier.                                                                                                                                                                                                                                                                                                       | `dev`                                                                              |
 
 ### 2. Step-by-Step Launch Guide
 
