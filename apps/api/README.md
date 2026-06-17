@@ -85,10 +85,10 @@ The codebase strictly adheres to **Separation of Concerns (SoC)** and **Layered 
 
 ### 🩺 Monitoring & API Documentation
 
-| Method  | Route          | Description                                                    | Allowed Roles | Errors |
-| ------- | -------------- | -------------------------------------------------------------- | ------------- | ------ |
-| **GET** | `/api/health`  | Check server status, process uptime, and database connectivity | Public (`-`)  | `503`  |
-| **GET** | `/api-docs`    | Swagger UI interactive API documentation (OpenAPI Specification)| Public (`-`)  | `404`  |
+| Method  | Route         | Description                                                      | Allowed Roles | Errors |
+| ------- | ------------- | ---------------------------------------------------------------- | ------------- | ------ |
+| **GET** | `/api/health` | Check server status, process uptime, and database connectivity   | Public (`-`)  | `503`  |
+| **GET** | `/api-docs`   | Swagger UI interactive API documentation (OpenAPI Specification) | Public (`-`)  | `404`  |
 
 ---
 
@@ -159,7 +159,7 @@ cp .env.example .env
 Open `.env` and fill out the configuration parameters. Refer to the table below for detailed descriptions:
 
 | Key              | Description                                                                                                                                                                                                                                                                                                                               | Example / Default                                                                  |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | `PORT`           | Local server port assignment.                                                                                                                                                                                                                                                                                                             | `3000`                                                                             |
 | `DATABASE_URL`   | Cloud database (Neon/Supabase) connection string utilizing transaction/connection pooling. Recommended for general application usage.                                                                                                                                                                                                     | `postgresql://<user>:<password>@<pooler_host>:5432/state_authorities?pooling=true` |
 | `DIRECT_URL`     | Direct connection string to the PostgreSQL cloud database instance bypassing the connection pooler. **Must be provided** to run database migrations (as connection poolers do not support DDL-based queries). **Important:** This connection string must NOT contain any pooling parameters (such as `pooling=true` or `pgbouncer=true`). | `postgresql://<user>:<password>@<direct_host>:5432/state_authorities`              |
@@ -168,31 +168,40 @@ Open `.env` and fill out the configuration parameters. Refer to the table below 
 | `JWT_EXPIRES_IN` | Token validity duration.                                                                                                                                                                                                                                                                                                                  | `7d`                                                                               |
 | `AI_API_KEY`     | Google Gemini API key credential. Used for translating crawled news, identifying news categories/sentiment, and handling dynamic selector self-healing.                                                                                                                                                                                   | `AIzaSy...`                                                                        |
 | `NODE_ENV`       | Application environment identifier.                                                                                                                                                                                                                                                                                                       | `dev`                                                                              |
+| `LOG_LEVEL`      | Application logs level                                                                                                                                                                                                                                                                                                                    | `debug`                                                                            |
 
 ### 2. Step-by-Step Launch Guide
 
 Follow these sequential steps to boot the backend environment:
 
 #### 1. Install Dependencies
+
 Resolve packages and dependencies defined in the package manager layout:
+
 ```bash
 npm install
 ```
 
 #### 2. Generate Prisma Client
+
 Generate the strongly typed Prisma client matching the current schema layouts:
+
 ```bash
 npx prisma generate
 ```
 
 #### 3. Deploy Database Migrations
+
 Apply existing migrations to the active database (requires `DIRECT_URL` defined in `.env` to bypass poolers):
+
 ```bash
 npx prisma migrate deploy
 ```
 
 #### 4. Start Development Server
+
 Start the local server instance with active hot-reloads via `tsx`:
+
 ```bash
 npm run dev
 ```
@@ -220,7 +229,7 @@ model SystemConfig {
 ### 🗃️ Active Core Parameters Ingestion Matrix
 
 | Configuration Key      | Description                                                                                                                                                                    | Default Value                   | Validation & Constraint Rules                                                        |
-|------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------|--------------------------------------------------------------------------------------|
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- | ------------------------------------------------------------------------------------ |
 | `NEWS_SYNC_CRON`       | Controls the background task interval execution cadence for the main news synchronization engine threads. Watchdog inspects this every 5 minutes and hot-reloads the cron job. | `"0 */3 * * *"` (Every 3 hours) | Must be a valid cron expression syntax (validated via `cron.validate()` at runtime). |
 | `NEWS_MAX_PARSE_COUNT` | Restricts the maximum number of news articles extracted and imported per catalog synchronization run for each agency.                                                          | `10`                            | Must be a positive integer. If not set or invalid, defaults to `10`.                 |
 
@@ -239,7 +248,7 @@ The background orchestrator manager (`NewsCronManager`) triggers an isolated, ul
 These are the scripts defined in `package.json` that are used to develop, build, test, and audit the application:
 
 | Script Command               | Description                                                                                           |
-|------------------------------|-------------------------------------------------------------------------------------------------------|
+| ---------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `npm run dev`                | Boots up the local environment server instance with hot-reload listening using `tsx`.                 |
 | `npm run build`              | Compiles TypeScript source structures into native JavaScript inside the `/dist` output folder.        |
 | `npm run start`              | Fires up production workloads reading from the pre-compiled `/dist` folder.                           |
