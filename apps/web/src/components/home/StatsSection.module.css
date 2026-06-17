@@ -11,35 +11,40 @@
 
 .card {
   padding: 20px;
-  background: #f4f4f4;
+  background: #eefeff;
+  border-radius: 10px;
 }
 
 .icon {
   width: 36px;
   height: 36px;
-  color: #777777;
+  color: #289999;
 }
 
 .label {
   margin: 8px 0 12px;
-  font-size: 14px;
+
+  font-size: 16px;
   font-weight: 600;
-  color: #777777;
+  color: #031126;
 }
 
 .value {
   margin: 0 0 12px;
+
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
-  color: #111111;
+  color: #289999;
 }
 
 .description {
   margin: 0;
+
   font-size: 14px;
-  line-height: 1.4;
-  color: #777777;
+  font-weight: 600;
+
+  color: #031126;
 }
 
 @media (max-width: 768px) {
