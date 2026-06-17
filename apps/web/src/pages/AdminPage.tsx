@@ -85,11 +85,7 @@ export function AdminPage() {
                     const mappedData: Institution[] = response.data.map((agency: Agency) => ({
                         id: agency.id,
                         name: agency.name,
-                        type:
-                            typeof agency.agencyType === "object" &&
-                            agency.agencyType !== null
-                                ? agency.agencyType.name
-                                : "Державна установа",
+                        type: (agency.agencyType as any)?.name ?? "Державна установа",
                         region: agency.region || "Не вказано",
                         headName: agency.headName || "-",
                         headTitle: agency.headTitle || "Керівник",
