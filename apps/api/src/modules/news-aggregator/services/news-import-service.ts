@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+import { logger as baseLogger } from "../../../configs/logger-config.js";
 import { sleep } from "../../../utils/sleep.js";
 import { KmuScraperService } from "../../parser/services/kmu-scraper-service.js";
 import type { ScrapeSelectors } from "../schemas/scrape-selectors.schema.js";
@@ -6,6 +7,8 @@ import { NewsDataService } from "../services/news-data-service.js";
 import type { NewsDataInput } from "../types/news-types.js";
 import { NewsAiAnalyzerService } from "./news-ai-analyzer-service.js";
 import { NewsScraperService } from "./news-scraper-service.js";
+
+const logger = baseLogger.child({ service: "NewsImportPipeline" });
 
 const AI_ANALYSIS_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24h cooldown guard
 const AI_THROTTLE_DELAY_MS = 4_000; // pause before every request to Gemini
@@ -22,8 +25,7 @@ export class NewsImportService {
   }
 
   async runAutomatedLiveImport(agencyId: number, websiteUrl: string): Promise<number> {
-    const timestamp = new Date().toISOString();
-    console.log(`${timestamp} : [NewsSync] Initiating pipeline for agency: ${agencyId}`);
+    logger.info(`Initiating pipeline for agency: ${agencyId}`);
 
     const html = await this.browserScraper.fetchCatalogHtml(websiteUrl);
 
@@ -66,7 +68,11 @@ export class NewsImportService {
       (item) => item.publishedAt.getTime() >= freshNewsCutoff,
     );
 
-    return this.newsDataService.upsertManyNews(freshNewsItems, agencyId);
+    const upsertedCount = await this.newsDataService.upsertManyNews(freshNewsItems, agencyId);
+    logger.info(
+      `Pipeline finished for agency ${agencyId}. Upserted records count: ${upsertedCount}`,
+    );
+    return upsertedCount;
   }
 
   private async resolveSelectors(
@@ -75,12 +81,12 @@ export class NewsImportService {
     configRecord: { selectors: Prisma.JsonValue; lastAiAnalysedAt: Date | null } | null,
   ): Promise<ScrapeSelectors | null> {
     if (configRecord?.selectors) {
+      logger.debug(`Cache hit: Using existing selectors matrix for agency ${agencyId}`);
       return configRecord.selectors as unknown as ScrapeSelectors;
     }
 
-    const timestamp = new Date().toISOString();
-    console.log(
-      `${timestamp} : [NewsSync] Target configuration missing. Running LLM extraction...`,
+    logger.warn(
+      `Target scraping configuration missing for agency ${agencyId}. Running LLM extraction...`,
     );
     await sleep(AI_THROTTLE_DELAY_MS); // throttle before first call
 
@@ -94,8 +100,8 @@ export class NewsImportService {
       return selectors;
     } catch (error) {
       if (error instanceof Error && error.message.includes("Missing AI_API_KEY")) {
-        console.warn(
-          `[NewsSync CRITICAL] Skipping agency ${agencyId} because AI analyzer is unavailable`,
+        logger.error(
+          `Skipping agency ${agencyId} extraction cascade: AI analyzer component is unconfigured.`,
         );
         return null;
       }
@@ -110,7 +116,6 @@ export class NewsImportService {
     configRecord: { selectors: Prisma.JsonValue; lastAiAnalysedAt: Date | null },
     resolvedMaxParseCount: number,
   ): Promise<NewsDataInput[] | null> {
-    const timestamp = new Date().toISOString();
     const now = new Date();
     const lastAnalysed = configRecord.lastAiAnalysedAt;
 
@@ -119,15 +124,15 @@ export class NewsImportService {
       lastAnalysed !== undefined &&
       now.getTime() - new Date(lastAnalysed).getTime() < AI_ANALYSIS_COOLDOWN_MS
     ) {
-      console.warn(
-        `${timestamp} : [Self-Healing Locked] AI analysis skipped due to 24h cooldown` +
-          ` (agency: ${agencyId}, lastAiAnalysedAt: ${new Date(lastAnalysed).toISOString()})`,
+      logger.warn(
+        `[Self-Healing Locked] Analysis skipped due to 24h cooldown buffer layer ` +
+          `(agency: ${agencyId}, lastAiAnalysedAt: ${new Date(lastAnalysed).toISOString()})`,
       );
       return [];
     }
 
-    console.warn(
-      `${timestamp} : [Self-Healing] Zero items matched. Layout change suspected. Re-invoking AI...`,
+    logger.error(
+      `[Self-Healing] Zero items matched for agency ${agencyId}. Layout distortion suspected. Re-invoking Gemini...`,
     );
     await sleep(AI_THROTTLE_DELAY_MS); // throttle before self-healing call
 
@@ -137,6 +142,11 @@ export class NewsImportService {
         return null;
       }
       await this.newsDataService.upsertScrapeConfig(agencyId, freshSelectors, now);
+
+      logger.info(
+        `[Self-Healing SUCCESS] New structural layout mapped and saved for agency ${agencyId}`,
+      );
+
       return this.cheerioParser.parseNewsWithConfig(
         html,
         freshSelectors,
@@ -145,7 +155,9 @@ export class NewsImportService {
       );
     } catch (error) {
       if (error instanceof Error && error.message.includes("Missing AI_API_KEY")) {
-        console.warn(`[Self-Healing Locked] Failed to heal layout due to missing AI key`);
+        logger.error(
+          `[Self-Healing Failed] Cancelled healing operation for agency ${agencyId} due to missing AI key metadata credentials.`,
+        );
         return null;
       }
       throw error;

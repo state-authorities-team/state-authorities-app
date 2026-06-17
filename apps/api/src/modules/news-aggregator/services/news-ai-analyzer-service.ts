@@ -1,7 +1,10 @@
 import { GoogleGenAI } from "@google/genai";
+import { logger as baseLogger } from "../../../configs/logger-config.js";
 import { extractRetryDelayMs, isRateLimitError } from "../../../utils/rate-limit.js";
 import { sleep } from "../../../utils/sleep.js";
 import { type ScrapeSelectors, scrapeSelectorsSchema } from "../schemas/scrape-selectors.schema.js";
+
+const logger = baseLogger.child({ service: "AiAnalyzer" });
 
 const MAX_RETRIES = 1;
 
@@ -13,6 +16,7 @@ export class NewsAiAnalyzerService {
       this.aiClient = new GoogleGenAI({ apiKey: process.env.AI_API_KEY });
     } else {
       this.aiClient = null;
+      logger.warn("AI features are disabled: Missing AI_API_KEY in server environment.");
     }
   }
 
@@ -27,8 +31,6 @@ export class NewsAiAnalyzerService {
     htmlSnapshot: string,
     retriesLeft: number,
   ): Promise<ScrapeSelectors | null> {
-    const timestamp = new Date().toISOString();
-
     const bodyMatch = htmlSnapshot.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
     const bodyHtml = bodyMatch ? bodyMatch[1] : htmlSnapshot;
     const cleanHtml = bodyHtml
@@ -61,9 +63,7 @@ export class NewsAiAnalyzerService {
     `;
 
     try {
-      console.log(
-        `${timestamp} : [AI Agent] Sending HTML snapshot to Gemini for structural token analysis...`,
-      );
+      logger.debug("Sending HTML snapshot to Gemini for structural token analysis...");
 
       if (!this.aiClient) {
         throw new Error("AI features are disabled: Missing AI_API_KEY in server environment.");
@@ -84,8 +84,9 @@ export class NewsAiAnalyzerService {
       const validation = scrapeSelectorsSchema.safeParse(JSON.parse(responseText));
 
       if (!validation.success) {
-        console.warn(
-          `${timestamp} : [AI Agent Warning] Selector discovery failed for this specific layout`,
+        logger.warn(
+          "Selector discovery failed or returned non-compliant matrix layout for this specific layout.",
+          { errors: validation.error.format() },
         );
         return null;
       }
@@ -94,20 +95,17 @@ export class NewsAiAnalyzerService {
     } catch (error) {
       if (isRateLimitError(error) && retriesLeft > 0) {
         const delayMs = extractRetryDelayMs(error);
-        console.warn(
-          `${timestamp} : [AI Agent] 429 RESOURCE_EXHAUSTED received. ` +
-            `Waiting ${delayMs}ms before retry (${retriesLeft} attempt(s) left)...`,
+        logger.warn(
+          `429 RESOURCE_EXHAUSTED received. Waiting ${delayMs}ms before retry (${retriesLeft} attempt(s) left)...`,
         );
         await sleep(delayMs);
         return this.generateSelectorsWithRetry(htmlSnapshot, retriesLeft - 1);
       }
 
-      console.error(
-        `${timestamp} : [AI Agent ERROR] Failed to evaluate DOM structure or parse JSON matrix.`,
+      logger.error(
+        "Failed to evaluate DOM structure or parse target JSON matrix through Gemini API layer.",
+        error,
       );
-      if (error instanceof Error) {
-        console.error(`=> Reason: ${error.message}`);
-      }
       throw error;
     }
   }

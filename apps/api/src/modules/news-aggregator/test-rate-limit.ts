@@ -1,7 +1,10 @@
 import * as dotenv from "dotenv";
+import { logger as baseLogger } from "../../configs/logger-config.js";
 import { NewsAiAnalyzerService } from "./services/news-ai-analyzer-service.js";
 
 dotenv.config();
+
+const logger = baseLogger.child({ service: "RateLimitTestHarness" });
 
 // Ensure process.env.AI_API_KEY is defined so the constructor doesn't throw
 if (!process.env.AI_API_KEY) {
@@ -19,7 +22,7 @@ interface MockAiClient {
 }
 
 async function runRateLimitTest() {
-  console.log("=== STARTING RATE LIMIT 429 HANDLING TEST ===");
+  logger.info("=== STARTING RATE LIMIT 429 HANDLING TEST ===");
 
   const analyzer = new NewsAiAnalyzerService();
 
@@ -29,14 +32,14 @@ async function runRateLimitTest() {
     models: {
       generateContent: async () => {
         callCount++;
-        console.log(`[Mock AI] generateContent called. Call count: ${callCount}`);
+        logger.debug(`[Mock AI] generateContent called. Call count: ${callCount}`);
         if (callCount === 1) {
-          console.log("[Mock AI] Throwing 429 RESOURCE_EXHAUSTED error");
+          logger.debug("[Mock AI] Throwing simulated 429 RESOURCE_EXHAUSTED error");
           throw new Error(
             "GoogleGenAIError: [429 RESOURCE_EXHAUSTED] Quota exceeded for metric. Please retry in 2.5s.",
           );
         }
-        console.log("[Mock AI] Returning successful response on retry");
+        logger.debug("[Mock AI] Returning successful response on retry loop");
         return {
           text: JSON.stringify({
             container: "div.news-card",
@@ -51,31 +54,33 @@ async function runRateLimitTest() {
 
   const startTime = Date.now();
   try {
+    logger.info("Executing Test 1: AI fails once with 429, expecting backoff retry success...");
     const selectors = await analyzer.generateSelectors("<html><body><div>News</div></body></html>");
     const duration = Date.now() - startTime;
 
     if (!selectors) {
-      console.error("❌ TEST 1 FAILED: generateSelectors returned null");
+      logger.error("❌ TEST 1 FAILED: generateSelectors returned null unexpectedly");
       return;
     }
 
-    console.log(`\nResult selectors: ${JSON.stringify(selectors)}`);
-    console.log(`Total duration: ${duration}ms`);
+    logger.debug(`Result selectors: ${JSON.stringify(selectors)}`);
+    logger.debug(`Total execution duration: ${duration}ms`);
+
     // 2.5s delay is parsed as 3s + 1s buffer = 4s sleep. Let's make sure it slept at least 3.9s.
     if (callCount === 2 && selectors.container === "div.news-card" && duration >= 3900) {
-      console.log(
+      logger.info(
         "✅ TEST 1 PASSED: Successfully retried, respected parsed sleep delay, and got selectors!",
       );
     } else {
-      console.error(
-        `❌ TEST 1 FAILED: Unexpected behavior. Call count: ${callCount}, duration: ${duration}ms`,
+      logger.error(
+        `❌ TEST 1 FAILED: Unexpected execution fingerprint. Call count: ${callCount}, duration: ${duration}ms`,
       );
     }
   } catch (err: unknown) {
-    console.error("❌ TEST 1 FAILED: Unexpected error thrown", err);
+    logger.error("❌ TEST 1 FAILED: Unexpected error thrown down the pipeline cascade", err);
   }
 
-  console.log("\n--------------------------------------------------\n");
+  logger.info("--------------------------------------------------");
 
   // Test Case 2: 429 error occurs twice (should exhaust retries and fail)
   callCount = 0;
@@ -83,8 +88,8 @@ async function runRateLimitTest() {
     models: {
       generateContent: async () => {
         callCount++;
-        console.log(`[Mock AI] generateContent called. Call count: ${callCount}`);
-        console.log("[Mock AI] Throwing 429 RESOURCE_EXHAUSTED error");
+        logger.debug(`[Mock AI] generateContent called. Call count: ${callCount}`);
+        logger.debug("[Mock AI] Throwing systemic 429 RESOURCE_EXHAUSTED error");
         throw new Error(
           "GoogleGenAIError: [429 RESOURCE_EXHAUSTED] Quota exceeded for metric. Please retry in 2.5s.",
         );
@@ -93,20 +98,28 @@ async function runRateLimitTest() {
   };
 
   try {
-    console.log("Starting Test 2: AI fails twice with 429");
+    logger.info(
+      "Executing Test 2: AI fails consecutively with 429, expecting total exhaust block...",
+    );
     await analyzer.generateSelectors("<html><body><div>News</div></body></html>");
-    console.error("❌ TEST 2 FAILED: Expected error to be thrown but it succeeded");
+    logger.error(
+      "❌ TEST 2 FAILED: Expected error to be thrown but the method succeeded contextually",
+    );
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
-    console.log(`Caught expected error: ${errorMessage}`);
+    logger.debug(`Caught expected mock error stream: ${errorMessage}`);
     if (callCount === 2) {
-      console.log(
-        "✅ TEST 2 PASSED: Tried exactly 2 times (1 initial + 1 retry) and threw the error.",
+      logger.info(
+        "✅ TEST 2 PASSED: Tried exactly 2 times (1 initial + 1 retry) and threw the expected error.",
       );
     } else {
-      console.error(`❌ TEST 2 FAILED: Expected 2 calls, got ${callCount}`);
+      logger.error(
+        `❌ TEST 2 FAILED: Expected exactly 2 fallback calls, but intercepted ${callCount}`,
+      );
     }
   }
 }
 
-runRateLimitTest().catch(console.error);
+runRateLimitTest().catch((fatalError) => {
+  logger.error("Fatal uncaught exception during rate-limit test bootstrap execution:", fatalError);
+});

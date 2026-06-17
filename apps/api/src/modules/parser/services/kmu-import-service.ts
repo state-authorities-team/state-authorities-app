@@ -1,8 +1,11 @@
 import prisma from "../../../configs/db-config.js";
+import { logger as baseLogger } from "../../../configs/logger-config.js";
 import { KmuAgencyDataService } from "./kmu-agency-data-service.js";
 import { KmuAgencyTypeService } from "./kmu-agency-type-service.js";
 import { KmuParserService } from "./kmu-parser-service.js";
 import { KmuScraperService } from "./kmu-scraper-service.js";
+
+const logger = baseLogger.child({ service: "KmuImportService" });
 
 export class KmuImportService {
   private readonly kmuUrl = "https://www.kmu.gov.ua/catalog";
@@ -12,16 +15,14 @@ export class KmuImportService {
   private readonly agencyDataService = new KmuAgencyDataService();
 
   async runAutomatedLiveImport(): Promise<number> {
-    console.log(
-      `${new Date().toISOString()} : [Parser][ImportService] Initializing automated streaming pipeline`,
-    );
+    logger.debug("Initializing automated streaming pipeline");
 
     try {
       const html = await this.scraperService.fetchCatalogHtml(this.kmuUrl);
       const records = this.parserService.parseCatalog(html);
 
       if (records.length === 0) {
-        console.warn("[Parser][ImportService] Dataset is empty. Aborting update.");
+        logger.warn("Dataset is empty. Aborting update.");
         return 0;
       }
 
@@ -34,12 +35,10 @@ export class KmuImportService {
         typeMap,
       );
 
-      console.log(
-        `${new Date().toISOString()} : [Parser][ImportService] Successfully synced ${importedCount} elements.`,
-      );
+      logger.info(`Successfully synced ${importedCount} elements`);
       return importedCount;
     } catch (error) {
-      console.error("[Parser][ImportService] Critical failure inside seeding loop:", error);
+      logger.error("Critical failure inside seeding loop:", error);
       throw error;
     }
   }

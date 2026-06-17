@@ -3,6 +3,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Express } from "express";
 import swaggerUi from "swagger-ui-express";
+import { logger as baseLogger } from "./logger-config.js";
+
+const logger = baseLogger.child({ service: "Swagger" });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,13 +17,9 @@ export const setupSwaggerDocs = (app: Express): void => {
 
     app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-    console.log(
-      `${new Date().toISOString()} : [Infrastructure] Swagger UI interactive documentation hooked at /api-docs`,
-    );
+    logger.info("Swagger UI interactive documentation hooked at /api-docs");
   } catch (error) {
-    console.error(
-      `${new Date().toISOString()} : [Infrastructure ERROR] Failed to initialize Swagger documentation:`,
-      error,
-    );
+    logger.error("Failed to initialize Swagger documentation");
+    logger.debug(error);
   }
 };
