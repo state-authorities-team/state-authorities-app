@@ -1,7 +1,10 @@
 import { Readable } from "node:stream";
 import { type Options, parse } from "csv-parse";
 import type { ZodType } from "zod";
+import { logger as baseLogger } from "../configs/logger-config.js";
 import type { CsvTypeCastFn, ParseCsvResult } from "../types/csv-parser-types.js";
+
+const logger = baseLogger.child({ service: "CsvParser" });
 
 const csvParseOptions: Options = {
   bom: true,
@@ -34,10 +37,7 @@ export const parseAndValidate = async <T>(
     if (!validation.success) {
       const formattedError = validation.error.format();
 
-      console.warn(
-        `${new Date().toISOString()} [CSV Parser] Row ${totalRows} was skipped`,
-        formattedError,
-      );
+      logger.warn(`Row ${totalRows} was skipped`, formattedError);
       skippedRows++;
       continue;
     }

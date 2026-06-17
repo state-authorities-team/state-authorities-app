@@ -1,11 +1,13 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "../configs/db-config.js";
+import { logger as baseLogger } from "../configs/logger-config.js";
 import ApiError from "../errors/ApiError.js";
 import { type ImportAgencySchema, importAgencySchema } from "../schemas/agency.schema.js";
 import type { getAgencyQuery } from "../types/get-agency-query.js";
 import { parseAndValidate } from "../utils/csv-parser.js";
 import { buildCsvBuffer } from "../utils/csv-writer.js";
 
+const logger = baseLogger.child({ service: "AgencyService" });
 const agencyExportHeaders = ["id", "name", "website", "typeName", "createdAt"] as const;
 
 export const getAll = async (params: getAgencyQuery) => {
@@ -166,9 +168,7 @@ export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
 
     if (!typeId) {
       skippedByMissingType++;
-      console.warn(
-        `${new Date().toISOString()} [Agency CSV] Skipped agency ${record.name}: type "${normalizedTypeName}" not found`,
-      );
+      logger.warn(`[CSV Import] Skipped agency ${record.name}: type "${normalizedTypeName}" not found`)
       continue;
     }
 
