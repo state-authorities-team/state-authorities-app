@@ -1,11 +1,13 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "../configs/db-config.js";
+import { logger as baseLogger } from "../configs/logger-config.js";
 import ApiError from "../errors/ApiError.js";
-import { type CreateAgencySchema, createAgencySchema } from "../schemas/agency.schema.js";
+import { type ImportAgencySchema, importAgencySchema } from "../schemas/agency.schema.js";
 import type { getAgencyQuery } from "../types/get-agency-query.js";
 import { parseAndValidate } from "../utils/csv-parser.js";
 import { buildCsvBuffer } from "../utils/csv-writer.js";
 
+const logger = baseLogger.child({ service: "AgencyService" });
 const agencyExportHeaders = ["id", "name", "website", "typeName", "createdAt"] as const;
 
 export const getAll = async (params: getAgencyQuery) => {
@@ -132,9 +134,17 @@ export const exportCsv = async () => {
 };
 
 export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
-  const { validRecords, skippedRows, totalRows } = await parseAndValidate<CreateAgencySchema>(
+  const agencyTypes = await prisma.agencyType.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+  const agencyTypeMap = new Map(agencyTypes.map((agencyType) => [agencyType.name, agencyType.id]));
+
+  const { validRecords, skippedRows, totalRows } = await parseAndValidate<ImportAgencySchema>(
     fileBuffer,
-    createAgencySchema,
+    importAgencySchema,
     (row) => {
       const cleanedRow = Object.fromEntries(
         Object.entries(row).map(([key, value]) => [
@@ -145,19 +155,59 @@ export const importAgencyFromCsv = async (fileBuffer: Buffer) => {
 
       return {
         ...cleanedRow,
-        typeId: cleanedRow.typeId ? Number(cleanedRow.typeId) : undefined,
       };
     },
   );
-  if (validRecords.length > 0) {
-    await prisma.agency.createMany({
-      data: validRecords,
-      skipDuplicates: true,
+  let imported = 0;
+  let skippedByMissingType = 0;
+
+  for (const record of validRecords) {
+    const normalizedName = record.name.trim();
+    const normalizedTypeName = record.typeName.trim();
+    const typeId = agencyTypeMap.get(normalizedTypeName);
+
+    if (!typeId) {
+      skippedByMissingType++;
+      logger.warn(
+        `[CSV Import] Skipped agency ${record.name}: type "${normalizedTypeName}" not found`,
+      );
+      continue;
+    }
+
+    await prisma.agency.upsert({
+      where: { name: normalizedName },
+      update: {
+        website: record.website,
+        shortName: record.shortName,
+        headName: record.headName,
+        headTitle: record.headTitle,
+        description: record.description,
+        address: record.address,
+        phone: record.phone,
+        email: record.email,
+        region: record.region,
+        typeId,
+      },
+      create: {
+        name: normalizedName,
+        website: record.website,
+        shortName: record.shortName,
+        headName: record.headName,
+        headTitle: record.headTitle,
+        description: record.description,
+        address: record.address,
+        phone: record.phone,
+        email: record.email,
+        region: record.region,
+        typeId,
+      },
     });
+
+    imported++;
   }
   return {
     totalRows,
-    imported: validRecords.length,
-    skipped: skippedRows,
+    imported,
+    skipped: skippedRows + skippedByMissingType,
   };
 };

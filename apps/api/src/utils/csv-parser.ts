@@ -1,9 +1,12 @@
 import { Readable } from "node:stream";
-import { parse } from "csv-parse";
-import { type ZodType, z } from "zod";
+import { type Options, parse } from "csv-parse";
+import type { ZodType } from "zod";
+import { logger as baseLogger } from "../configs/logger-config.js";
 import type { CsvTypeCastFn, ParseCsvResult } from "../types/csv-parser-types.js";
 
-const csvParseOptions = {
+const logger = baseLogger.child({ service: "CsvParser" });
+
+const csvParseOptions: Options = {
   bom: true,
   delimiter: [",", ";"],
   columns: true,
@@ -11,7 +14,7 @@ const csvParseOptions = {
   record_delimiter: ["\r\n", "\n"],
   skip_empty_lines: true,
   trim: true,
-} as const;
+};
 
 export const parseAndValidate = async <T>(
   fileBuffer: Buffer,
@@ -22,24 +25,26 @@ export const parseAndValidate = async <T>(
   let skippedRows = 0;
   let totalRows = 0;
 
-  const stream = Readable.from(fileBuffer).pipe(parse(csvParseOptions));
-  for await (const row of stream) {
+  const parserStream = parse(csvParseOptions);
+  Readable.from(fileBuffer).pipe(parserStream);
+
+  for await (const row of parserStream) {
     totalRows++;
 
     const preparedRow = typeCastFn ? typeCastFn(row) : row;
     const validation = schema.safeParse(preparedRow);
 
     if (!validation.success) {
-      const formattedError = z.treeifyError(validation.error);
-      console.warn(
-        `${new Date().toISOString} [CSV Parser] Row ${totalRows} was skipped`,
-        formattedError,
-      );
+      const formattedError = validation.error.format();
+
+      logger.warn(`Row ${totalRows} was skipped`, formattedError);
       skippedRows++;
       continue;
     }
+
     validRecords.push(validation.data);
   }
+
   return {
     validRecords,
     skippedRows,

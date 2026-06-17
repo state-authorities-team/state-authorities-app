@@ -9,18 +9,21 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
     "@types/multer": "^2.1.0",
     "@types/node": "^25.6.2",
     "@types/node-cron": "^3.0.11",
     "@types/pg": "^8.20.0",
     "@types/puppeteer": "^5.4.7",
+    "@types/swagger-ui-express": "^4.1.8",
+    "cpx": "^1.5.0",
     "prisma": "^7.8.0",
     "tsx": "^4.22.0",
     "typescript": "^6.0.3"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc && cpx \"src/**/*.json\" dist",
     "start": "node dist/index.js",
     "lint": "npx @biomejs/biome check src",
     "lint:fix": "npx @biomejs/biome check --write src",
@@ -28,7 +31,9 @@
     "parse:kmu": "tsx src/modules/parser/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "echo \"No tests present yet\"",
-    "test:news-pipeline": "tsx src/modules/news-aggregator/test-news-pipeline.ts"
+    "test:news-pipeline": "tsx src/modules/news-aggregator/test-news-pipeline.ts",
+    "test:news-cooldown": "tsx src/modules/news-aggregator/test-news-cooldown.ts",
+    "test:rate-limit": "tsx src/modules/news-aggregator/test-rate-limit.ts"
   },
   "keywords": [],
   "author": "",
@@ -47,10 +52,13 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.11.0",
     "multer": "^2.1.1",
     "node-cron": "^4.2.1",
     "pg": "^8.20.0",
     "puppeteer": "^25.1.0",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.19.0",
     "zod": "^4.4.3"
   }
 }
