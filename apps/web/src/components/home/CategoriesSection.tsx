@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { PageContainer } from "../layout/PageContainer";
 import { Icon } from "../ui/Icon";
 import type { AgencyType } from "../../types/agency";
@@ -24,14 +25,18 @@ export function CategoriesSection({
   return (
     <section className={styles.section}>
       <PageContainer>
-        <h2 className={styles.title}>Основні категорії державних установ</h2>
+        <h2 className={styles.title}>Основні категорії державних органів</h2>
 
         {isLoading ? (
           <p>Завантаження категорій...</p>
         ) : (
           <div className={styles.grid}>
             {categories.map((category) => (
-              <article key={category.id} className={styles.card}>
+              <Link
+                key={category.id}
+                to={`/catalog?type=${category.slug}`}
+                className={styles.card}
+              >
                 <Icon
                   name={categoryIcons[category.slug]}
                   size={36}
@@ -43,7 +48,7 @@ export function CategoriesSection({
 
                   <p className={styles.count}>{category.count} установ</p>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         )}

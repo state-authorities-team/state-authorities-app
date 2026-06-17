@@ -1,14 +1,17 @@
 .section {
   padding-top: 20px;
+  padding-bottom: 20px;
   background: #ffffff;
 }
 
 .title {
   margin: 0 0 20px;
-  font-size: 32px;
-  font-weight: 600;
-  line-height: 1.2;
-  color: #777777;
+
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+
+  color: #031126;
 }
 
 .grid {
@@ -21,33 +24,66 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  min-height: 80px;
+
+  min-height: 87px;
   padding: 20px;
-  background: #f4f4f4;
+
+  background: #ffffff;
+  border: 2px solid #a1a1a1;
+  border-radius: 10px;
+
+  text-decoration: none;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
 }
 
 .icon {
   width: 36px;
   height: 36px;
-  color: #777777;
+  color: #a1a1a1;
   flex-shrink: 0;
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .name {
   margin: 0;
-  font-size: 14px;
+
+  font-size: 20px;
   font-weight: 600;
-  color: #111111;
+  color: #777777;
 }
 
 .count {
   margin: 0;
-  font-size: 14px;
+
+  font-size: 16px;
+  font-weight: 600;
   color: #777777;
+}
+
+.card:hover,
+.card:focus-visible {
+  background: #eefeff;
+  border-color: #031126;
+}
+
+.card:hover .icon,
+.card:focus-visible .icon {
+  color: #289999;
+}
+
+.card:hover .name,
+.card:focus-visible .name {
+  color: #289999;
+}
+
+.card:hover .count,
+.card:focus-visible .count {
+  color: #031126;
 }

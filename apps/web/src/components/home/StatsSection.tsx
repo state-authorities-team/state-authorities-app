@@ -15,7 +15,7 @@ export function StatsSection({ stats }: StatsSectionProps) {
           <article className={styles.card}>
             <Icon name="Institutions" size={36} className={styles.icon} />
 
-            <p className={styles.label}>Установи</p>
+            <p className={styles.label}>Кількість установ</p>
 
             <p className={styles.value}>{stats?.agenciesCount || "—"}</p>
 

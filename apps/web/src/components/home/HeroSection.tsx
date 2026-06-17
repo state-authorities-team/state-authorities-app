@@ -8,20 +8,19 @@ export function HeroSection() {
       <PageContainer>
         <div className={styles.heroContent}>
           <h1 className={styles.title}>
-            Національний каталог державних установ України
+            Національний каталог державних органів України
           </h1>
 
           <p className={styles.description}>
             Централізована платформа для аналізу структури влади, відстеження
-            відповідальності та дослідження взаємозв'язків між державними
-            інституціями
+            відповідальності та дослідження активності державних інституцій
           </p>
 
           <div className={styles.searchPanel}>
             <input
               type="text"
               className={styles.input}
-              placeholder="Пошук установ..."
+              placeholder="Пошук за назвою..."
             />
 
             <button
