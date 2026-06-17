@@ -8,6 +8,7 @@ import { NewsCronManager } from "./modules/news-aggregator/cron/news-cron.js";
 import agencyRouter from "./routes/agencies-routes.js";
 import agencyTypeRouter from "./routes/agency-types-routes.js";
 import authRouter from "./routes/auth-routes.js";
+import healthRouter from "./routes/health-routes.js";
 import refreshRouter from "./routes/refresh-routes.js";
 
 dotenv.config();
@@ -28,6 +29,7 @@ setupSwaggerDocs(app);
 app.use("/api/agencies", agencyRouter);
 app.use("/api/agency-types", agencyTypeRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/health", healthRouter);
 app.use("/api/refresh", refreshRouter);
 app.use(errorHandler);
 

@@ -12,6 +12,71 @@
     }
   ],
   "paths": {
+    "/api/health": {
+      "get": {
+        "tags": ["System Monitor"],
+        "summary": "Check system health and database connectivity",
+        "description": "Performs a check of the server status and tests the active database connection.",
+        "responses": {
+          "200": {
+            "description": "System is healthy and database is connected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "status": { "type": "string", "example": "UP" },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-06-16T19:00:00.000Z"
+                    },
+                    "uptime": { "type": "number", "example": 124.5 },
+                    "services": {
+                      "type": "object",
+                      "properties": {
+                        "database": { "type": "string", "example": "HEALTHY" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database connection is unhealthy or server is down",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "status": { "type": "string", "example": "DOWN" },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-06-16T19:00:00.000Z"
+                    },
+                    "uptime": { "type": "number", "example": 124.5 },
+                    "services": {
+                      "type": "object",
+                      "properties": {
+                        "database": { "type": "string", "example": "UNHEALTHY" }
+                      }
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Can't reach database server on localhost:5432"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/auth/register": {
       "post": {
         "tags": ["Authorization"],
