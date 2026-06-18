@@ -1,6 +1,5 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import dotenv from "dotenv";
 import express from "express";
 import { setupSwaggerDocs } from "./configs/swagger-config.js";
 import errorHandlerMiddleware from "./middlewares/error-handler.js";
@@ -10,8 +9,6 @@ import agencyTypeRouter from "./routes/agency-types-routes.js";
 import authRouter from "./routes/auth-routes.js";
 import healthRouter from "./routes/health-routes.js";
 import refreshRouter from "./routes/refresh-routes.js";
-
-dotenv.config();
 
 const app = express();
 
