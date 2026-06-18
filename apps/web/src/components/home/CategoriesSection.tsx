@@ -9,14 +9,57 @@ type CategoriesSectionProps = {
   isLoading: boolean;
 };
 
-const categoryIcons: Record<string, string> = {
+const categoryIconsBySlug: Record<string, string> = {
   cabinet: "CabMin",
-  ministry: "Institutions",
-  local: "RegAdmin",
+
+  ministry: "CabMin",
+  "ministry-subordinate": "CabMin",
+
+  "state-service": "Institutions",
+  service: "Institutions",
+
+  "state-agency": "StateEnterpr",
+  agency: "StateEnterpr",
+
+  "state-inspection": "Institutions",
+  inspection: "Institutions",
+
+  commission: "Court",
+  bureau: "Institutions",
+
+  covv: "Institutions",
+  "other-covv": "Institutions",
+  "special-covv": "LawEnfAgencies",
+
+  local: "Regions",
   "local-auth": "Regions",
-  enterprise: "StateEnterpr",
+  "local-authorities": "Regions",
+
   court: "Court",
+  enterprise: "StateEnterpr",
+  education: "Education",
 };
+
+function getCategoryIcon(category: AgencyType) {
+  const slug = category.slug?.toLowerCase() || "";
+  const name = category.name?.toLowerCase() || "";
+
+  if (categoryIconsBySlug[slug]) {
+    return categoryIconsBySlug[slug];
+  }
+
+  if (name.includes("міністер")) return "CabMin";
+  if (name.includes("служб")) return "StateEnterpr";
+  if (name.includes("агентств")) return "StateEnterpr";
+  if (name.includes("інспекц")) return "StateEnterpr";
+  if (name.includes("коміс")) return "Court";
+  if (name.includes("бюро")) return "Institutions";
+  if (name.includes("ц овв") || name.includes("цовв")) return "Institutions";
+  if (name.includes("місцев")) return "Regions";
+  if (name.includes("суд")) return "Court";
+
+  return "Institutions";
+}
 
 export function CategoriesSection({
   categories,
@@ -28,17 +71,21 @@ export function CategoriesSection({
         <h2 className={styles.title}>Основні категорії державних органів</h2>
 
         {isLoading ? (
-          <p>Завантаження категорій...</p>
+          <p className={styles.loadingText}>Завантаження категорій...</p>
+        ) : categories.length === 0 ? (
+          <p className={styles.loadingText}>Категорії не знайдено.</p>
         ) : (
           <div className={styles.grid}>
-            {categories.map((category) => (
+            {categories.map((category, index) => (
               <Link
                 key={category.id}
                 to={`/catalog?type=${category.slug}`}
-                className={styles.card}
+                className={`${styles.card} ${
+                  index === 0 ? styles.cardActive : ""
+                }`}
               >
                 <Icon
-                  name={categoryIcons[category.slug]}
+                  name={getCategoryIcon(category)}
                   size={36}
                   className={styles.icon}
                 />
@@ -46,7 +93,9 @@ export function CategoriesSection({
                 <div className={styles.content}>
                   <p className={styles.name}>{category.name}</p>
 
-                  <p className={styles.count}>{category.count} установ</p>
+                  <p className={styles.count}>
+                    {category.count ?? 0} установ
+                  </p>
                 </div>
               </Link>
             ))}

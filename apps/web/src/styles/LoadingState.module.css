@@ -36,13 +36,13 @@
   background:
     radial-gradient(
       15% 15% at 42% 35%,
-      #ffffff 50%,
+      var(--fon-1) 50%,
       transparent 50%,
       transparent
     ),
     radial-gradient(
       15% 15% at 75% 35%,
-      #ffffff 50%,
+      var(--fon-1) 50%,
       transparent 50%,
       transparent
     ),
@@ -106,11 +106,11 @@
   font-size: 3rem;
   aspect-ratio: clamp(2, 3, 10);
   /* Точки, які їсть Пакман, тепер темно-сірі/брендові, щоб їх було видно на білому */
-  background-image: radial-gradient(closest-side circle, #333333 35%, #fff0 0);
+  background-image: radial-gradient(closest-side circle, #333333 35%, var(--fon-1)0 0);
   background-size: 0.4em 100%;
   background-position: 0.4em 50%;
   mask:
-    radial-gradient(farthest-side circle, #fff 99.9%, #fff0) 0 0 / calc(2em / 3)
+    radial-gradient(farthest-side circle, var(--fon-1) 99.9%, var(--fon-1)0) 0 0 / calc(2em / 3)
       100% no-repeat,
     linear-gradient(90deg, #0000 calc(1em / 3), #000 0 75%, #0000 95%);
   transform: scaleX(-1);

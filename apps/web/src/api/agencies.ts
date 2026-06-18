@@ -120,3 +120,35 @@ export const getAgencyById = async (id: number): Promise<Agency | null> => {
     return mockAgenciesFallback.find((item) => item.id === id) || null;
   }
 };
+
+export type AgencyNewsItem = {
+  title: string;
+  url: string;
+  publishedAt?: string;
+};
+
+export async function getAgencyNews(id: number): Promise<AgencyNewsItem[]> {
+  const response = await apiClient.get<{
+    success: boolean;
+    data: AgencyNewsItem[];
+  }>(`/agencies/${id}/news`);
+
+  return response.data.data;
+}
+
+export type RelatedAgencyItem = {
+  id: number;
+  name: string;
+  type?: string;
+};
+
+export async function getRelatedAgencies(
+  id: number,
+): Promise<RelatedAgencyItem[]> {
+  const response = await apiClient.get<{
+    success: boolean;
+    data: RelatedAgencyItem[];
+  }>(`/agencies/${id}/related`);
+
+  return response.data.data;
+}

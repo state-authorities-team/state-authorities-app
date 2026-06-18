@@ -1,0 +1,431 @@
+.page {
+    min-height: 100vh;
+    background: var(--fon-1, #ffffff);
+    color: var(--kdou-primary, #031126);
+}
+
+.hero {
+    background: var(--kdou-primary, #031126);
+    color: #ffffff;
+    padding: 24px 0;
+    border-top: 2px solid #ffffff;
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    margin-bottom: 16px;
+
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.backLink:hover,
+.backLink:focus-visible {
+    color: var(--kdou-accent, #289999);
+}
+
+.tagRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.tag,
+.tagMuted {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+
+    padding: 3px 8px;
+    border: 2px solid var(--kdou-accent, #289999);
+    border-radius: 4px;
+
+    color: var(--kdou-accent, #289999);
+    background: #eeffff;
+
+    font-size: 16px;
+    line-height: 1.1;
+    font-weight: 700;
+}
+
+.tagMuted {
+    border-color: #9bdada;
+    color: #289999;
+}
+
+.title {
+    max-width: 980px;
+    margin-bottom: 16px;
+
+    color: #ffffff;
+    font-size: 40px;
+    line-height: 1.12;
+    font-weight: 700;
+}
+
+.subtitle {
+    max-width: 980px;
+    margin: 0;
+
+    color: #ffffff;
+    font-size: 24px;
+    line-height: 1.35;
+    font-weight: 700;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-block: 20px;
+}
+
+.topGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(260px, 0.7fr);
+    gap: 20px;
+}
+
+.infoPanel,
+.leadershipCard,
+.sectionCard,
+.descriptionCard {
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.infoPanel,
+.leadershipCard {
+    background: #eeffff;
+}
+
+.infoPanel {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 32px;
+    padding: 24px;
+}
+
+.infoItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+}
+
+.infoIcon {
+    width: 24px;
+    height: 24px;
+    color: var(--kdou-accent, #289999);
+    flex-shrink: 0;
+}
+
+.infoItem h3 {
+    margin: 0 0 8px;
+    color: var(--kdou-accent, #289999);
+    font-size: 24px;
+    line-height: 1.15;
+    font-weight: 700;
+}
+
+.infoItem p {
+    margin: 0;
+    color: var(--kdou-primary, #031126);
+    font-size: 16px;
+    line-height: 1.35;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.infoItem a {
+    color: var(--kdou-primary, #031126);
+    text-decoration: none;
+}
+
+.infoItem a:hover,
+.infoItem a:focus-visible {
+    color: var(--kdou-accent, #289999);
+    text-decoration: underline;
+}
+
+.leadershipCard {
+    padding: 24px;
+}
+
+.leadershipTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 37px;
+
+    color: var(--kdou-primary, #031126);
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+.leadershipTitle svg {
+    color: var(--kdou-accent, #289999);
+    height: 24px;
+    width: 24px;
+}
+
+.leadershipCard h2 {
+    margin: 0 0 8px;
+    color: var(--kdou-accent, #289999);
+    font-size: 32px;
+    line-height: 1.15;
+    font-weight: 700;
+}
+
+.leadershipCard p {
+    margin: 0 0 22px;
+    color: var(--kdou-primary, #031126);
+    font-size: 20px;
+    line-height: 1.25;
+    font-weight: 600;
+}
+
+.appointmentDate {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.appointmentDate svg {
+    color: var(--kdou-accent, #289999);
+    flex-shrink: 0;
+    height: 24px;
+    width: 24px;
+}
+
+.appointmentDate strong {
+    display: block;
+    font-size: 24px;
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+.appointmentDate strong {
+    color: var(--kdou-accent, #289999);
+    margin-bottom: 8px;
+}
+
+.appointmentDate span {
+    color: var(--kdou-primary, #031126);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.sectionCard {
+    padding: 20px;
+    border: 2px solid var(--kdou-primary, #031126);
+    background: #ffffff;
+}
+
+.descriptionCard {
+    padding: 20px;
+    background: #eeffff;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.sectionTitle {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sectionTitle svg {
+    color: var(--kdou-accent, #289999);
+    flex-shrink: 0;
+    height: 36px;
+    width: 36px;
+}
+
+.sectionTitle h2 {
+    margin: 0;
+    color: var(--kdou-primary, #031126);
+    font-size: 32px;
+    line-height: 1.15;
+    font-weight: 700;
+}
+
+.newsMessage {
+    font-size: 20px;
+    margin: 0;
+}
+
+.allNewsButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    border: 0;
+    background: transparent;
+    color: #999999;
+
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.allNewsButton:hover,
+.allNewsButton:focus-visible {
+    color: var(--kdou-accent, #289999);
+}
+
+.newsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.newsCard {
+    min-height: 84px;
+    padding: 10px;
+    border: 2px solid #b8b8b8;
+    border-radius: 5px;
+    background: #ffffff;
+}
+
+.newsCardActive {
+    border-color: var(--kdou-accent, #289999);
+    background: #eeffff;
+}
+
+.newsCard span {
+    display: block;
+    margin-bottom: 6px;
+
+    color: #999999;
+    font-size: 12px;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.newsCardActive span {
+    color: var(--kdou-accent, #289999);
+}
+
+.newsCard p {
+    margin: 0;
+    color: var(--kdou-primary, #031126);
+    font-size: 13px;
+    line-height: 1.25;
+    font-weight: 600;
+}
+
+.descriptionCard p {
+    margin: 20px 0 0;
+    color: var(--kdou-primary, #031126);
+    font-size: 20px;
+    line-height: 1.45;
+    font-weight: 600;
+}
+
+.relatedGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.relatedItem {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 8px 12px;
+    border: 2px solid #b8b8b8;
+    border-radius: 4px;
+    background: #ffffff;
+
+    color: #999999;
+    font-size: 14px;
+    line-height: 1.2;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.relatedMessage {
+    margin: 20px 0 0;
+    color: var(--kdou-inactive, #a1a1a1);
+    font-size: 20px;
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+.relatedItem:first-child,
+.relatedItem:hover,
+.relatedItem:focus-visible {
+    border-color: var(--kdou-accent, #289999);
+    background: #eeffff;
+    color: var(--kdou-primary, #031126);
+}
+
+.relatedItem span {
+    color: var(--kdou-accent, #289999);
+    font-size: 24px;
+    line-height: 1;
+}
+
+@media (max-width: 1024px) {
+    .topGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .newsGrid,
+    .relatedGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 16px 0 22px;
+    }
+
+    .title {
+        font-size: 28px;
+    }
+
+    .subtitle {
+        font-size: 15px;
+    }
+
+    .infoPanel {
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    .leadershipCard,
+    .sectionCard,
+    .descriptionCard {
+        padding: 16px;
+    }
+
+    .sectionTitle h2 {
+        font-size: 22px;
+    }
+}
