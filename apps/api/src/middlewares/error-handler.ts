@@ -1,6 +1,6 @@
 import type { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import { logger as baseLogger } from "../configs/logger-config.js";
-import ApiError from "../errors/ApiError.js";
+import ApiError from "../errors/api-error.js";
 
 const logger = baseLogger.child({ service: "GlobalErrorHandler" });
 
@@ -12,7 +12,7 @@ const isPrismaLikeError = (err: unknown): err is PrismaLikeError => {
   return err instanceof Error && typeof (err as PrismaLikeError).code === "string";
 };
 
-const errorHandler: ErrorRequestHandler = (
+const errorHandlerMiddleware: ErrorRequestHandler = (
   err: unknown,
   _req: Request,
   res: Response,
@@ -62,4 +62,4 @@ const errorHandler: ErrorRequestHandler = (
   });
 };
 
-export default errorHandler;
+export default errorHandlerMiddleware;

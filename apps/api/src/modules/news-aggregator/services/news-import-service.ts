@@ -2,7 +2,7 @@ import type { Prisma } from "@prisma/client";
 import { logger as baseLogger } from "../../../configs/logger-config.js";
 import { sleep } from "../../../utils/sleep.js";
 import { KmuScraperService } from "../../parser/services/kmu-scraper-service.js";
-import type { ScrapeSelectors } from "../schemas/scrape-selectors.schema.js";
+import type { ScrapeSelectors } from "../schemas/scrape-selectors-schema.js";
 import { NewsDataService } from "../services/news-data-service.js";
 import type { NewsDataInput } from "../types/news-types.js";
 import { NewsAiAnalyzerService } from "./news-ai-analyzer-service.js";

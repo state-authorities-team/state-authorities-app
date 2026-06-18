@@ -1,5 +1,5 @@
 import type { CookieOptions, Request, Response } from "express";
-import asyncHandler from "../middlewares/asyncHandler.js";
+import asyncHandler from "../middlewares/async-handler.js";
 import { loginUser, registerUser } from "../services/auth-service.js";
 
 const cookieOptions: CookieOptions = {

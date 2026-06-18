@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import * as dotenv from "dotenv";
 import { logger as baseLogger } from "../../configs/logger-config.js";
-import type { ScrapeSelectors } from "./schemas/scrape-selectors.schema.js";
+import type { ScrapeSelectors } from "./schemas/scrape-selectors-schema.js";
 import type { NewsAiAnalyzerService } from "./services/news-ai-analyzer-service.js";
 import { NewsDataService } from "./services/news-data-service.js";
 import { NewsImportService } from "./services/news-import-service.js";

@@ -1,7 +1,7 @@
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import prisma from "../configs/db-config.js";
-import ApiError from "../errors/ApiError.js";
+import ApiError from "../errors/api-error.js";
 import type { LoginInput, RegistrationInput } from "../schemas/auth-schema.js";
 import { parseExpiresInToSeconds } from "../utils/time.js";
 

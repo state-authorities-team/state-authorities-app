@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import ApiError from "../errors/ApiError.js";
-import asyncHandler from "../middlewares/asyncHandler.js";
+import ApiError from "../errors/api-error.js";
+import asyncHandler from "../middlewares/async-handler.js";
 import { KmuImportService } from "../modules/parser/services/kmu-import-service.js";
 
 class KmuRefreshController {

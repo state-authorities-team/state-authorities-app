@@ -1,10 +1,10 @@
 import type { Role } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import ApiError from "../errors/ApiError.js";
+import ApiError from "../errors/api-error.js";
 import type { JwtPayload } from "../types/jwt-types.js";
 
-export const requireAuth = (req: Request, _res: Response, next: NextFunction): void => {
+export const requireAuthMiddleware = (req: Request, _res: Response, next: NextFunction): void => {
   const token = req.cookies.token as string | undefined;
 
   if (!token) {
@@ -27,7 +27,7 @@ export const requireAuth = (req: Request, _res: Response, next: NextFunction): v
   }
 };
 
-export const checkRole = (allowedRoles: Role[]) => {
+export const checkRoleMiddleware = (allowedRoles: Role[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user) {
       next(ApiError.unauthorized("Authentication context missing"));

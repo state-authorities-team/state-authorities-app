@@ -1,9 +1,14 @@
 import express from "express";
 import { kmuRefreshController } from "../controllers/kmu-refresh-controller.js";
-import { checkRole, requireAuth } from "../middlewares/auth-middleware.js";
+import { checkRoleMiddleware, requireAuthMiddleware } from "../middlewares/auth-middleware.js";
 
 const refreshRouter = express.Router();
 
-refreshRouter.post("/", requireAuth, checkRole(["ADMIN"]), kmuRefreshController.handle);
+refreshRouter.post(
+  "/",
+  requireAuthMiddleware,
+  checkRoleMiddleware(["ADMIN"]),
+  kmuRefreshController.handle,
+);
 
 export default refreshRouter;

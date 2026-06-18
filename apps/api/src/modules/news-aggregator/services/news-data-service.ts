@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "../../../configs/db-config.js";
-import type { ScrapeSelectors } from "../schemas/scrape-selectors.schema.js";
+import type { ScrapeSelectors } from "../schemas/scrape-selectors-schema.js";
 import type { NewsDataInput } from "../types/news-types.js";
 
 export class NewsDataService {

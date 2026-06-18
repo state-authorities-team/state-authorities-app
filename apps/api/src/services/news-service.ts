@@ -1,5 +1,5 @@
 import prisma from "../configs/db-config.js";
-import ApiError from "../errors/ApiError.js";
+import ApiError from "../errors/api-error.js";
 import type { GetNewsQuerySchema } from "../schemas/news-schema.js";
 
 export const getNewsByAgency = async (agencyId: number, params: GetNewsQuerySchema) => {

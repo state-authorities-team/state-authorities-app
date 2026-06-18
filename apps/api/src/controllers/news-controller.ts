@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import asyncHandler from "../middlewares/asyncHandler.js";
+import asyncHandler from "../middlewares/async-handler.js";
 import { getNewsByAgency } from "../services/news-service.js";
 
 export const getNewsByAgencyHandler = asyncHandler(async (req: Request, res: Response) => {

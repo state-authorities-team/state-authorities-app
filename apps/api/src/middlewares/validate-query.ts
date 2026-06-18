@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 import type { ZodType } from "zod";
-import ApiError from "../errors/ApiError.js";
+import ApiError from "../errors/api-error.js";
 
-export const validateQuery =
+export const validateQueryMiddleware =
   (schema: ZodType) => (req: Request, res: Response, next: NextFunction) => {
     const result = schema.safeParse(req.query);
 

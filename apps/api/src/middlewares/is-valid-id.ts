@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
-import ApiError from "../errors/ApiError.js";
+import ApiError from "../errors/api-error.js";
 
-export const isValidId = (req: Request, _res: Response, next: NextFunction) => {
+export const isValidIdMiddleware = (req: Request, _res: Response, next: NextFunction) => {
   const id = Number(req.params.id);
 
   if (!Number.isInteger(id) || id <= 0) {
