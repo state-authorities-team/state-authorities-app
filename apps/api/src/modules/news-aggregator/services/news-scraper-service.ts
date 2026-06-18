@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import type { ScrapeSelectors } from "../schemas/scrape-selectors.schema.js";
+import type { ScrapeSelectors } from "../schemas/scrape-selectors-schema.js";
 import type { NewsDataInput } from "../types/news-types.js";
 
 export class NewsScraperService {

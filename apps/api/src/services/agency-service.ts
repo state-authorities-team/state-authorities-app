@@ -1,8 +1,8 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "../configs/db-config.js";
 import { logger as baseLogger } from "../configs/logger-config.js";
-import ApiError from "../errors/ApiError.js";
-import { type ImportAgencySchema, importAgencySchema } from "../schemas/agency.schema.js";
+import ApiError from "../errors/api-error.js";
+import { type ImportAgencySchema, importAgencySchema } from "../schemas/agency-schema.js";
 import type { getAgencyQuery } from "../types/get-agency-query.js";
 import { parseAndValidate } from "../utils/csv-parser.js";
 import { buildCsvBuffer } from "../utils/csv-writer.js";

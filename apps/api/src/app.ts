@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import { setupSwaggerDocs } from "./configs/swagger-config.js";
-import errorHandler from "./middlewares/errorHandler.js";
+import errorHandlerMiddleware from "./middlewares/error-handler.js";
 import { httpLoggerMiddleware } from "./middlewares/logger-middleware.js";
 import agencyRouter from "./routes/agencies-routes.js";
 import agencyTypeRouter from "./routes/agency-types-routes.js";
@@ -31,6 +31,6 @@ app.use("/api/agency-types", agencyTypeRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/health", healthRouter);
 app.use("/api/refresh", refreshRouter);
-app.use(errorHandler);
+app.use(errorHandlerMiddleware);
 
 export default app;

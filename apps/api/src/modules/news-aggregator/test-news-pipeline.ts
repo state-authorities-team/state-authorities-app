@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 import { logger as baseLogger } from "../../configs/logger-config.js";
-import type { ScrapeSelectors } from "./schemas/scrape-selectors.schema.js";
+import type { ScrapeSelectors } from "./schemas/scrape-selectors-schema.js";
 import { NewsDataService } from "./services/news-data-service.js";
 import { NewsImportService } from "./services/news-import-service.js";
 import type { NewsDataInput } from "./types/news-types.js";

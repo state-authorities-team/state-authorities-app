@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import prisma from "../configs/db-config.js";
 import { logger as baseLogger } from "../configs/logger-config.js";
-import asyncHandler from "../middlewares/asyncHandler.js";
+import asyncHandler from "../middlewares/async-handler.js";
 
 const logger = baseLogger.child({ service: "HealthCheck" });
 

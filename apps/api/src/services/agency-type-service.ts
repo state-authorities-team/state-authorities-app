@@ -1,9 +1,9 @@
 import prisma from "../configs/db-config.js";
-import ApiError from "../errors/ApiError.js";
+import ApiError from "../errors/api-error.js";
 import {
   type CreateAgencyTypeSchema,
   createAgencyTypeSchema,
-} from "../schemas/agency-type.schema.js";
+} from "../schemas/agency-type-schema.js";
 import { parseAndValidate } from "../utils/csv-parser.js";
 import { buildCsvBuffer } from "../utils/csv-writer.js";
 import { slugify } from "../utils/slugify.js";

@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import { logger as baseLogger } from "../../../configs/logger-config.js";
 import { extractRetryDelayMs, isRateLimitError } from "../../../utils/rate-limit.js";
 import { sleep } from "../../../utils/sleep.js";
-import { type ScrapeSelectors, scrapeSelectorsSchema } from "../schemas/scrape-selectors.schema.js";
+import { type ScrapeSelectors, scrapeSelectorsSchema } from "../schemas/scrape-selectors-schema.js";
 
 const logger = baseLogger.child({ service: "AiAnalyzer" });
 
