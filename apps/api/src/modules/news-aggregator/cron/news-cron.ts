@@ -1,4 +1,4 @@
-import cron from "node-cron";
+import cron, { type ScheduledTask } from "node-cron";
 import prisma from "../../../configs/db-config.js";
 import { logger as baseLogger } from "../../../configs/logger-config.js";
 import { NewsImportService } from "../services/news-import-service.js";
@@ -7,7 +7,7 @@ const logger = baseLogger.child({ service: "CronManager" });
 
 export class NewsCronManager {
   private readonly newsImportService = new NewsImportService();
-  private activeJob: cron.ScheduledTask | null = null;
+  private activeJob: ScheduledTask | null = null;
   private currentCronExpression = "";
   private isSyncRunning = false;
 
