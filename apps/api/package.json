@@ -4,26 +4,25 @@
   "description": "Scalable Node.js REST API for managing state structures, featuring secure user authentication and seamless frontend integration",
   "main": "dist/index.js",
   "devDependencies": {
-    "@biomejs/biome": "2.4.15",
+    "@biomejs/biome": "^2.5.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/multer": "^2.1.0",
-    "@types/node": "^25.6.2",
+    "@types/node": "^25.9.3",
     "@types/node-cron": "^3.0.11",
-    "@types/pg": "^8.20.0",
     "@types/puppeteer": "^5.4.7",
     "@types/swagger-ui-express": "^4.1.8",
-    "cpx": "^1.5.0",
+    "cpy-cli": "^7.0.0",
     "prisma": "^7.8.0",
-    "tsx": "^4.22.0",
+    "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc && cpx \"src/**/*.json\" dist",
+    "build": "tsc && cpy \"src/docs/*.json\" dist/docs",
     "start": "node dist/index.js",
     "lint": "npx @biomejs/biome check src",
     "lint:fix": "npx @biomejs/biome check --write src",
@@ -44,7 +43,6 @@
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "argon2": "^0.44.0",
-    "axios": "^1.17.0",
     "cheerio": "^1.2.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -54,11 +52,13 @@
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.11.0",
     "multer": "^2.1.1",
-    "node-cron": "^4.2.1",
-    "pg": "^8.20.0",
+    "node-cron": "^4.4.1",
     "puppeteer": "^25.1.0",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.19.0",
     "zod": "^4.4.3"
+  },
+  "overrides": {
+    "@hono/node-server": "^1.19.13"
   }
 }
