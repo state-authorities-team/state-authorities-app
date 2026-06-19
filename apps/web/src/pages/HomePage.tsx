@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAgencyTypes } from "../api/agencyTypes";
 import { getHomeStats, getAgencies } from "../api/agencies";
-import type { AgencyType } from "../types/agency";
-import type { HomeStats } from "../api/agencies";
+import type { AgencyType, HomeStats } from "../types/agency";
 import { HeroSection } from "../components/home/HeroSection";
 import { StatsSection } from "../components/home/StatsSection";
 import { CategoriesSection } from "../components/home/CategoriesSection";
