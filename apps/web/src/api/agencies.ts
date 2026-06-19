@@ -176,3 +176,42 @@ export async function getAgencyNews(
     return [];
   }
 }
+
+export type AgencyPayload = {
+  name: string;
+  shortName?: string | null;
+  typeId?: number;
+  headName?: string | null;
+  headTitle?: string | null;
+  description?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
+  region?: string | null;
+};
+
+export async function createAgency(payload: AgencyPayload): Promise<Agency> {
+  const response = await apiClient.post<{ success: boolean; data: Agency }>(
+    "/agencies",
+    payload,
+  );
+
+  return response.data.data;
+}
+
+export async function updateAgency(
+  id: number,
+  payload: AgencyPayload,
+): Promise<Agency> {
+  const response = await apiClient.put<{ success: boolean; data: Agency }>(
+    `/agencies/${id}`,
+    payload,
+  );
+
+  return response.data.data;
+}
+
+export async function deleteAgency(id: number): Promise<void> {
+  await apiClient.delete(`/agencies/${id}`);
+}

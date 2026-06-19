@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SVG Sprite Preview</title>
+  <style>
+    :root {
+      --bg: #f4f4f4;
+      --card: #ffffff;
+      --primary: #031126;
+      --accent: #289999;
+      --danger: #900000;
+      --muted: #7a7a7a;
+      --border: #d7dce2;
+      --icon-size: 48px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+    }
+    header { max-width: 1240px; margin: 0 auto 24px; }
+    h1 { margin: 0 0 8px; font-size: 36px; line-height: 1.1; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 16px; font-weight: 600; }
+    .controls {
+      max-width: 1240px;
+      margin: 0 auto 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+    }
+    .controls button {
+      min-height: 40px;
+      padding: 8px 14px;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--primary);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .controls button:hover,
+    .controls button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+    .controls label { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+    .controls input { width: 88px; height: 40px; padding: 6px 8px; border: 2px solid var(--border); border-radius: 8px; font: inherit; font-weight: 700; }
+    .grid {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .icon-card {
+      min-height: 188px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card);
+      box-shadow: 0 6px 18px rgba(3, 17, 38, 0.06);
+    }
+    .icon-box {
+      height: 92px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #eeffff;
+      color: var(--accent);
+    }
+    .icon { width: var(--icon-size); height: var(--icon-size); color: currentColor; overflow: visible; }
+    .icon-meta h2 { margin: 0 0 6px; font-size: 18px; line-height: 1.2; }
+    .icon-meta p { margin: 0 0 10px; color: var(--muted); font-size: 13px; font-weight: 600; }
+    code { display: block; width: 100%; padding: 8px; border-radius: 8px; background: #f6f8fa; color: #24292f; font-size: 12px; white-space: nowrap; overflow-x: auto; }
+    body.primary .icon-box { color: var(--primary); }
+    body.accent .icon-box { color: var(--accent); }
+    body.danger .icon-box { color: var(--danger); }
+    body.white-preview { background: #031126; color: #ffffff; }
+    body.white-preview .controls,
+    body.white-preview .icon-card { background: #071a36; border-color: rgba(255,255,255,0.2); }
+    body.white-preview .icon-box { background: #031126; color: #ffffff; border: 1px solid rgba(255,255,255,0.25); }
+    body.white-preview .subtitle,
+    body.white-preview .icon-meta p { color: rgba(255,255,255,0.7); }
+    body.white-preview code { background: rgba(255,255,255,0.12); color: #ffffff; }
+  </style>
+</head>
+<body class="accent">
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true" version="1.1"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <symbol id="Address" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12.601 21.799C14.461 20.193 20 14.993 20 10C20 7.87827 19.1571 5.84344 17.6569 4.34315C16.1566 2.84285 14.1217 2 12 2C9.87827 2 7.84344 2.84285 6.34315 4.34315C4.84285 5.84344 4 7.87827 4 10C4 14.993 9.539 20.193 11.399 21.799C11.5723 21.9293 11.7832 21.9998 12 21.9998C12.2168 21.9998 12.4277 21.9293 12.601 21.799Z"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path
+        d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="Workers" viewBox="0 0 36 36" stroke-width="3" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path
+        d="M24 31.5v-3c0-1.5913-0.6321-3.1174-1.7574-4.2426C21.1174 23.1321 19.5913 22.5 18 22.5H9c-1.5913 0-3.1174 0.6321-4.2426 1.7574C3.6321 25.3826 3 26.9087 3 28.5v3" />
+      <path
+        d="M24 4.692c1.2866 0.3336 2.4261 1.0849 3.2395 2.1361s1.2548 2.3427 1.2548 3.6719c0 1.3292-0.4414 2.6207-1.2548 3.6719S25.2866 15.9744 24 16.308" />
+      <path d="M33 31.5v-3c-1e-3-1.3294-0.4435-2.6208-1.258-3.6715-0.8144-1.0507-1.9548-1.8011-3.242-2.1335" />
+      <path d="M13.5 16.5c3.3137 0 6-2.6863 6-6s-2.6863-6-6-6-6 2.6863-6 6 2.6863 6 6 6z" />
+    </symbol>
+    <symbol id="Worker" viewBox="0 0 20 20" stroke-width="1.66667" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path
+        d="M15.8334 17.5v-1.6667c0-0.884-0.3512-1.7319-0.9763-2.357S13.3841 12.5 12.5001 12.5h-5c-0.8841 0-1.7319 0.3512-2.357 0.9763-0.6252 0.6251-0.9763 1.473-0.9763 2.357l0 1.6667" />
+      <path
+        d="M10.0001 9.1667c1.8409 0 3.3333-1.4924 3.3333-3.3334 0-1.8409-1.4924-3.3333-3.3333-3.3333-1.841 0-3.3333 1.4924-3.3333 3.3333 0 1.841 1.4923 3.3334 3.3333 3.3334z" />
+    </symbol>
+    <symbol id="Website" viewBox="0 0 20 20" fill="none">
+      <g stroke-width="1.66667" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+        clip-path="url(#clip0_25_130)">
+        <path
+          d="M10.0001 18.3333c4.6024 0 8.3333-3.7309 8.3333-8.3333 0-4.6024-3.7309-8.3333-8.3333-8.3333-4.6024 0-8.3333 3.7309-8.3333 8.3333 0 4.6024 3.7309 8.3333 8.3333 8.3333z" />
+        <path
+          d="M10.0001 1.6667C7.8603 3.9135 6.6668 6.8973 6.6668 10c0 3.1027 1.1935 6.0865 3.3333 8.3333 2.1398-2.2468 3.3333-5.2306 3.3333-8.3333s-1.1935-6.0865-3.3333-8.3333z" />
+        <path d="M1.6668 10h16.6666" />
+      </g>
+      <defs>
+        <clipPath id="clip0_25_130">
+          <rect fill="currentColor" width="20" height="20" />
+        </clipPath>
+      </defs>
+    </symbol>
+    <symbol id="StateEnterpr" viewBox="0 0 36 36" stroke-width="3" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path d="M18 24h0.015" />
+      <path d="M24 24h0.015" />
+      <path
+        d="M4.5 28.5c0 0.7956 0.3161 1.5587 0.8787 2.1213C5.9413 31.1839 6.7044 31.5 7.5 31.5h21c0.7956 0 1.5587-0.3161 2.1213-0.8787S31.5 29.2956 31.5 28.5V12.75c1e-4-0.1345-0.0359-0.2667-0.1044-0.3825s-0.1668-0.2111-0.2848-0.2758c-0.1179-0.0647-0.2511-0.0965-0.3856-0.0921-0.1345 45e-4-0.2653 0.045-0.3787 0.1174l-6.693 4.266c-0.1134 0.0724-0.2442 0.1129-0.3787 0.1174-0.1345 44e-4-0.2677-0.0274-0.3856-0.0921-0.118-0.0647-0.2163-0.16-0.2848-0.2758S22.4999 15.8845 22.5 15.75v-3c1e-4-0.1345-0.0359-0.2667-0.1044-0.3825s-0.1668-0.2111-0.2848-0.2758c-0.1179-0.0647-0.2511-0.0965-0.3856-0.0921-0.1345 45e-4-0.2653 0.045-0.3787 0.1174l-6.6915 4.266c-0.1134 0.0728-0.2444 0.1136-0.3791 0.1183s-0.2682-0.0271-0.3864-0.0918c-0.1182-0.0648-0.2167-0.1603-0.2853-0.2763-0.0685-0.116-0.1045-0.2484-0.1042-0.3832V7.5c0-0.7957-0.3161-1.5587-0.8787-2.1213C12.0587 4.8161 11.2956 4.5 10.5 4.5h-3c-0.7957 0-1.5587 0.3161-2.1213 0.8787C4.8161 5.9413 4.5 6.7044 4.5 7.5z" />
+      <path d="M12 24h0.015" />
+    </symbol>
+    <symbol id="Search" viewBox="0 0 32 32" stroke-width="3.33333" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path d="M28 28l-5.7866-5.7867" />
+      <path
+        d="M14.6667 25.3333c5.891 0 10.6666-4.7756 10.6666-10.6666C25.3333 8.7756 20.5577 4 14.6667 4 8.7756 4 4 8.7756 4 14.6667c0 5.891 4.7756 10.6666 10.6667 10.6666z" />
+    </symbol>
+    <symbol id="RightMenu" viewBox="0 0 11 19" fill="none">
+      <path d="M1.33337 1.33325L9.33337 9.33325L1.33337 17.3333" stroke="currentColor" stroke-width="2.66667"
+        stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="Regions" viewBox="0 0 36 36" stroke-width="3" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path d="M32.31 22.5H25.5c-0.7956 0-1.5587 0.3161-2.1213 0.8787S22.5 24.7044 22.5 25.5v6.81" />
+      <path
+        d="M10.5 5.01V7.5c0 1.1935 0.4741 2.3381 1.318 3.182C12.6619 11.5259 13.8065 12 15 12c0.7956 0 1.5587 0.3161 2.1213 0.8787S18 14.2043 18 15c0 1.65 1.35 3 3 3 0.7957 0 1.5587-0.3161 2.1213-0.8787S24 15.7956 24 15c0-1.65 1.35-3 3-3h4.755" />
+      <path
+        d="M16.5 32.925V27c0-0.7956-0.3161-1.5587-0.8787-2.1213S14.2956 24 13.5 24c-0.7957 0-1.5588-0.3161-2.1214-0.8787S10.5 21.7956 10.5 21v-1.5c0-0.7956-0.3161-1.5587-0.8787-2.1213C9.0587 16.8161 8.2956 16.5 7.5 16.5H3.075" />
+      <path
+        d="M18 33c8.2843 0 15-6.7157 15-15 0-8.2843-6.7157-15-15-15C9.7157 3 3 9.7157 3 18c0 8.2843 6.7157 15 15 15z" />
+    </symbol>
+    <symbol id="RegAdmin" viewBox="0 0 36 36" stroke-width="3" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path
+        d="M30 15c0 7.4895-8.3085 15.2895-11.0985 17.6985-0.2599 0.1954-0.5763 0.3011-0.9015 0.3011s-0.6416-0.1057-0.9015-0.3011C14.3085 30.2895 6 22.4895 6 15c0-3.1826 1.2643-6.2348 3.5147-8.4853C11.7652 4.2643 14.8174 3 18 3s6.2348 1.2643 8.4853 3.5147C28.7357 8.7652 30 11.8174 30 15z" />
+      <path d="M18 19.5c2.4853 0 4.5-2.0147 4.5-4.5s-2.0147-4.5-4.5-4.5-4.5 2.0147-4.5 4.5 2.0147 4.5 4.5 4.5z" />
+    </symbol>
+    <symbol id="LeftArrow" viewBox="0 0 20 20" stroke-width="1.66667" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path d="M10.0001 15.8333 4.1668 10l5.8333-5.8333" />
+      <path d="M15.8334 10H4.1668" />
+    </symbol>
+    <symbol id="ArrowRight" viewBox="0 0 24 24" fill="none">
+      <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" />
+    </symbol>
+    <symbol id="LeftMenu" viewBox="0 0 11 19" fill="none">
+      <path d="M9.33337 17.3333L1.33337 9.33325L9.33337 1.33325" stroke="currentColor" stroke-width="2.66667"
+        stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="LawEnfAgencies" viewBox="0 0 36 36" fill="none">
+      <path stroke-width="3" stroke="currentColor" stroke-linejoin="round"
+        d="M30 19.5c0 7.5-5.25 11.25-11.49 13.425-0.3268 0.1107-0.6817 0.1054-1.005-0.015C11.25 30.75 6 27 6 19.5V9c0-0.3978 0.158-0.7794 0.4393-1.0607C6.7206 7.658 7.1022 7.5 7.5 7.5c3 0 6.75-1.8 9.36-4.08 0.3178-0.2715 0.722-0.4207 1.14-0.4207 0.418 0 0.8222 0.1492 1.14 0.4207 2.625 2.295 6.36 4.08 9.36 4.08 0.3978 0 0.7794 0.158 1.0607 0.4393C29.842 8.2206 30 8.6022 30 9z" />
+    </symbol>
+    <symbol id="Institutions" viewBox="0 0 36 36" stroke-width="3" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path d="M22.5 18H15" />
+      <path d="M22.5 12H15" />
+      <path d="M28.5 25.5v-18c0-0.7957-0.3161-1.5587-0.8787-2.1213C27.0587 4.8161 26.2956 4.5 25.5 4.5H6" />
+      <path
+        d="M12 31.5h18c0.7956 0 1.5587-0.3161 2.1213-0.8787S33 29.2956 33 28.5V27c0-0.3978-0.158-0.7794-0.4393-1.0607S31.8978 25.5 31.5 25.5h-15c-0.3978 0-0.7794 0.158-1.0607 0.4393S15 26.6022 15 27v1.5c0 0.7956-0.3161 1.5587-0.8787 2.1213S12.7956 31.5 12 31.5zM12 31.5c-0.7956 0-1.5587-0.3161-2.1213-0.8787C9.3161 30.0587 9 29.2956 9 28.5v-21c0-0.7957-0.3161-1.5587-0.8787-2.1213C7.5587 4.8161 6.7957 4.5 6 4.5S4.4413 4.8161 3.8787 5.3787C3.3161 5.9413 3 6.7044 3 7.5v3c0 0.3978 0.158 0.7794 0.4393 1.0607C3.7206 11.842 4.1022 12 4.5 12H9" />
+    </symbol>
+    <symbol id="Home" viewBox="0 0 28 28" stroke-width="2.33333" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path
+        d="M17.5 24.5v-9.3333c0-0.3095-0.1229-0.6062-0.3417-0.825S16.6428 14 16.3333 14h-4.6666c-0.3095 0-0.6062 0.1229-0.825 0.3417S10.5 14.8572 10.5 15.1667V24.5" />
+      <path
+        d="M3.5 11.6667c-1e-4-0.3395 0.0739-0.6748 0.2168-0.9827 0.1428-0.3079 0.3511-0.5809 0.6104-0.8l8.1666-7C12.915 2.5281 13.4486 2.3328 14 2.3328c0.5514 0 1.085 0.1952 1.5062 0.5512l8.1666 7c0.2593 0.2191 0.4676 0.4921 0.6104 0.8 0.1429 0.3079 0.2169 0.6432 0.2168 0.9827v10.5c0 0.6188-0.2458 1.2123-0.6834 1.6499S22.7855 24.5 22.1667 24.5H5.8333c-0.6188 0-1.2123-0.2458-1.6499-0.6834C3.7458 23.379 3.5 22.7855 3.5 22.1667z" />
+    </symbol>
+    <symbol id="Frame" viewBox="0 0 72 72" stroke-width="6" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path
+        d="M57 9H15c-3.3137 0-6 2.6863-6 6v42c0 3.3137 2.6863 6 6 6h42c3.3137 0 6-2.6863 6-6V15c0-3.3137-2.6863-6-6-6z" />
+      <path d="M27 33c3.3137 0 6-2.6863 6-6s-2.6863-6-6-6-6 2.6863-6 6 2.6863 6 6 6z" />
+      <path d="M63 45l-9.258-9.258c-1.1252-1.1248-2.651-1.7567-4.242-1.7567s-3.1168 0.6319-4.242 1.7567L18 63" />
+    </symbol>
+    <symbol id="Filter" viewBox="0 0 36 36" fill="none">
+      <path stroke-width="3" stroke="currentColor" stroke-linejoin="round"
+        d="M14.9999 30c-1e-4 0.2787 0.0775 0.552 0.224 0.7892 0.1465 0.2371 0.3562 0.4287 0.6055 0.5533l3 1.5c0.2288 0.1143 0.483 0.1682 0.7384 0.1567 0.2555-0.0116 0.5037-0.0883 0.7212-0.2228s0.3969-0.3224 0.5214-0.5458c0.1244-0.2234 0.1897-0.4749 0.1895-0.7306V21c4e-4-0.7434 0.2767-1.4602 0.7755-2.0115L32.6099 7.005c0.1942-0.2152 0.3219-0.482 0.3677-0.7682 0.0458-0.2862 76e-4-0.5795-0.1098-0.8445-0.1174-0.265-0.3091-0.4903-0.5518-0.6486-0.2428-0.1584-0.5262-0.243-0.8161-0.2437h-27c-0.29 1e-4-0.5739 0.0843-0.8171 0.2424-0.2432 0.1582-0.4353 0.3834-0.5531 0.6485C3.0119 5.656 2.9735 5.9496 3.0192 6.2361 3.0648 6.5226 3.1926 6.7897 3.387 7.005l10.8374 11.9835c0.4989 0.5513 0.7752 1.2681 0.7755 2.0115z" />
+    </symbol>
+    <symbol id="Education" viewBox="0 0 36 36" stroke-width="3" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path d="M15 3v12l4.5-4.5L24 15V3" />
+      <path
+        d="M6 29.25V6.75c0-0.9946 0.3951-1.9484 1.0984-2.6516C7.8016 3.3951 8.7554 3 9.75 3H28.5c0.3978 0 0.7794 0.158 1.0607 0.4393C29.842 3.7206 30 4.1022 30 4.5v27c0 0.3978-0.158 0.7794-0.4393 1.0607S28.8978 33 28.5 33H9.75c-0.9946 0-1.9484-0.3951-2.6516-1.0983C6.3951 31.1984 6 30.2446 6 29.25zM6 29.25c0-0.9946 0.3951-1.9484 1.0984-2.6517C7.8016 25.8951 8.7554 25.5 9.75 25.5H30" />
+    </symbol>
+    <symbol id="Court" viewBox="0 0 36 36" stroke-width="3" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path d="M18 4.5v27" />
+      <path d="M28.5 12 33 24c-1.2982 0.9737-2.8772 1.5-4.5 1.5S25.2982 24.9737 24 24zM28.5 12v-1.5" />
+      <path d="M4.5 10.5H6c4.1856 0 8.3068-1.0303 12-3 3.6932 1.9697 7.8144 3 12 3h1.5" />
+      <path d="M7.5 12 12 24c-1.2982 0.9737-2.8772 1.5-4.5 1.5S4.2982 24.9737 3 24zM7.5 12v-1.5" />
+      <path d="M10.5 31.5h15" />
+    </symbol>
+    <symbol id="Catalog" viewBox="0 0 28 28" stroke-width="2.33333" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path
+        d="M10.5 3.5H4.6667C4.0223 3.5 3.5 4.0223 3.5 4.6667V10.5c0 0.6443 0.5223 1.1667 1.1667 1.1667H10.5c0.6443 0 1.1667-0.5224 1.1667-1.1667V4.6667C11.6667 4.0223 11.1443 3.5 10.5 3.5z" />
+      <path
+        d="M23.3333 3.5h-5.8334c-0.6443 0-1.1666 0.5223-1.1666 1.1667V10.5c0 0.6443 0.5223 1.1667 1.1666 1.1667h5.8334c0.6443 0 1.1666-0.5224 1.1666-1.1667V4.6667c0-0.6444-0.5223-1.1667-1.1666-1.1667z" />
+      <path
+        d="M23.3333 16.3333h-5.8334c-0.6443 0-1.1666 0.5224-1.1666 1.1667v5.8333c0 0.6444 0.5223 1.1667 1.1666 1.1667h5.8334c0.6443 0 1.1666-0.5223 1.1666-1.1667V17.5c0-0.6443-0.5223-1.1667-1.1666-1.1667z" />
+      <path
+        d="M10.5 16.3333H4.6667C4.0223 16.3333 3.5 16.8557 3.5 17.5v5.8333C3.5 23.9777 4.0223 24.5 4.6667 24.5H10.5c0.6443 0 1.1667-0.5223 1.1667-1.1667V17.5c0-0.6443-0.5224-1.1667-1.1667-1.1667z" />
+    </symbol>
+    <symbol id="CabMin" viewBox="0 0 36 36" stroke-width="3" stroke="currentColor" stroke-linecap="round"
+      stroke-linejoin="round" fill="none">
+      <path d="M15 27V16.5" />
+      <path
+        d="M16.6785 3.3075C17.0898 3.1057 17.5419 3.0008 18 3.0008c0.4581 0 0.9102 0.1049 1.3215 0.3067l11.76 5.769c0.1523 0.0746 0.2748 0.1987 0.3475 0.3519 0.0728 0.1532 0.0914 0.3265 0.053 0.4917-0.0385 0.1652-0.1318 0.3125-0.2648 0.4178-0.1329 0.1053-0.2976 0.1624-0.4672 0.1621H5.25c-0.1695 0-0.3339-0.0574-0.4666-0.1628-0.1327-0.1055-0.2258-0.2527-0.264-0.4178C4.4811 9.7543 4.4999 9.5811 4.5726 9.428 4.6454 9.275 4.7678 9.1511 4.92 9.0765z" />
+      <path d="M21 27V16.5" />
+      <path d="M27 27V16.5" />
+      <path d="M4.5 33h27" />
+      <path d="M9 27V16.5" />
+    </symbol>
+    <symbol id="BottomMenu" viewBox="0 0 20 20" fill="none">
+      <path stroke-width="1.66667" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+        d="M5 7.5l5 5 5-5" />
+    </symbol>
+    <symbol id="Official-symbol" viewBox="0 0 38 63">
+      <path
+        d="M17.1104 60.6195C13.8074 58.1416 11.4268 54.4248 10.6233 50.118H0V4.74926C5.68363 7.58112 9.79013 13.7758 10.2365 20.2065L11.8434 32.9499L11.0697 32.8614C9.37353 32.8614 7.88567 34.4543 7.88567 36.0177C7.88567 37.4926 9.01644 38.7316 10.5043 39.0561L12.4385 39.4985C15.6226 33.5103 17.4377 27.6401 17.4377 21.8879C17.4377 16.6962 16.7533 11.5044 16.6343 6.19469C16.6343 3.83481 17.5568 1.68142 19.0149 0C20.5027 1.68142 21.3955 3.83481 21.3955 6.19469C21.3955 11.5044 20.592 16.6962 20.592 21.8879C20.592 27.6401 22.4072 33.5103 25.5912 39.4985L27.5254 39.0561C29.0133 38.7316 30.1441 37.4631 30.1441 36.0177C30.1441 34.4248 28.6562 32.8614 26.9601 32.8614L26.1566 32.9794L27.7635 20.236C28.567 13.8053 32.3164 7.58113 38 4.77877V50.1475H27.4064C26.603 54.4248 24.3414 58.2891 20.9193 60.649C20.1159 61.2095 19.4315 61.8879 18.9851 62.8024C18.5685 61.8879 17.8841 61.2095 17.1104 60.6195ZM5.02897 34.4543C5.47533 32.7729 6.72514 31.298 8.33203 30.3835L7.08222 19.882C6.63586 16.6077 5.26703 13.6873 3.21378 11.2979V34.4248H5.02897V34.4543ZM10.3853 46.9617C10.3853 45.3688 10.6233 43.9233 10.9507 42.4484L9.4628 42.0944C7.29052 41.416 5.59436 39.7345 5.02897 37.5811H3.21378V46.9617H10.3853ZM17.4377 46.9617C17.4377 45.0443 15.9499 43.3629 14.0157 43.1269C13.6883 44.3658 13.4503 45.6047 13.4503 46.9617H17.4377ZM17.4377 50.1475H13.8966C14.462 52.6254 15.7118 54.8968 17.4377 56.8142V50.1475ZM22.437 40.3245C21.0681 37.8466 19.8183 35.2508 19.0149 32.5369C18.2114 35.2508 16.9616 37.8466 15.5928 40.3245C16.9616 40.649 18.0924 41.5634 19.0149 42.5959C19.9374 41.5634 21.0681 40.649 22.437 40.3245ZM24.6092 46.9617C24.6092 45.6047 24.3712 44.3658 24.0439 43.1269C22.1096 43.3629 20.6218 45.0443 20.6218 46.9617H24.6092ZM24.1629 50.1475H20.6218V56.8142C22.3477 54.8673 23.5975 52.6254 24.1629 50.1475ZM34.8457 46.9617V37.5811H33.0305C32.4652 39.7345 30.7392 41.416 28.5967 42.0944L27.1088 42.4484C27.4362 43.9233 27.6742 45.3688 27.6742 46.9617H34.8457ZM34.8457 34.4543V11.2979C32.7925 13.6578 31.3046 16.6077 30.9773 19.882L29.7275 30.3835C31.3344 31.298 32.5842 32.7434 33.0305 34.4543H34.8457Z"
+        fill="currentColor" />
+    </symbol>
+    <symbol id="Phone" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M13.832 16.568C14.0385 16.6628 14.2712 16.6845 14.4917 16.6294C14.7122 16.5744 14.9073 16.4458 15.045 16.265L15.4 15.8C15.5863 15.5516 15.8279 15.35 16.1056 15.2111C16.3833 15.0723 16.6895 15 17 15H20C20.5304 15 21.0391 15.2107 21.4142 15.5858C21.7893 15.9609 22 16.4696 22 17V20C22 20.5304 21.7893 21.0391 21.4142 21.4142C21.0391 21.7893 20.5304 22 20 22C15.2261 22 10.6477 20.1036 7.27208 16.7279C3.89642 13.3523 2 8.7739 2 4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H7C7.53043 2 8.03914 2.21071 8.41421 2.58579C8.78929 2.96086 9 3.46957 9 4V7C9 7.31049 8.92771 7.61672 8.78885 7.89443C8.65 8.17214 8.44839 8.41371 8.2 8.6L7.732 8.951C7.54842 9.09118 7.41902 9.29059 7.36579 9.51535C7.31256 9.74012 7.33878 9.97638 7.44 10.184C8.80668 12.9599 11.0544 15.2048 13.832 16.568Z"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+
+    <symbol id="Email" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M22 7L13.009 12.727C12.7039 12.9042 12.3573 12.9976 12.0045 12.9976C11.6517 12.9976 11.3051 12.9042 11 12.727L2 7"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path
+        d="M20 4H4C2.89543 4 2 4.89543 2 6V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V6C22 4.89543 21.1046 4 20 4Z"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+
+    <symbol id="Date" viewBox="0 0 24 24" fill="none">
+      <path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path
+        d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="News" viewBox="0 0 36 36" fill="none">
+      <path d="M22.5 27H15" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M27 21H15" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      <path
+        d="M6 33H30C30.7956 33 31.5587 32.6839 32.1213 32.1213C32.6839 31.5587 33 30.7956 33 30V6C33 5.20435 32.6839 4.44129 32.1213 3.87868C31.5587 3.31607 30.7956 3 30 3H12C11.2044 3 10.4413 3.31607 9.87868 3.87868C9.31607 4.44129 9 5.20435 9 6V30C9 30.7956 8.68393 31.5587 8.12132 32.1213C7.55871 32.6839 6.79565 33 6 33ZM6 33C5.20435 33 4.44129 32.6839 3.87868 32.1213C3.31607 31.5587 3 30.7956 3 30V16.5C3 15.7044 3.31607 14.9413 3.87868 14.3787C4.44129 13.8161 5.20435 13.5 6 13.5H9"
+        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      <path
+        d="M25.5 9H16.5C15.6716 9 15 9.67157 15 10.5V13.5C15 14.3284 15.6716 15 16.5 15H25.5C26.3284 15 27 14.3284 27 13.5V10.5C27 9.67157 26.3284 9 25.5 9Z"
+        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="Description" viewBox="0 0 36 36" fill="none">
+      <path
+        d="M18 33C26.2843 33 33 26.2843 33 18C33 9.71573 26.2843 3 18 3C9.71573 3 3 9.71573 3 18C3 26.2843 9.71573 33 18 33Z"
+        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M18 24V18" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M18 12H18.015" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="Modify" viewBox="0 0 20 20" fill="none">
+      <path
+        d="M10 2.5H4.16667C3.72464 2.5 3.30072 2.67559 2.98816 2.98816C2.67559 3.30072 2.5 3.72464 2.5 4.16667V15.8333C2.5 16.2754 2.67559 16.6993 2.98816 17.0118C3.30072 17.3244 3.72464 17.5 4.16667 17.5H15.8333C16.2754 17.5 16.6993 17.3244 17.0118 17.0118C17.3244 16.6993 17.5 16.2754 17.5 15.8333V10"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+      <path
+        d="M15.3127 2.18769C15.6443 1.85617 16.0939 1.66992 16.5627 1.66992C17.0316 1.66992 17.4812 1.85617 17.8127 2.18769C18.1443 2.51921 18.3305 2.96885 18.3305 3.43769C18.3305 3.90653 18.1443 4.35617 17.8127 4.68769L10.3019 12.1994C10.104 12.3971 9.85958 12.5418 9.59107 12.6202L7.19691 13.3202C7.1252 13.3411 7.04919 13.3424 6.97683 13.3238C6.90447 13.3053 6.83843 13.2676 6.78561 13.2148C6.7328 13.162 6.69515 13.096 6.67661 13.0236C6.65807 12.9512 6.65933 12.8752 6.68024 12.8035L7.38024 10.4094C7.45901 10.1411 7.60402 9.8969 7.80191 9.69936L15.3127 2.18769Z"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+
+    <symbol id="Look" viewBox="0 0 20 20" fill="none">
+      <path
+        d="M1.7181 10.2898C1.64865 10.1027 1.64865 9.89691 1.7181 9.70981C2.39452 8.06969 3.5427 6.66735 5.01708 5.68056C6.49146 4.69378 8.22564 4.16699 9.99977 4.16699C11.7739 4.16699 13.5081 4.69378 14.9825 5.68056C16.4568 6.66735 17.605 8.06969 18.2814 9.70981C18.3509 9.89691 18.3509 10.1027 18.2814 10.2898C17.605 11.9299 16.4568 13.3323 14.9825 14.3191C13.5081 15.3058 11.7739 15.8326 9.99977 15.8326C8.22564 15.8326 6.49146 15.3058 5.01708 14.3191C3.5427 13.3323 2.39452 11.9299 1.7181 10.2898Z"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+      <path
+        d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+
+    <symbol id="Delete" viewBox="0 0 20 20" fill="none">
+      <path d="M8.3335 9.1665V14.1665" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round"
+        stroke-linejoin="round" />
+      <path d="M11.6665 9.1665V14.1665" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round"
+        stroke-linejoin="round" />
+      <path
+        d="M15.8332 5V16.6667C15.8332 17.1087 15.6576 17.5326 15.345 17.8452C15.0325 18.1577 14.6085 18.3333 14.1665 18.3333H5.83317C5.39114 18.3333 4.96722 18.1577 4.65466 17.8452C4.3421 17.5326 4.1665 17.1087 4.1665 16.6667V5"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M2.5 5H17.5" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round"
+        stroke-linejoin="round" />
+      <path
+        d="M6.6665 4.99984V3.33317C6.6665 2.89114 6.8421 2.46722 7.15466 2.15466C7.46722 1.8421 7.89114 1.6665 8.33317 1.6665H11.6665C12.1085 1.6665 12.5325 1.8421 12.845 2.15466C13.1576 2.46722 13.3332 2.89114 13.3332 3.33317V4.99984"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+  </defs>
+</svg>
+  <header>
+    <h1>SVG Sprite Preview</h1>
+    <p class="subtitle">Showing 31 symbols from the uploaded sprite. All icons are previewed through SVG <code style="display:inline;padding:2px 6px;">&lt;use&gt;</code> and inherit color through <code style="display:inline;padding:2px 6px;">currentColor</code>.</p>
+  </header>
+  <section class="controls" aria-label="Preview controls">
+    <button type="button" onclick="setTheme('accent')">Accent</button>
+    <button type="button" onclick="setTheme('primary')">Primary</button>
+    <button type="button" onclick="setTheme('danger')">Danger</button>
+    <button type="button" onclick="setTheme('white-preview')">White</button>
+    <label>Icon size <input id="sizeInput" type="number" min="16" max="120" value="48" /></label>
+  </section>
+  <main class="grid">
+    
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Address"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Address</h2>
+          <p>viewBox: 0 0 24 24</p>
+          <code>&lt;Icon name="Address" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Workers"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Workers</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Workers" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Worker"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Worker</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="Worker" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Website"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Website</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="Website" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#StateEnterpr"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>StateEnterpr</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="StateEnterpr" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Search"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Search</h2>
+          <p>viewBox: 0 0 32 32</p>
+          <code>&lt;Icon name="Search" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#RightMenu"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>RightMenu</h2>
+          <p>viewBox: 0 0 11 19</p>
+          <code>&lt;Icon name="RightMenu" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Regions"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Regions</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Regions" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#RegAdmin"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>RegAdmin</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="RegAdmin" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#LeftArrow"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>LeftArrow</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="LeftArrow" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#ArrowRight"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>ArrowRight</h2>
+          <p>viewBox: 0 0 24 24</p>
+          <code>&lt;Icon name="ArrowRight" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#LeftMenu"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>LeftMenu</h2>
+          <p>viewBox: 0 0 11 19</p>
+          <code>&lt;Icon name="LeftMenu" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#LawEnfAgencies"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>LawEnfAgencies</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="LawEnfAgencies" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Institutions"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Institutions</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Institutions" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Home"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Home</h2>
+          <p>viewBox: 0 0 28 28</p>
+          <code>&lt;Icon name="Home" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Frame"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Frame</h2>
+          <p>viewBox: 0 0 72 72</p>
+          <code>&lt;Icon name="Frame" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Filter"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Filter</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Filter" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Education"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Education</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Education" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Court"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Court</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Court" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Catalog"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Catalog</h2>
+          <p>viewBox: 0 0 28 28</p>
+          <code>&lt;Icon name="Catalog" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#CabMin"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>CabMin</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="CabMin" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#BottomMenu"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>BottomMenu</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="BottomMenu" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Official-symbol"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Official-symbol</h2>
+          <p>viewBox: 0 0 38 63</p>
+          <code>&lt;Icon name="Official-symbol" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Phone"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Phone</h2>
+          <p>viewBox: 0 0 24 24</p>
+          <code>&lt;Icon name="Phone" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Email"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Email</h2>
+          <p>viewBox: 0 0 24 24</p>
+          <code>&lt;Icon name="Email" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Date"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Date</h2>
+          <p>viewBox: 0 0 24 24</p>
+          <code>&lt;Icon name="Date" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#News"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>News</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="News" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Description"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Description</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Description" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Modify"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Modify</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="Modify" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Look"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Look</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="Look" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Delete"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Delete</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="Delete" size={24} /&gt;</code>
+        </div>
+      </article>
+  </main>
+  <script>
+    function setTheme(theme) { document.body.className = theme; }
+    const sizeInput = document.getElementById('sizeInput');
+    sizeInput.addEventListener('input', () => {
+      const value = Number(sizeInput.value || 48);
+      document.documentElement.style.setProperty('--icon-size', value + 'px');
+    });
+  </script>
+</body>
+</html>

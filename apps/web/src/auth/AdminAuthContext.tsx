@@ -1,41 +1,49 @@
 import { useMemo, useState, type ReactNode } from "react";
+import { loginAdmin, logoutAdmin } from "../api/auth";
 import { AdminAuthContext } from "./adminAuthStore";
 
-const ADMIN_TOKEN_KEY = "admin_token";
+const ADMIN_AUTH_KEY = "admin_authenticated";
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(() =>
-    localStorage.getItem(ADMIN_TOKEN_KEY),
+  const [isAdmin, setIsAdmin] = useState<boolean>(
+    () => localStorage.getItem(ADMIN_AUTH_KEY) === "true",
   );
 
   const login = async (email: string, password: string) => {
-    const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || "admin@gmail.com";
-    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || "admin123";
+    try {
+      await loginAdmin({ email, password });
 
-    if (email === adminEmail && password === adminPassword) {
-      const fakeToken = "admin-local-token";
-
-      localStorage.setItem(ADMIN_TOKEN_KEY, fakeToken);
-      setToken(fakeToken);
+      localStorage.setItem(ADMIN_AUTH_KEY, "true");
+      setIsAdmin(true);
 
       return true;
-    }
+    } catch (error) {
+      localStorage.removeItem(ADMIN_AUTH_KEY);
+      setIsAdmin(false);
 
-    return false;
+      console.warn("Admin login failed:", error);
+      return false;
+    }
   };
 
-  const logout = () => {
-    localStorage.removeItem(ADMIN_TOKEN_KEY);
-    setToken(null);
+  const logout = async () => {
+    try {
+      await logoutAdmin();
+    } catch (error) {
+      console.warn("Admin logout failed:", error);
+    } finally {
+      localStorage.removeItem(ADMIN_AUTH_KEY);
+      setIsAdmin(false);
+    }
   };
 
   const value = useMemo(
     () => ({
-      isAdmin: Boolean(token),
+      isAdmin,
       login,
       logout,
     }),
-    [token],
+    [isAdmin],
   );
 
   return (
