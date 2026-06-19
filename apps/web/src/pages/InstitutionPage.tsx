@@ -5,12 +5,8 @@ import { LoadingState } from "../components/ui/LoadingState";
 import { ErrorState } from "../components/ui/ErrorState";
 import { EmptyState } from "../components/ui/EmptyState";
 import { Icon } from "../components/ui/Icon";
-import {
-  getAgencyById,
-  getAgencyNews,
-  type AgencyNewsItem,
-} from "../api/agencies";
-import type { Agency } from "../types/agency";
+import { getAgencyById, getAgencyNews } from "../api/agencies";
+import type { Agency, AgencyNewsItem } from "../types/agency";
 import css from "../styles/InstitutionPage.module.css";
 
 type InfoItemProps = {

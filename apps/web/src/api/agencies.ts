@@ -1,12 +1,13 @@
 import { apiClient } from "./client";
-import type { Agency } from "../types/agency";
+import type {
+  Agency,
+  AgencyNewsItem,
+  AgencyNewsResponse,
+  AgencyPayload,
+  GetAgenciesParams,
+  HomeStats,
+} from "../types/agency";
 import type { ApiListResponse } from "../types/api";
-
-export interface HomeStats {
-  agenciesCount: string;
-  employeesCount: string;
-  regionsCount: string;
-}
 
 const mockStats: HomeStats = {
   agenciesCount: "16 423",
@@ -60,6 +61,7 @@ export const getHomeStats = async (): Promise<HomeStats> => {
   try {
     const response =
       await apiClient.get<ApiListResponse<Agency>>("/agencies?limit=1");
+
     if (response.data?.success && response.data.total > 0) {
       return {
         agenciesCount: response.data.total.toLocaleString("uk-UA"),
@@ -67,38 +69,41 @@ export const getHomeStats = async (): Promise<HomeStats> => {
         regionsCount: "25",
       };
     }
+
     return mockStats;
   } catch (error) {
     console.warn(
       "Backend /agencies unavailable for stats, using fallback mock stats.",
       error,
     );
+
     return mockStats;
   }
 };
 
-export const getAgencies = async (params?: {
-  page?: number;
-  limit?: number;
-  type?: string;
-  search?: string;
-}): Promise<ApiListResponse<Agency>> => {
+export const getAgencies = async (
+  params?: GetAgenciesParams,
+): Promise<ApiListResponse<Agency>> => {
   try {
     const response = await apiClient.get<ApiListResponse<Agency>>("/agencies", {
       params,
     });
+
     if (response.data?.success && Array.isArray(response.data.data)) {
       if (response.data.data.length === 0 && !params?.type && !params?.search) {
         return createMockResponse(mockAgenciesFallback);
       }
+
       return response.data;
     }
+
     return createMockResponse(mockAgenciesFallback);
   } catch (error) {
     console.warn(
       "Backend /agencies unavailable, using fallback mock data.",
       error,
     );
+
     return createMockResponse(mockAgenciesFallback);
   }
 };
@@ -108,37 +113,20 @@ export const getAgencyById = async (id: number): Promise<Agency | null> => {
     const response = await apiClient.get<{ success: boolean; data: Agency }>(
       `/agencies/${id}`,
     );
+
     if (response.data?.success && response.data.data) {
       return response.data.data;
     }
+
     return null;
   } catch (error) {
     console.warn(
       `Backend /agencies/${id} unavailable, using fallback search.`,
       error,
     );
+
     return mockAgenciesFallback.find((item) => item.id === id) || null;
   }
-};
-
-export type AgencyNewsItem = {
-  id: number;
-  title: string;
-  description?: string | null;
-  content?: string | null;
-  url: string;
-  publishedAt?: string;
-  createdAt?: string;
-  agencyId?: number;
-};
-
-type AgencyNewsResponse = {
-  success: boolean;
-  count?: number;
-  total?: number;
-  totalPages?: number;
-  currentPage?: number;
-  data: AgencyNewsItem[];
 };
 
 export async function getAgencyNews(
@@ -173,6 +161,32 @@ export async function getAgencyNews(
     }
 
     console.warn(`News endpoint unavailable for agency ${agencyId}.`, error);
+
     return [];
   }
+}
+
+export async function createAgency(payload: AgencyPayload): Promise<Agency> {
+  const response = await apiClient.post<{ success: boolean; data: Agency }>(
+    "/agencies",
+    payload,
+  );
+
+  return response.data.data;
+}
+
+export async function updateAgency(
+  id: number,
+  payload: AgencyPayload,
+): Promise<Agency> {
+  const response = await apiClient.put<{ success: boolean; data: Agency }>(
+    `/agencies/${id}`,
+    payload,
+  );
+
+  return response.data.data;
+}
+
+export async function deleteAgency(id: number): Promise<void> {
+  await apiClient.delete(`/agencies/${id}`);
 }
