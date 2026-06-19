@@ -1,12 +1,12 @@
 .section {
   padding-bottom: 20px;
-  background: #ffffff;
+  background: var(--kdou-background);
 }
 
 .card {
   padding: 20px;
-  background: #ffffff;
-  border: 2px solid #031126;
+  background: var(--kdou-background);
+  border: 2px solid var(--kdou-primary);
   border-radius: 10px;
 }
 
@@ -17,7 +17,7 @@
   font-weight: 700;
   line-height: 1;
 
-  color: #031126;
+  color: var(--kdou-primary);
 }
 
 .description {
@@ -27,7 +27,7 @@
   font-weight: 600;
   line-height: 1.2;
 
-  color: #031126;
+  color: var(--kdou-primary);
 }
 
 .subtitle {
@@ -37,7 +37,7 @@
   font-weight: 600;
   line-height: 1.2;
 
-  color: #031126;
+  color: var(--kdou-primary);
 }
 
 .list {
@@ -48,7 +48,7 @@
   font-weight: 600;
   line-height: 1.2;
 
-  color: #031126;
+  color: var(--kdou-primary);
 }
 
 .list li + li {

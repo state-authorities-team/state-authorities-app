@@ -1,0 +1,441 @@
+.page {
+    background: var(--kdou-background, #ffffff);
+    color: var(--kdou-primary, #031126);
+}
+
+.hero {
+    background: var(--kdou-primary, #031126);
+    color: var(--fon-1);
+    padding: 24px 0;
+    border-top: 2px solid var(--fon-1);
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    margin-bottom: 16px;
+
+    color: var(--fon-1);
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.backLink:hover,
+.backLink:focus-visible {
+    color: var(--kdou-accent, #289999);
+}
+
+.tagRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.tag,
+.tagMuted {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+
+    padding: 3px 8px;
+    border: 2px solid var(--kdou-accent, #289999);
+    border-radius: 4px;
+
+    color: var(--kdou-accent, #289999);
+    background: #eefeff;
+
+    font-size: 16px;
+    line-height: 1.1;
+    font-weight: 700;
+}
+
+.tagMuted {
+    border-color: #9bdada;
+    color: #289999;
+}
+
+.title {
+    max-width: 980px;
+    margin-bottom: 16px;
+
+    color: var(--fon-1);
+    font-size: 40px;
+    line-height: 1.12;
+    font-weight: 700;
+}
+
+.subtitle {
+    max-width: 980px;
+    margin: 0;
+
+    color: var(--fon-1);
+    font-size: 24px;
+    line-height: 1.35;
+    font-weight: 700;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-block: 20px;
+}
+
+.topGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(260px, 0.7fr);
+    gap: 20px;
+}
+
+.infoPanel,
+.leadershipCard,
+.sectionCard,
+.descriptionCard {
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.infoPanel,
+.leadershipCard {
+    background: #eefeff;
+}
+
+.infoPanel {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 32px;
+    padding: 24px;
+}
+
+.infoItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+}
+
+.infoIcon {
+    width: 24px;
+    height: 24px;
+    color: var(--kdou-accent, #289999);
+    flex-shrink: 0;
+}
+
+.infoItem h3 {
+    margin: 0 0 8px;
+    color: var(--kdou-accent, #289999);
+    font-size: 24px;
+    line-height: 1.15;
+    font-weight: 700;
+}
+
+.infoItem p {
+    margin: 0;
+    color: var(--kdou-primary, #031126);
+    font-size: 16px;
+    line-height: 1.35;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.infoItem a {
+    color: var(--kdou-primary, #031126);
+    text-decoration: none;
+}
+
+.infoItem a:hover,
+.infoItem a:focus-visible {
+    color: var(--kdou-accent, #289999);
+    text-decoration: underline;
+}
+
+.leadershipCard {
+    padding: 24px;
+}
+
+.leadershipTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 37px;
+
+    color: var(--kdou-primary, #031126);
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+.leadershipTitle svg {
+    color: var(--kdou-accent, #289999);
+    height: 24px;
+    width: 24px;
+}
+
+.leadershipCard h2 {
+    margin: 0 0 8px;
+    color: var(--kdou-accent, #289999);
+    font-size: 32px;
+    line-height: 1.15;
+    font-weight: 700;
+}
+
+.leadershipCard p {
+    margin: 0 0 22px;
+    color: var(--kdou-primary, #031126);
+    font-size: 20px;
+    line-height: 1.25;
+    font-weight: 600;
+}
+
+.appointmentDate {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.appointmentDate svg {
+    color: var(--kdou-accent, #289999);
+    flex-shrink: 0;
+    height: 24px;
+    width: 24px;
+}
+
+.appointmentDate strong {
+    display: block;
+    font-size: 24px;
+    line-height: 1.25;
+    font-weight: 700;
+}
+
+.appointmentDate strong {
+    color: var(--kdou-accent, #289999);
+    margin-bottom: 8px;
+}
+
+.appointmentDate span {
+    color: var(--kdou-primary, #031126);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.sectionCard {
+    padding: 20px;
+    border: 2px solid var(--kdou-primary, #031126);
+    background: var(--kdou-background, #ffffff);
+}
+
+.descriptionCard {
+    padding: 20px;
+    background: #eefeff;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.sectionTitle {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sectionTitle svg {
+    color: var(--kdou-accent, #289999);
+    flex-shrink: 0;
+    height: 36px;
+    width: 36px;
+}
+
+.sectionTitle h2 {
+    margin: 0;
+    color: var(--kdou-primary, #031126);
+    font-size: 32px;
+    line-height: 1.15;
+    font-weight: 700;
+}
+
+.newsMessage {
+    font-size: 20px;
+    margin: 0;
+}
+
+.allNewsButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    border: 0;
+    background: transparent;
+    color: #999999;
+
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.allNewsButton:hover,
+.allNewsButton:focus-visible {
+    color: var(--kdou-accent, #289999);
+}
+
+.newsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.newsCard {
+    min-height: 84px;
+    padding: 10px;
+    border: 2px solid var(--kdou-inactive);
+    border-radius: 5px;
+    background: var(--kdou-background, #ffffff);
+    color: var(--kdou-primary, #031126);
+    text-decoration: none;
+    cursor: pointer;
+
+    transition:
+        border-color 200ms ease,
+        background-color 200ms ease,
+        color 200ms ease;
+}
+
+.newsDate {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.newsMeta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.newsMeta span {
+    margin-bottom: 0;
+    color: var(--kdou-inactive);
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+.newsArrow {
+    width: 24px;
+    height: 24px;
+    color: var(--kdou-inactive);
+    flex-shrink: 0;
+
+    transition: color 200ms ease;
+}
+
+.newsCard p {
+    margin: 0;
+    color: var(--kdou-primary, #031126);
+    font-size: 20px;
+    line-height: 1.25;
+    font-weight: 600;
+}
+
+/* Default: first card is green */
+.newsCardActive {
+    border-color: var(--kdou-accent, #289999);
+    background: #eefeff;
+}
+
+.newsCardActive .newsMeta span,
+.newsCardActive .newsArrow {
+    color: var(--kdou-accent, #289999);
+}
+
+/* Hover/focus: selected card becomes green */
+.newsCard:hover,
+.newsCard:focus-visible {
+    border-color: var(--kdou-accent, #289999);
+    background: #eefeff;
+    outline: none;
+}
+
+.newsCard:hover .newsMeta span,
+.newsCard:focus-visible .newsMeta span,
+.newsCard:hover .newsArrow,
+.newsCard:focus-visible .newsArrow {
+    color: var(--kdou-accent, #289999);
+}
+
+/* When another card is hovered/focused, first active card becomes regular */
+.newsGrid:has(.newsCard:hover) .newsCardActive:not(:hover),
+.newsGrid:has(.newsCard:focus-visible) .newsCardActive:not(:focus-visible) {
+    border-color: var(--kdou-inactive);
+    background: var(--kdou-background);
+}
+
+.newsGrid:has(.newsCard:hover) .newsCardActive:not(:hover) .newsMeta span,
+.newsGrid:has(.newsCard:focus-visible) .newsCardActive:not(:focus-visible) .newsMeta span,
+.newsGrid:has(.newsCard:hover) .newsCardActive:not(:hover) .newsArrow,
+.newsGrid:has(.newsCard:focus-visible) .newsCardActive:not(:focus-visible) .newsArrow {
+    color: var(--kdou-inactive);
+}
+
+.descriptionCard p {
+    margin: 20px 0 0;
+    color: var(--kdou-primary, #031126);
+    font-size: 20px;
+    line-height: 1.45;
+    font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+    .topGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .newsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 16px 0 22px;
+    }
+
+    .title {
+        font-size: 28px;
+    }
+
+    .subtitle {
+        font-size: 15px;
+    }
+
+    .infoPanel {
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    .leadershipCard,
+    .sectionCard,
+    .descriptionCard {
+        padding: 16px;
+    }
+
+    .sectionTitle h2 {
+        font-size: 22px;
+    }
+}

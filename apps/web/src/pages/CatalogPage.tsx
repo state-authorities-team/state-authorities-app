@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { PageContainer } from "../components/layout/PageContainer";
 import { CatalogFilters } from "../components/catalog/CatalogFilters";
 import { InstitutionList } from "../components/catalog/InstitutionList";
@@ -15,16 +16,17 @@ import { EmptyState } from "../components/ui/EmptyState";
 
 import { getAgencies } from "../api/agencies";
 import type { Agency } from "../types/agency";
-
 import type { Institution } from "../types/institution";
 
 export function CatalogPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedType = searchParams.get("type") || "";
+
   const [institutions, setInstitutions] = useState<Agency[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<string>("name");
 
-  // Пагінаційні стейти
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const ITEMS_PER_PAGE = 6;
@@ -32,7 +34,6 @@ export function CatalogPage() {
   const [agencyTypes, setAgencyTypes] = useState<AgencyType[]>([]);
   const [isLoadingTypes, setIsLoadingTypes] = useState<boolean>(true);
   const [typesError, setTypesError] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [totalInstitutions, setTotalInstitutions] = useState<number>(0);
 
@@ -43,15 +44,17 @@ export function CatalogPage() {
       const [field, order] = sortStr.split("_");
       return { sortBy: field, sortOrder: order };
     }
+
     return { sortBy: sortStr, sortOrder: "asc" };
   };
 
-  // 1. Завантаження типів агенцій
   useEffect(() => {
     async function fetchTypes() {
       try {
         setIsLoadingTypes(true);
+
         const data = await getAgencyTypes();
+
         setAgencyTypes(data);
       } catch (err) {
         console.error("Помилка завантаження типів агенцій:", err);
@@ -60,6 +63,7 @@ export function CatalogPage() {
         setIsLoadingTypes(false);
       }
     }
+
     fetchTypes();
   }, []);
 
@@ -72,8 +76,10 @@ export function CatalogPage() {
     ) => {
       setIsLoading(true);
       setError(null);
+
       try {
         const sortParams = getSortParams(currentSort);
+
         const response = await getAgencies({
           page,
           limit: ITEMS_PER_PAGE,
@@ -97,15 +103,16 @@ export function CatalogPage() {
     [],
   );
 
-  // 3. Основний ефект стеження за фільтрами
   useEffect(() => {
     let isMounted = true;
 
     async function fetchData() {
       setIsLoading(true);
       setError(null);
+
       try {
         const sortParams = getSortParams(sortBy);
+
         const response = await getAgencies({
           page: currentPage,
           limit: ITEMS_PER_PAGE,
@@ -114,15 +121,14 @@ export function CatalogPage() {
           ...sortParams,
         });
 
-        if (isMounted) {
-          if (response && response.success) {
-            setInstitutions(response.data);
-            setTotalPages(response.totalPages || 1);
-            setTotalInstitutions(response.total || 0);
-          }
+        if (isMounted && response && response.success) {
+          setInstitutions(response.data);
+          setTotalPages(response.totalPages || 1);
+          setTotalInstitutions(response.total || 0);
         }
       } catch (err) {
         console.error("Помилка під час завантаження установ в ефекті:", err);
+
         if (isMounted) {
           setError("Не вдалося завантажити дані з сервера");
         }
@@ -141,25 +147,39 @@ export function CatalogPage() {
   }, [currentPage, selectedType, debouncedSearch, sortBy]);
 
   const handleTypeChange = (type: string) => {
-    setSelectedType(type);
     setCurrentPage(1);
+
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (type) {
+      nextParams.set("type", type);
+    } else {
+      nextParams.delete("type");
+    }
+
+    setSearchParams(nextParams);
   };
 
-  const handleResetFilters = () => {
-    setSelectedType("");
+  const handleResetFilters = useCallback(() => {
     setCurrentPage(1);
     setSearchQuery("");
     setSortBy("name");
-  };
+    setSearchParams({});
+  }, [setSearchParams]);
+
+  const handleClearFilters = useCallback(() => {
+    handleResetFilters();
+  }, [handleResetFilters]);
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
   };
 
-  const handleClearFilters = useCallback(() => {
-    handleResetFilters();
-  }, []);
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    setCurrentPage(1);
+  };
 
   const mappedInstitutions: Institution[] = institutions.map(
     (agency: Agency): Institution => {
@@ -168,7 +188,7 @@ export function CatalogPage() {
         name: agency.name,
         shortName: agency.shortName || "",
         description: agency.description || "",
-        region: "",
+        region: agency.region || "Не вказано",
         type:
           agency.agencyType && typeof agency.agencyType === "object"
             ? agency.agencyType.name
@@ -188,6 +208,7 @@ export function CatalogPage() {
       <PageContainer>
         <div className={css.headerBlock}>
           <h1 className={css.title}>Каталог державних установ</h1>
+
           <CatalogToolbar count={totalInstitutions} />
         </div>
 
@@ -203,7 +224,7 @@ export function CatalogPage() {
               searchQuery={searchQuery}
               onSearchChange={handleSearchChange}
               sortBy={sortBy}
-              onSortChange={setSortBy}
+              onSortChange={handleSortChange}
             />
           </aside>
 
@@ -211,26 +232,32 @@ export function CatalogPage() {
             {isLoading && institutions.length === 0 ? (
               <LoadingState message="Завантажуємо каталог установ..." />
             ) : error ? (
-              <ErrorState
-                message={error}
-                onRetry={() =>
-                  loadInstitutions(
-                    currentPage,
-                    selectedType,
-                    searchQuery,
-                    sortBy,
-                  )
-                }
-              />
+              <div className={css.centerMessage}>
+                <ErrorState
+                  message={error}
+                  onRetry={() =>
+                    loadInstitutions(
+                      currentPage,
+                      selectedType,
+                      searchQuery,
+                      sortBy,
+                    )
+                  }
+                />
+              </div>
+              
             ) : institutions.length === 0 ? (
-              <EmptyState
-                title="Каталог порожній"
-                message="Наразі немає зареєстрованих державних установ за обраними критеріями."
-                onClearFilters={handleClearFilters}
-              />
+              <div className={css.centerMessage}>
+                <EmptyState
+                  title="Каталог порожній"
+                  message="Наразі немає зареєстрованих державних установ за обраними критеріями."
+                  onClearFilters={handleClearFilters}
+                />
+              </div>
             ) : (
               <div className={isLoading ? css.loadingOverlay : ""}>
                 <InstitutionList institutions={mappedInstitutions} />
+
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}

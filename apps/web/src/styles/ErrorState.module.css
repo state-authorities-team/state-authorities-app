@@ -22,7 +22,7 @@
 
 .retryButton {
   background-color: var(--kdou-primary, #2563eb);
-  color: #ffffff;
+  color: var(--fon-1);
   border: none;
   border-radius: 5px;
   cursor: pointer;

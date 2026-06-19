@@ -27,7 +27,7 @@ export default defineConfig({
       //
       "/api": {
         //
-        target: "http://localhost:3000", //
+        target: "https://state-authorities-app.onrender.com", //
         changeOrigin: true, //
       }, //
     }, //
