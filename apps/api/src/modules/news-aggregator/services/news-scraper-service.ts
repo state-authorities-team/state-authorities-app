@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import { parseDate } from "../../../utils/time.js";
 import type { ScrapeSelectors } from "../schemas/scrape-selectors-schema.js";
 import type { NewsDataInput } from "../types/news-types.js";
 
@@ -29,8 +30,7 @@ export class NewsScraperService {
 
       const finalUrl = rawUrl.startsWith("/") ? `${sanitizedBaseUrl}${rawUrl}` : rawUrl;
 
-      const parsedDate = rawDate ? new Date(rawDate) : new Date();
-      const finalDate = Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+      const finalDate = parseDate(rawDate);
       parsedNews.push({ title: titleText, url: finalUrl, publishedAt: finalDate });
     });
     return parsedNews;
