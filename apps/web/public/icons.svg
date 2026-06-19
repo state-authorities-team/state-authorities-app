@@ -79,6 +79,11 @@
       <path d="M10.0001 15.8333 4.1668 10l5.8333-5.8333" />
       <path d="M15.8334 10H4.1668" />
     </symbol>
+    <symbol id="ArrowRight" viewBox="0 0 24 24" fill="none">
+      <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" />
+    </symbol>
     <symbol id="LeftMenu" viewBox="0 0 11 19" fill="none">
       <path d="M9.33337 17.3333L1.33337 9.33325L9.33337 1.33325" stroke="currentColor" stroke-width="2.66667"
         stroke-linecap="round" stroke-linejoin="round" />
@@ -196,6 +201,38 @@
         stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
       <path d="M18 24V18" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
       <path d="M18 12H18.015" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="Modify" viewBox="0 0 20 20" fill="none">
+      <path
+        d="M10 2.5H4.16667C3.72464 2.5 3.30072 2.67559 2.98816 2.98816C2.67559 3.30072 2.5 3.72464 2.5 4.16667V15.8333C2.5 16.2754 2.67559 16.6993 2.98816 17.0118C3.30072 17.3244 3.72464 17.5 4.16667 17.5H15.8333C16.2754 17.5 16.6993 17.3244 17.0118 17.0118C17.3244 16.6993 17.5 16.2754 17.5 15.8333V10"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+      <path
+        d="M15.3127 2.18769C15.6443 1.85617 16.0939 1.66992 16.5627 1.66992C17.0316 1.66992 17.4812 1.85617 17.8127 2.18769C18.1443 2.51921 18.3305 2.96885 18.3305 3.43769C18.3305 3.90653 18.1443 4.35617 17.8127 4.68769L10.3019 12.1994C10.104 12.3971 9.85958 12.5418 9.59107 12.6202L7.19691 13.3202C7.1252 13.3411 7.04919 13.3424 6.97683 13.3238C6.90447 13.3053 6.83843 13.2676 6.78561 13.2148C6.7328 13.162 6.69515 13.096 6.67661 13.0236C6.65807 12.9512 6.65933 12.8752 6.68024 12.8035L7.38024 10.4094C7.45901 10.1411 7.60402 9.8969 7.80191 9.69936L15.3127 2.18769Z"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+
+    <symbol id="Look" viewBox="0 0 20 20" fill="none">
+      <path
+        d="M1.7181 10.2898C1.64865 10.1027 1.64865 9.89691 1.7181 9.70981C2.39452 8.06969 3.5427 6.66735 5.01708 5.68056C6.49146 4.69378 8.22564 4.16699 9.99977 4.16699C11.7739 4.16699 13.5081 4.69378 14.9825 5.68056C16.4568 6.66735 17.605 8.06969 18.2814 9.70981C18.3509 9.89691 18.3509 10.1027 18.2814 10.2898C17.605 11.9299 16.4568 13.3323 14.9825 14.3191C13.5081 15.3058 11.7739 15.8326 9.99977 15.8326C8.22564 15.8326 6.49146 15.3058 5.01708 14.3191C3.5427 13.3323 2.39452 11.9299 1.7181 10.2898Z"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+      <path
+        d="M10 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61929 11.3807 7.5 10 7.5C8.61929 7.5 7.5 8.61929 7.5 10C7.5 11.3807 8.61929 12.5 10 12.5Z"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+
+    <symbol id="Delete" viewBox="0 0 20 20" fill="none">
+      <path d="M8.3335 9.1665V14.1665" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round"
+        stroke-linejoin="round" />
+      <path d="M11.6665 9.1665V14.1665" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round"
+        stroke-linejoin="round" />
+      <path
+        d="M15.8332 5V16.6667C15.8332 17.1087 15.6576 17.5326 15.345 17.8452C15.0325 18.1577 14.6085 18.3333 14.1665 18.3333H5.83317C5.39114 18.3333 4.96722 18.1577 4.65466 17.8452C4.3421 17.5326 4.1665 17.1087 4.1665 16.6667V5"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M2.5 5H17.5" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round"
+        stroke-linejoin="round" />
+      <path
+        d="M6.6665 4.99984V3.33317C6.6665 2.89114 6.8421 2.46722 7.15466 2.15466C7.46722 1.8421 7.89114 1.6665 8.33317 1.6665H11.6665C12.1085 1.6665 12.5325 1.8421 12.845 2.15466C13.1576 2.46722 13.3332 2.89114 13.3332 3.33317V4.99984"
+        stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
     </symbol>
   </defs>
 </svg>

@@ -72,10 +72,17 @@
   border-radius: 8px;
   background: var(--fon-1);
   box-sizing: border-box;
+
+  cursor: pointer;
 }
 
 .catalogContent :global(.institution-card):hover {
   border-color: var(--kdou-primary);
+}
+
+.catalogContent :global(.institution-card):focus-visible {
+  outline: 3px solid var(--kdou-accent);
+  outline-offset: 4px;
 }
 
 /* Left card content */

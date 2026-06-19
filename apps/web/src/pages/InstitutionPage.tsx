@@ -8,9 +8,7 @@ import { Icon } from "../components/ui/Icon";
 import {
   getAgencyById,
   getAgencyNews,
-  getRelatedAgencies,
   type AgencyNewsItem,
-  type RelatedAgencyItem,
 } from "../api/agencies";
 import type { Agency } from "../types/agency";
 import css from "../styles/InstitutionPage.module.css";
@@ -54,16 +52,36 @@ function getExternalUrl(url: string) {
     : `https://${url}`;
 }
 
-function formatNewsDate(date?: string) {
-  if (!date) return "Дата не вказана";
+type NewsDateParts = {
+  time: string;
+  date: string;
+};
 
-  return new Intl.DateTimeFormat("uk-UA", {
+function formatNewsDate(date?: string): NewsDateParts | null {
+  if (!date) return null;
+
+  const parsedDate = new Date(date);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return null;
+  }
+
+  const time = new Intl.DateTimeFormat("uk-UA", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(parsedDate);
+
+  const formattedDate = new Intl.DateTimeFormat("uk-UA", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(date));
+  }).format(parsedDate);
+
+  return {
+    time,
+    date: formattedDate,
+  };
 }
 
 export function InstitutionPage() {
@@ -75,11 +93,6 @@ export function InstitutionPage() {
 
   const [news, setNews] = useState<AgencyNewsItem[]>([]);
   const [isNewsLoading, setIsNewsLoading] = useState<boolean>(false);
-
-  const [relatedAgencies, setRelatedAgencies] = useState<RelatedAgencyItem[]>(
-    [],
-  );
-  const [isRelatedLoading, setIsRelatedLoading] = useState<boolean>(false);
 
   const loadInstitution = useCallback(async () => {
     if (!id) return;
@@ -114,11 +127,11 @@ export function InstitutionPage() {
       try {
         setIsNewsLoading(true);
 
-        const data = await getAgencyNews(Number(id));
+        const data = await getAgencyNews(Number(id), 1, 3);
 
-        setNews(data.slice(0, 3));
+        setNews(data);
       } catch (err) {
-        console.error("Помилка завантаження новин установи:", err);
+        console.warn("Новини для цієї установи не знайдено:", err);
         setNews([]);
       } finally {
         setIsNewsLoading(false);
@@ -126,27 +139,6 @@ export function InstitutionPage() {
     }
 
     void loadNews();
-  }, [id]);
-
-  useEffect(() => {
-    if (!id) return;
-
-    async function loadRelatedAgencies() {
-      try {
-        setIsRelatedLoading(true);
-
-        const data = await getRelatedAgencies(Number(id));
-
-        setRelatedAgencies(data.slice(0, 3));
-      } catch (err) {
-        console.error("Помилка завантаження пов'язаних установ:", err);
-        setRelatedAgencies([]);
-      } finally {
-        setIsRelatedLoading(false);
-      }
-    }
-
-    void loadRelatedAgencies();
   }, [id]);
 
   if (isLoading) {
@@ -258,7 +250,7 @@ export function InstitutionPage() {
 
               <h2>{institution.headName || "Керівник не вказаний"}</h2>
 
-              <p>{institution.headTitle}</p>
+              <p>{institution.headTitle || "Керівник установи"}</p>
 
               <div className={css.appointmentDate}>
                 <Icon name="Date" size={18} />
@@ -301,7 +293,7 @@ export function InstitutionPage() {
               <div className={css.newsGrid}>
                 {news.map((item, index) => (
                   <a
-                    key={item.url}
+                    key={item.id || item.url}
                     href={item.url}
                     target="_blank"
                     rel="noreferrer"
@@ -309,7 +301,24 @@ export function InstitutionPage() {
                       index === 0 ? css.newsCardActive : ""
                     }`}
                   >
-                    <span>{formatNewsDate(item.publishedAt)}</span>
+                    <div className={css.newsMeta}>
+                      <span className={css.newsDate}>
+                        {(() => {
+                          const formatted = formatNewsDate(item.publishedAt || item.createdAt);
+
+                          if (!formatted) return "Дата не вказана";
+
+                          return (
+                            <>
+                              <span>{formatted.time}</span>
+                              <span>{formatted.date}</span>
+                            </>
+                          );
+                        })()}
+                      </span>
+                      <Icon name="ArrowRight" size={24} className={css.newsArrow} />
+                    </div>
+
                     <p>{item.title}</p>
                   </a>
                 ))}
@@ -327,36 +336,6 @@ export function InstitutionPage() {
               {institution.description ||
                 `${institution.name} є державним органом у системі органів України. Детальний опис діяльності установи поки відсутній.`}
             </p>
-          </section>
-
-          <section className={css.sectionCard}>
-            <div className={css.sectionTitle}>
-              <Icon name="CabMin" size={24} />
-              <h2>Пов'язані державні органи</h2>
-            </div>
-
-            {isRelatedLoading ? (
-              <p className={css.relatedMessage}>
-                Завантаження пов'язаних установ...
-              </p>
-            ) : relatedAgencies.length === 0 ? (
-              <p className={css.relatedMessage}>
-                Пов'язані державні органи поки не знайдено.
-              </p>
-            ) : (
-              <div className={css.relatedGrid}>
-                {relatedAgencies.map((item) => (
-                  <Link
-                    key={item.id}
-                    to={`/institutions/${item.id}`}
-                    className={css.relatedItem}
-                  >
-                    <span>{item.name}</span>
-                    <span aria-hidden="true">›</span>
-                  </Link>
-                ))}
-              </div>
-            )}
           </section>
         </div>
       </PageContainer>

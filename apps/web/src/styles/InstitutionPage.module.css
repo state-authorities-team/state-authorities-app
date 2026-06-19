@@ -1,14 +1,13 @@
 .page {
-    min-height: 100vh;
-    background: var(--fon-1, #ffffff);
+    background: var(--kdou-background, #ffffff);
     color: var(--kdou-primary, #031126);
 }
 
 .hero {
     background: var(--kdou-primary, #031126);
-    color: #ffffff;
+    color: var(--fon-1);
     padding: 24px 0;
-    border-top: 2px solid #ffffff;
+    border-top: 2px solid var(--fon-1);
 }
 
 .backLink {
@@ -18,7 +17,7 @@
 
     margin-bottom: 16px;
 
-    color: #ffffff;
+    color: var(--fon-1);
     font-size: 16px;
     line-height: 1.2;
     font-weight: 700;
@@ -49,7 +48,7 @@
     border-radius: 4px;
 
     color: var(--kdou-accent, #289999);
-    background: #eeffff;
+    background: #eefeff;
 
     font-size: 16px;
     line-height: 1.1;
@@ -65,7 +64,7 @@
     max-width: 980px;
     margin-bottom: 16px;
 
-    color: #ffffff;
+    color: var(--fon-1);
     font-size: 40px;
     line-height: 1.12;
     font-weight: 700;
@@ -75,7 +74,7 @@
     max-width: 980px;
     margin: 0;
 
-    color: #ffffff;
+    color: var(--fon-1);
     font-size: 24px;
     line-height: 1.35;
     font-weight: 700;
@@ -104,7 +103,7 @@
 
 .infoPanel,
 .leadershipCard {
-    background: #eeffff;
+    background: #eefeff;
 }
 
 .infoPanel {
@@ -230,12 +229,12 @@
 .sectionCard {
     padding: 20px;
     border: 2px solid var(--kdou-primary, #031126);
-    background: #ffffff;
+    background: var(--kdou-background, #ffffff);
 }
 
 .descriptionCard {
     padding: 20px;
-    background: #eeffff;
+    background: #eefeff;
 }
 
 .sectionHeader {
@@ -302,36 +301,96 @@
 .newsCard {
     min-height: 84px;
     padding: 10px;
-    border: 2px solid #b8b8b8;
+    border: 2px solid var(--kdou-inactive);
     border-radius: 5px;
-    background: #ffffff;
+    background: var(--kdou-background, #ffffff);
+    color: var(--kdou-primary, #031126);
+    text-decoration: none;
+    cursor: pointer;
+
+    transition:
+        border-color 200ms ease,
+        background-color 200ms ease,
+        color 200ms ease;
 }
 
-.newsCardActive {
-    border-color: var(--kdou-accent, #289999);
-    background: #eeffff;
+.newsDate {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.newsCard span {
-    display: block;
-    margin-bottom: 6px;
+.newsMeta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
 
-    color: #999999;
-    font-size: 12px;
+.newsMeta span {
+    margin-bottom: 0;
+    color: var(--kdou-inactive);
+    font-size: 16px;
     line-height: 1.2;
-    font-weight: 700;
+    font-weight: 600;
 }
 
-.newsCardActive span {
-    color: var(--kdou-accent, #289999);
+.newsArrow {
+    width: 24px;
+    height: 24px;
+    color: var(--kdou-inactive);
+    flex-shrink: 0;
+
+    transition: color 200ms ease;
 }
 
 .newsCard p {
     margin: 0;
     color: var(--kdou-primary, #031126);
-    font-size: 13px;
+    font-size: 20px;
     line-height: 1.25;
     font-weight: 600;
+}
+
+/* Default: first card is green */
+.newsCardActive {
+    border-color: var(--kdou-accent, #289999);
+    background: #eefeff;
+}
+
+.newsCardActive .newsMeta span,
+.newsCardActive .newsArrow {
+    color: var(--kdou-accent, #289999);
+}
+
+/* Hover/focus: selected card becomes green */
+.newsCard:hover,
+.newsCard:focus-visible {
+    border-color: var(--kdou-accent, #289999);
+    background: #eefeff;
+    outline: none;
+}
+
+.newsCard:hover .newsMeta span,
+.newsCard:focus-visible .newsMeta span,
+.newsCard:hover .newsArrow,
+.newsCard:focus-visible .newsArrow {
+    color: var(--kdou-accent, #289999);
+}
+
+/* When another card is hovered/focused, first active card becomes regular */
+.newsGrid:has(.newsCard:hover) .newsCardActive:not(:hover),
+.newsGrid:has(.newsCard:focus-visible) .newsCardActive:not(:focus-visible) {
+    border-color: var(--kdou-inactive);
+    background: var(--kdou-background);
+}
+
+.newsGrid:has(.newsCard:hover) .newsCardActive:not(:hover) .newsMeta span,
+.newsGrid:has(.newsCard:focus-visible) .newsCardActive:not(:focus-visible) .newsMeta span,
+.newsGrid:has(.newsCard:hover) .newsCardActive:not(:hover) .newsArrow,
+.newsGrid:has(.newsCard:focus-visible) .newsCardActive:not(:focus-visible) .newsArrow {
+    color: var(--kdou-inactive);
 }
 
 .descriptionCard p {
@@ -342,61 +401,12 @@
     font-weight: 600;
 }
 
-.relatedGrid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.relatedItem {
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-
-    padding: 8px 12px;
-    border: 2px solid #b8b8b8;
-    border-radius: 4px;
-    background: #ffffff;
-
-    color: #999999;
-    font-size: 14px;
-    line-height: 1.2;
-    font-weight: 700;
-    text-decoration: none;
-}
-
-.relatedMessage {
-    margin: 20px 0 0;
-    color: var(--kdou-inactive, #a1a1a1);
-    font-size: 20px;
-    line-height: 1.3;
-    font-weight: 700;
-}
-
-.relatedItem:first-child,
-.relatedItem:hover,
-.relatedItem:focus-visible {
-    border-color: var(--kdou-accent, #289999);
-    background: #eeffff;
-    color: var(--kdou-primary, #031126);
-}
-
-.relatedItem span {
-    color: var(--kdou-accent, #289999);
-    font-size: 24px;
-    line-height: 1;
-}
-
 @media (max-width: 1024px) {
     .topGrid {
         grid-template-columns: 1fr;
     }
 
-    .newsGrid,
-    .relatedGrid {
+    .newsGrid {
         grid-template-columns: 1fr;
     }
 }

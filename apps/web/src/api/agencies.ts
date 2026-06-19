@@ -122,33 +122,57 @@ export const getAgencyById = async (id: number): Promise<Agency | null> => {
 };
 
 export type AgencyNewsItem = {
+  id: number;
   title: string;
+  description?: string | null;
+  content?: string | null;
   url: string;
   publishedAt?: string;
+  createdAt?: string;
+  agencyId?: number;
 };
 
-export async function getAgencyNews(id: number): Promise<AgencyNewsItem[]> {
-  const response = await apiClient.get<{
-    success: boolean;
-    data: AgencyNewsItem[];
-  }>(`/agencies/${id}/news`);
-
-  return response.data.data;
-}
-
-export type RelatedAgencyItem = {
-  id: number;
-  name: string;
-  type?: string;
+type AgencyNewsResponse = {
+  success: boolean;
+  count?: number;
+  total?: number;
+  totalPages?: number;
+  currentPage?: number;
+  data: AgencyNewsItem[];
 };
 
-export async function getRelatedAgencies(
-  id: number,
-): Promise<RelatedAgencyItem[]> {
-  const response = await apiClient.get<{
-    success: boolean;
-    data: RelatedAgencyItem[];
-  }>(`/agencies/${id}/related`);
+export async function getAgencyNews(
+  agencyId: number,
+  page = 1,
+  limit = 3,
+): Promise<AgencyNewsItem[]> {
+  try {
+    const response = await apiClient.get<AgencyNewsResponse>(
+      `/agencies/${agencyId}/news`,
+      {
+        params: {
+          page,
+          limit,
+        },
+      },
+    );
 
-  return response.data.data;
+    if (response.data?.success && Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+
+    return [];
+  } catch (error: unknown) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "response" in error &&
+      (error as { response?: { status?: number } }).response?.status === 404
+    ) {
+      return [];
+    }
+
+    console.warn(`News endpoint unavailable for agency ${agencyId}.`, error);
+    return [];
+  }
 }

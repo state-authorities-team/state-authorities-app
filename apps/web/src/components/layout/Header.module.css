@@ -110,7 +110,6 @@
 .logo:hover,
 .logo:focus-visible {
   color: var(--kdou-accent);
-  border: 3px solid var(--fon-1);
 }
 
 .logo:hover .logoIcon,
