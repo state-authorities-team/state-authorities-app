@@ -1,41 +1,33 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { loginAdmin, logoutAdmin } from "../api/auth";
 import { AdminAuthContext } from "./adminAuthStore";
 
-const ADMIN_AUTH_KEY = "admin_authenticated";
-
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
-  const [isAdmin, setIsAdmin] = useState<boolean>(
-    () => localStorage.getItem(ADMIN_AUTH_KEY) === "true",
-  );
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     try {
       await loginAdmin({ email, password });
-
-      localStorage.setItem(ADMIN_AUTH_KEY, "true");
       setIsAdmin(true);
 
       return true;
     } catch (error) {
-      localStorage.removeItem(ADMIN_AUTH_KEY);
+      console.warn("Admin login failed:", error);
       setIsAdmin(false);
 
-      console.warn("Admin login failed:", error);
       return false;
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await logoutAdmin();
     } catch (error) {
       console.warn("Admin logout failed:", error);
     } finally {
-      localStorage.removeItem(ADMIN_AUTH_KEY);
       setIsAdmin(false);
     }
-  };
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -43,7 +35,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
       login,
       logout,
     }),
-    [isAdmin],
+    [isAdmin, login, logout],
   );
 
   return (
