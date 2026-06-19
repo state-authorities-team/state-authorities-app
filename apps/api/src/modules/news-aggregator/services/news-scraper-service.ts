@@ -2,6 +2,36 @@ import * as cheerio from "cheerio";
 import type { ScrapeSelectors } from "../schemas/scrape-selectors-schema.js";
 import type { NewsDataInput } from "../types/news-types.js";
 
+function parseDate(rawDateStr: string): Date {
+  if (!rawDateStr) {
+    return new Date();
+  }
+
+  const cleaned = rawDateStr.trim();
+
+  // Match formats like DD.MM.YYYY or DD/MM/YYYY, with optional HH:MM[:SS]
+  const match = cleaned.match(
+    /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/,
+  );
+  if (match) {
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10) - 1; // JS Date months are 0-11
+    const year = parseInt(match[3], 10);
+    const hours = match[4] ? parseInt(match[4], 10) : 0;
+    const minutes = match[5] ? parseInt(match[5], 10) : 0;
+    const seconds = match[6] ? parseInt(match[6], 10) : 0;
+
+    const date = new Date(year, month, day, hours, minutes, seconds);
+    if (!Number.isNaN(date.getTime())) {
+      return date;
+    }
+  }
+
+  // Fallback to native parsing
+  const parsed = new Date(cleaned);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+}
+
 export class NewsScraperService {
   parseNewsWithConfig(
     html: string,
@@ -29,8 +59,7 @@ export class NewsScraperService {
 
       const finalUrl = rawUrl.startsWith("/") ? `${sanitizedBaseUrl}${rawUrl}` : rawUrl;
 
-      const parsedDate = rawDate ? new Date(rawDate) : new Date();
-      const finalDate = Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+      const finalDate = parseDate(rawDate);
       parsedNews.push({ title: titleText, url: finalUrl, publishedAt: finalDate });
     });
     return parsedNews;
