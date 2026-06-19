@@ -24,6 +24,8 @@ export const logger = createLogger({
     process.env.NODE_ENV === "production"
       ? new transports.Console({
           format: combine(json()),
+          forceConsole: true,
+          handleExceptions: true,
         })
       : new transports.Console({
           format: combine(colorize({ all: true }), devFormat),
