@@ -1,3 +1,12 @@
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+import timezone from "dayjs/plugin/timezone.js";
+import utc from "dayjs/plugin/utc.js";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(customParseFormat);
+
 export function parseExpiresInToSeconds(value: string): number {
   const num = parseInt(value, 10);
   if (Number.isNaN(num)) {
@@ -20,6 +29,21 @@ export function buildExportTimestamp(): string {
   return new Date().toISOString().replace(/[:.]/g, "-");
 }
 
+const SUPPORTED_FORMATS = [
+  "DD.MM.YYYY HH:mm:ss",
+  "DD.MM.YYYY HH:mm",
+  "DD.MM.YYYY",
+  "DD/MM/YYYY HH:mm:ss",
+  "DD/MM/YYYY HH:mm",
+  "DD/MM/YYYY",
+  "DD-MM-YYYY HH:mm:ss",
+  "DD-MM-YYYY HH:mm",
+  "DD-MM-YYYY",
+  "YYYY-MM-DD HH:mm:ss",
+  "YYYY-MM-DD HH:mm",
+  "YYYY-MM-DD",
+];
+
 export function parseDate(rawDateStr: string): Date {
   if (!rawDateStr) {
     return new Date();
@@ -27,25 +51,14 @@ export function parseDate(rawDateStr: string): Date {
 
   const cleaned = rawDateStr.trim();
 
-  // Match formats like DD.MM.YYYY or DD/MM/YYYY, with optional HH:MM[:SS]
-  const match = cleaned.match(
-    /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/,
-  );
-  if (match) {
-    const day = parseInt(match[1], 10);
-    const month = parseInt(match[2], 10) - 1; // JS Date months are 0-11
-    const year = parseInt(match[3], 10);
-    const hours = match[4] ? parseInt(match[4], 10) : 0;
-    const minutes = match[5] ? parseInt(match[5], 10) : 0;
-    const seconds = match[6] ? parseInt(match[6], 10) : 0;
-
-    const date = new Date(year, month, day, hours, minutes, seconds);
-    if (!Number.isNaN(date.getTime())) {
-      return date;
-    }
+  // Try to parse strictly using one of our supported formats
+  const parsed = dayjs(cleaned, SUPPORTED_FORMATS, true);
+  if (parsed.isValid()) {
+    // Reconstruct the date explicitly in Europe/Kyiv timezone to prevent server timezone drift
+    return dayjs.tz(parsed.format("YYYY-MM-DD HH:mm:ss"), "Europe/Kyiv").toDate();
   }
 
-  // Fallback to native parsing
-  const parsed = new Date(cleaned);
-  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+  // Fallback to standard/native parsing if none of the strict templates match
+  const fallback = dayjs(cleaned);
+  return fallback.isValid() ? fallback.toDate() : new Date();
 }
