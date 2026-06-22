@@ -42,21 +42,15 @@ export class NewsDataService {
   }
 
   async upsertManyNews(newsItems: NewsDataInput[], agencyId: number): Promise<number> {
-    for (const item of newsItems) {
-      await prisma.news.upsert({
-        where: { url: item.url },
-        update: {
-          title: item.title,
-          publishedAt: item.publishedAt,
-        },
-        create: {
-          title: item.title,
-          url: item.url,
-          publishedAt: item.publishedAt,
-          agencyId,
-        },
-      });
-    }
-    return newsItems.length;
+    const result = await prisma.news.createMany({
+      data: newsItems.map((item) => ({
+        title: item.title,
+        url: item.url,
+        publishedAt: item.publishedAt,
+        agencyId,
+      })),
+      skipDuplicates: true,
+    });
+    return result.count;
   }
 }
