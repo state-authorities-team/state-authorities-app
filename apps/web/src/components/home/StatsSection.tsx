@@ -1,6 +1,6 @@
 import { PageContainer } from "../layout/PageContainer";
 import { Icon } from "../ui/Icon";
-import type { HomeStats } from "../../api/agencies";
+import type { HomeStats } from "../../types/agency";
 import styles from "./StatsSection.module.css";
 
 type StatsSectionProps = {

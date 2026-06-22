@@ -820,6 +820,7 @@
       "post": {
         "tags": ["Agency Types"],
         "summary": "Import agency categories from a CSV file",
+        "security": [{ "cookieAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
@@ -866,6 +867,12 @@
           },
           "400": {
             "description": "Bad request - Missing file or not a text/csv file"
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN role"
           }
         }
       }

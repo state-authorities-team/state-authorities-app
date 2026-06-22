@@ -36,6 +36,7 @@ export function CatalogFilters({
 
       <div className={css.fieldGroup}>
         <span className={css.labelTitle}>Пошук</span>
+
         <div className={css.searchInputWrapper}>
           <input
             id="search"
@@ -45,47 +46,58 @@ export function CatalogFilters({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
           />
+
           <Icon name="Search" size={20} className={css.searchIcon} />
         </div>
       </div>
 
       <div className={css.fieldGroup}>
         <span className={css.labelTitle}>Категорія</span>
-        <select
-          className={css.select}
-          value={selectedType}
-          onChange={(e) => onTypeChange(e.target.value)}
-          disabled={isLoading || !!error}
-        >
-          {isLoading ? (
-            <option>Завантаження категорій...</option>
-          ) : error ? (
-            <option>Помилка завантаження</option>
-          ) : (
-            <>
-              <option value="">Усі категорії</option>
-              {agencyTypes.map((type) => (
-                <option key={type.id} value={type.slug}>
-                  {type.name}{" "}
-                  {type.count !== undefined ? `(${type.count})` : ""}
-                </option>
-              ))}
-            </>
-          )}
-        </select>
+
+        <div className={css.selectWrapper}>
+          <select
+            className={css.select}
+            value={selectedType}
+            onChange={(e) => onTypeChange(e.target.value)}
+            disabled={isLoading || !!error}
+          >
+            {isLoading ? (
+              <option>Завантаження категорій...</option>
+            ) : error ? (
+              <option>Помилка завантаження</option>
+            ) : (
+              <>
+                <option value="">Усі категорії</option>
+                {agencyTypes.map((type) => (
+                  <option key={type.id} value={type.slug}>
+                    {type.name}
+                    {type.count !== undefined ? ` (${type.count})` : ""}
+                  </option>
+                ))}
+              </>
+            )}
+          </select>
+
+          <Icon name="BottomMenu" size={16} className={css.selectArrow} />
+        </div>
       </div>
 
       <div className={css.fieldGroup}>
         <span className={css.labelTitle}>Сортування</span>
-        <select
-          className={css.select}
-          value={sortBy}
-          onChange={(e) => onSortChange(e.target.value)}
-        >
-          <option value="name">За назвою</option>
-          <option value="createdAt_desc">Спочатку нові</option>
-          <option value="createdAt_asc">Спочатку старі</option>
-        </select>
+
+        <div className={css.selectWrapper}>
+          <select
+            className={css.select}
+            value={sortBy}
+            onChange={(e) => onSortChange(e.target.value)}
+          >
+            <option value="name">За назвою</option>
+            <option value="createdAt_desc">Спочатку нові</option>
+            <option value="createdAt_asc">Спочатку старі</option>
+          </select>
+
+          <Icon name="BottomMenu" size={16} className={css.selectArrow} />
+        </div>
       </div>
 
       <button type="button" className={css.resetButton} onClick={onReset}>

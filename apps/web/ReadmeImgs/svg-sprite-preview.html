@@ -1,4 +1,102 @@
-<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true" version="1.1"
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SVG Sprite Preview</title>
+  <style>
+    :root {
+      --bg: #f4f4f4;
+      --card: #ffffff;
+      --primary: #031126;
+      --accent: #289999;
+      --danger: #900000;
+      --muted: #7a7a7a;
+      --border: #d7dce2;
+      --icon-size: 48px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+    }
+    header { max-width: 1240px; margin: 0 auto 24px; }
+    h1 { margin: 0 0 8px; font-size: 36px; line-height: 1.1; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 16px; font-weight: 600; }
+    .controls {
+      max-width: 1240px;
+      margin: 0 auto 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+    }
+    .controls button {
+      min-height: 40px;
+      padding: 8px 14px;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--primary);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .controls button:hover,
+    .controls button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+    .controls label { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+    .controls input { width: 88px; height: 40px; padding: 6px 8px; border: 2px solid var(--border); border-radius: 8px; font: inherit; font-weight: 700; }
+    .grid {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .icon-card {
+      min-height: 188px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card);
+      box-shadow: 0 6px 18px rgba(3, 17, 38, 0.06);
+    }
+    .icon-box {
+      height: 92px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #eeffff;
+      color: var(--accent);
+    }
+    .icon { width: var(--icon-size); height: var(--icon-size); color: currentColor; overflow: visible; }
+    .icon-meta h2 { margin: 0 0 6px; font-size: 18px; line-height: 1.2; }
+    .icon-meta p { margin: 0 0 10px; color: var(--muted); font-size: 13px; font-weight: 600; }
+    code { display: block; width: 100%; padding: 8px; border-radius: 8px; background: #f6f8fa; color: #24292f; font-size: 12px; white-space: nowrap; overflow-x: auto; }
+    body.primary .icon-box { color: var(--primary); }
+    body.accent .icon-box { color: var(--accent); }
+    body.danger .icon-box { color: var(--danger); }
+    body.white-preview { background: #031126; color: #ffffff; }
+    body.white-preview .controls,
+    body.white-preview .icon-card { background: #071a36; border-color: rgba(255,255,255,0.2); }
+    body.white-preview .icon-box { background: #031126; color: #ffffff; border: 1px solid rgba(255,255,255,0.25); }
+    body.white-preview .subtitle,
+    body.white-preview .icon-meta p { color: rgba(255,255,255,0.7); }
+    body.white-preview code { background: rgba(255,255,255,0.12); color: #ffffff; }
+  </style>
+</head>
+<body class="accent">
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true" version="1.1"
   xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
     <symbol id="Address" viewBox="0 0 24 24" fill="none">
@@ -236,3 +334,337 @@
     </symbol>
   </defs>
 </svg>
+  <header>
+    <h1>SVG Sprite Preview</h1>
+    <p class="subtitle">Showing 31 symbols from the uploaded sprite. All icons are previewed through SVG <code style="display:inline;padding:2px 6px;">&lt;use&gt;</code> and inherit color through <code style="display:inline;padding:2px 6px;">currentColor</code>.</p>
+  </header>
+  <section class="controls" aria-label="Preview controls">
+    <button type="button" onclick="setTheme('accent')">Accent</button>
+    <button type="button" onclick="setTheme('primary')">Primary</button>
+    <button type="button" onclick="setTheme('danger')">Danger</button>
+    <button type="button" onclick="setTheme('white-preview')">White</button>
+    <label>Icon size <input id="sizeInput" type="number" min="16" max="120" value="48" /></label>
+  </section>
+  <main class="grid">
+    
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Address"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Address</h2>
+          <p>viewBox: 0 0 24 24</p>
+          <code>&lt;Icon name="Address" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Workers"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Workers</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Workers" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Worker"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Worker</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="Worker" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Website"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Website</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="Website" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#StateEnterpr"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>StateEnterpr</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="StateEnterpr" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Search"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Search</h2>
+          <p>viewBox: 0 0 32 32</p>
+          <code>&lt;Icon name="Search" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#RightMenu"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>RightMenu</h2>
+          <p>viewBox: 0 0 11 19</p>
+          <code>&lt;Icon name="RightMenu" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Regions"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Regions</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Regions" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#RegAdmin"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>RegAdmin</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="RegAdmin" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#LeftArrow"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>LeftArrow</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="LeftArrow" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#ArrowRight"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>ArrowRight</h2>
+          <p>viewBox: 0 0 24 24</p>
+          <code>&lt;Icon name="ArrowRight" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#LeftMenu"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>LeftMenu</h2>
+          <p>viewBox: 0 0 11 19</p>
+          <code>&lt;Icon name="LeftMenu" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#LawEnfAgencies"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>LawEnfAgencies</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="LawEnfAgencies" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Institutions"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Institutions</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Institutions" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Home"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Home</h2>
+          <p>viewBox: 0 0 28 28</p>
+          <code>&lt;Icon name="Home" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Frame"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Frame</h2>
+          <p>viewBox: 0 0 72 72</p>
+          <code>&lt;Icon name="Frame" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Filter"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Filter</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Filter" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Education"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Education</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Education" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Court"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Court</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Court" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Catalog"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Catalog</h2>
+          <p>viewBox: 0 0 28 28</p>
+          <code>&lt;Icon name="Catalog" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#CabMin"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>CabMin</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="CabMin" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#BottomMenu"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>BottomMenu</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="BottomMenu" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Official-symbol"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Official-symbol</h2>
+          <p>viewBox: 0 0 38 63</p>
+          <code>&lt;Icon name="Official-symbol" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Phone"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Phone</h2>
+          <p>viewBox: 0 0 24 24</p>
+          <code>&lt;Icon name="Phone" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Email"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Email</h2>
+          <p>viewBox: 0 0 24 24</p>
+          <code>&lt;Icon name="Email" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Date"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Date</h2>
+          <p>viewBox: 0 0 24 24</p>
+          <code>&lt;Icon name="Date" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#News"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>News</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="News" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Description"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Description</h2>
+          <p>viewBox: 0 0 36 36</p>
+          <code>&lt;Icon name="Description" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Modify"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Modify</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="Modify" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Look"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Look</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="Look" size={24} /&gt;</code>
+        </div>
+      </article>
+      <article class="icon-card">
+        <div class="icon-box">
+          <svg class="icon" aria-hidden="true"><use href="#Delete"></use></svg>
+        </div>
+        <div class="icon-meta">
+          <h2>Delete</h2>
+          <p>viewBox: 0 0 20 20</p>
+          <code>&lt;Icon name="Delete" size={24} /&gt;</code>
+        </div>
+      </article>
+  </main>
+  <script>
+    function setTheme(theme) { document.body.className = theme; }
+    const sizeInput = document.getElementById('sizeInput');
+    sizeInput.addEventListener('input', () => {
+      const value = Number(sizeInput.value || 48);
+      document.documentElement.style.setProperty('--icon-size', value + 'px');
+    });
+  </script>
+</body>
+</html>

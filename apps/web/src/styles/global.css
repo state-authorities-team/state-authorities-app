@@ -1,12 +1,26 @@
+:root {
+  --fon-1: #fff;
+  
+  --kdou-primary: #031126;
+  --kdou-background: #ffffff;
+  --kdou-secondary: #eeffff;
+  --kdou-accent: #289999;
+  --kdou-inactive: #a1a1a1;
+  --kdou-destructive: #900000;
+
+  --font-family: "Inter", sans-serif;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: Inter, Arial, sans-serif;
+  padding-top: 118px;
+  font-family: Inter, sans-serif;
   background: #f4f4f4;
-  color: #777;
+  color: var(--kdou-primary);
 }
 
 a {
@@ -24,21 +38,13 @@ button {
   cursor: pointer;
 }
 
-/* .page-container {
-	width: min(1120px, calc(100% - 32px));
-	margin: 0 auto;
-} */
 .page-container {
-  width: min(1440px, calc(100% - 64px));
+  width: min(1440px, calc(100% - 212px));
   margin: 0 auto;
 }
 
-.section {
-  padding: 32px 0;
-}
-
 .card {
-  background: #ffffff;
+  background: var(--kdou-background);
   border: 1px solid #dddddd;
   border-radius: 8px;
   padding: 18px;

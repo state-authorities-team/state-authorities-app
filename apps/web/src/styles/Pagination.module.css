@@ -2,35 +2,60 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 16px;
+  gap: 32px;
   margin-top: 32px;
 }
 
 .pageButton,
 .navButton {
-  padding: 8px 12px;
+  padding: 9px 16px;
   background-color: transparent;
   border: none;
   cursor: pointer;
-  font-size: 14px;
-  color: #64748b;
+  font-size: 24px;
+  color: var(--kdou-inactive);
   transition: color 0.2s;
 }
 
+.navButton {
+  color: var(--kdou-primary);
+}
+
+.navButton svg {
+  color: currentColor;
+}
+
 .pageButton:hover,
-.navButton:hover {
+.pageButton:focus-visible {
   color: #1e293b;
 }
 
+.navButton:hover:not(:disabled),
+.navButton:focus-visible:not(:disabled) {
+  color: var(--kdou-primary);
+  border: 2px solid var(--kdou-accent);
+  border-radius: 5px;
+  outline: none;
+}
+
+.navButton:disabled {
+  color: #999999;
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
 .pageButton.active {
-  background-color: transparent;
+  background: #eefeff;
   color: #1e293b;
   font-weight: 700;
-  border: solid 1px #cbd5e1;
+  border: 2px solid var(--kdou-primary);
+  border-radius: 5px;
   cursor: default;
 }
 
 .ellipsis {
   color: #94a3b8;
+  font-size: 24px;
   padding: 0 4px;
 }

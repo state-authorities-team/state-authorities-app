@@ -57,11 +57,11 @@ The codebase strictly adheres to **Separation of Concerns (SoC)** and **Layered 
 
 ### 🗂️ Agency Structural Classifications
 
-| Method   | Route                          | Description                                                    | Allowed Roles | Errors       |
-| -------- | ------------------------------ | -------------------------------------------------------------- | ------------- | ------------ |
-| **GET**  | `/api/agency-types`            | Fetch lists of available categories (e.g., Ministry, ODA)      | Public (`-`)  | `500`        |
-| **GET**  | `/api/agency-types/export`     | Export all agency structural classifications as a CSV file     | Public (`-`)  | `500`        |
-| **POST** | `/api/agency-types/import-csv` | Stream and bulk-ingest agency classifications via CSV template | Public (`-`)  | `400`, `500` |
+| Method   | Route                          | Description                                                    | Allowed Roles | Errors                     |
+|----------|--------------------------------|----------------------------------------------------------------|---------------|----------------------------|
+| **GET**  | `/api/agency-types`            | Fetch lists of available categories (e.g., Ministry, ODA)      | Public (`-`)  | `500`                      |
+| **GET**  | `/api/agency-types/export`     | Export all agency structural classifications as a CSV file     | Public (`-`)  | `500`                      |
+| **POST** | `/api/agency-types/import-csv` | Stream and bulk-ingest agency classifications via CSV template | `ADMIN`       | `400`, `401`, `403`, `500` |
 
 ### 🤖 Smart News Aggregator Sync Controls
 

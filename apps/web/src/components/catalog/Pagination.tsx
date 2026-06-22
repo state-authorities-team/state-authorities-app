@@ -1,4 +1,4 @@
-
+import { Icon } from "../ui/Icon";
 import styles from "../../styles/Pagination.module.css";
 
 interface PaginationProps {
@@ -24,7 +24,6 @@ export function Pagination({
 
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
-
     const boundaryRange = 1;
 
     pages.push(1);
@@ -56,11 +55,13 @@ export function Pagination({
   return (
     <div className={styles.pagination}>
       <button
+        type="button"
         className={styles.navButton}
         onClick={handlePrev}
         disabled={currentPage === 1}
+        aria-label="Попередня сторінка"
       >
-        {"<"}
+        <Icon name="LeftMenu" size={19} />
       </button>
 
       {pageElements.map((item, index) => {
@@ -75,6 +76,7 @@ export function Pagination({
         return (
           <button
             key={`page-${item}`}
+            type="button"
             className={`${styles.pageButton} ${
               currentPage === item ? styles.active : ""
             }`}
@@ -87,11 +89,13 @@ export function Pagination({
       })}
 
       <button
+        type="button"
         className={styles.navButton}
         onClick={handleNext}
         disabled={currentPage === totalPages}
+        aria-label="Наступна сторінка"
       >
-        {">"}
+        <Icon name="RightMenu" size={19} />
       </button>
     </div>
   );

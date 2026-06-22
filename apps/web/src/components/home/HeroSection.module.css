@@ -1,5 +1,5 @@
 .hero {
-  background: #031126;
+  background: var(--kdou-primary);
   padding: 48px 0;
 }
 
@@ -16,7 +16,7 @@
   font-size: 40px;
   font-weight: 700;
   line-height: 100%;
-  color: #ffffff;
+  color: var(--fon-1);
 }
 
 .description {
@@ -24,7 +24,7 @@
   font-size: 24px;
   font-weight: 700;
   line-height: 1.2;
-  color: #ffffff;
+  color: var(--fon-1);
 }
 
 .searchPanel {
@@ -38,7 +38,7 @@
   padding: 20px;
 
   background: transparent;
-  border: 3px solid #a1a1a1;
+  border: 3px solid var(--kdou-inactive);
   border-radius: 10px;
 
   transition:
@@ -76,13 +76,13 @@
 
   font-size: 20px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--fon-1);
 }
 
 .input::placeholder {
   font-size: 20px;
   font-weight: 500;
-  color: #a1a1a1;
+  color: var(--kdou-inactive);
 }
 
 .input:focus::placeholder {
@@ -101,14 +101,14 @@
   border: none;
   background: transparent;
 
-  color: #a1a1a1;
+  color: var(--kdou-inactive);
   cursor: pointer;
 
   transition: color 0.2s ease;
 }
 
 .searchButton:hover {
-  color: #ffffff;
+  color: var(--fon-1);
 }
 
 .searchIcon {

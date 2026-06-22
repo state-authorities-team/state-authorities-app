@@ -1,7 +1,10 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "../../../configs/db-config.js";
+import { logger as baseLogger } from "../../../configs/logger-config.js";
 import type { ScrapeSelectors } from "../schemas/scrape-selectors-schema.js";
 import type { NewsDataInput } from "../types/news-types.js";
+
+const logger = baseLogger.child({ service: "NewsDataService" });
 
 export class NewsDataService {
   async getSystemConfigValue(key: string): Promise<string | null> {
@@ -42,21 +45,38 @@ export class NewsDataService {
   }
 
   async upsertManyNews(newsItems: NewsDataInput[], agencyId: number): Promise<number> {
-    for (const item of newsItems) {
-      await prisma.news.upsert({
-        where: { url: item.url },
-        update: {
-          title: item.title,
-          publishedAt: item.publishedAt,
-        },
-        create: {
-          title: item.title,
-          url: item.url,
-          publishedAt: item.publishedAt,
-          agencyId,
-        },
-      });
+    if (newsItems.length === 0) {
+      return 0;
     }
-    return newsItems.length;
+
+    const incomingUrls = newsItems.map((item) => item.url);
+
+    const existingRecords = await prisma.news.findMany({
+      where: { url: { in: incomingUrls } },
+      select: { url: true },
+    });
+
+    const existingUrlSet = new Set(existingRecords.map((r) => r.url));
+    const newItems = newsItems.filter((item) => !existingUrlSet.has(item.url));
+
+    if (newItems.length === 0) {
+      logger.debug(
+        `Agency ${agencyId}: all ${newsItems.length} article(s) already exist. No inserts performed.`,
+      );
+      return 0;
+    }
+
+    const result = await prisma.news.createMany({
+      data: newItems.map((item) => ({
+        title: item.title,
+        url: item.url,
+        publishedAt: item.publishedAt,
+        agencyId,
+      })),
+      skipDuplicates: true, // safety net
+    });
+
+    logger.info(`Agency ${agencyId}: inserted ${result.count} new article(s).`);
+    return result.count;
   }
 }

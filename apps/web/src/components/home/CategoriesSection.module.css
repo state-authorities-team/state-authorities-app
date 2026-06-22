@@ -1,89 +1,131 @@
 .section {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  background: #ffffff;
+  padding-block: 20px;
+  background: var(--kdou-background);
 }
 
 .title {
   margin: 0 0 20px;
-
-  font-size: 40px;
+  font-size: 32px;
+  line-height: 1.15;
   font-weight: 700;
-  line-height: 1;
+  color: var(--kdou-primary);
+}
 
-  color: #031126;
+.loadingText {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--kdou-primary);
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
 }
 
 .card {
+  min-height: 78px;
   display: flex;
   align-items: center;
   gap: 16px;
 
-  min-height: 87px;
-  padding: 20px;
-
-  background: #ffffff;
-  border: 2px solid #a1a1a1;
+  padding: 14px 20px;
+  border: 2px solid #999999;
   border-radius: 10px;
 
+  background: var(--kdou-background);
+  color: #999999;
   text-decoration: none;
-  cursor: pointer;
 
-  transition: all 0.2s ease;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.card svg {
+  color: currentColor;
+  flex-shrink: 0;
 }
 
 .icon {
   width: 36px;
   height: 36px;
-  color: #a1a1a1;
+  color: currentColor;
   flex-shrink: 0;
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .name {
   margin: 0;
-
-  font-size: 20px;
-  font-weight: 600;
-  color: #777777;
+  font-size: 18px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: currentColor;
 }
 
 .count {
   margin: 0;
-
-  font-size: 16px;
-  font-weight: 600;
-  color: #777777;
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: currentColor;
 }
 
 .card:hover,
+.card:focus-visible,
+.cardActive {
+  background: #e9ffff;
+  border-color: var(--kdou-primary);
+  color: var(--kdou-accent);
+}
+
+.cardActive .count {
+  color: var(--kdou-primary);
+}
+
 .card:focus-visible {
-  background: #eefeff;
-  border-color: #031126;
+  outline: 2px solid var(--kdou-accent);
+  outline-offset: 4px;
 }
 
-.card:hover .icon,
-.card:focus-visible .icon {
-  color: #289999;
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .title {
+    font-size: 28px;
+  }
 }
 
-.card:hover .name,
-.card:focus-visible .name {
-  color: #289999;
-}
+@media (max-width: 768px) {
+  .section {
+    padding-block: 16px;
+  }
 
-.card:hover .count,
-.card:focus-visible .count {
-  color: #031126;
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    min-height: 68px;
+    padding: 12px 16px;
+  }
+
+  .name {
+    font-size: 16px;
+  }
+
+  .count {
+    font-size: 13px;
+  }
 }

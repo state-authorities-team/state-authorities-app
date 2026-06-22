@@ -8,9 +8,9 @@ The front-end application is located in:
 /apps/web
 ```
 
-This implementation currently contains the **basic layout** for the main user-facing pages based on the [Figma design](https://www.figma.com/design/G8QMwYywDHrtvZo1jtQms5/%D0%9A%D0%B0%D1%82%D0%B0%D0%BB%D0%BE%D0%B3-%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%B2%D0%BD%D0%B8%D1%85-%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2?node-id=0-1&p=f&t=jZvsylRtS6wF9vnc-0).
+The implementation follows the project Figma design and contains the main user-facing pages, catalog UI, institution details page, admin login flow, reusable SVG sprite icons, and API integration with the backend.
 
-The goal of this stage is to prepare the structure of the front-end project so that the FE team can later split and implement features in parallel.
+Figma [design](https://www.figma.com/design/G8QMwYywDHrtvZo1jtQms5/%D0%9A%D0%B0%D1%82%D0%B0%D0%BB%D0%BE%D0%B3-%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D0%B2%D0%BD%D0%B8%D1%85-%D0%BE%D1%80%D0%B3%D0%B0%D0%BD%D1%96%D0%B2-%D0%A3%D0%BA%D1%80%D0%B0%D1%97%D0%BD%D0%B8?node-id=216-196&p=f&t=swDNlTcK3ubrNTwB-0)
 
 ---
 
@@ -18,16 +18,59 @@ The goal of this stage is to prepare the structure of the front-end project so t
 
 This front-end currently includes:
 
-- Basic React + TypeScript application structure
-- Page routing
-- Static layout for 3 main pages
-- Shared layout components
-- SVG sprite icon usage
-- Mock institution data
-- Basic CSS structure
+- React + TypeScript application structure
+- Page routing with `react-router-dom`
+- Home page
+- Catalog page
+- Institution details page
+- Login page
+- Protected Admin page
+- Shared Header, Footer, and PageContainer layout components
+- SVG sprite icon system
+- HTML icon preview file
+- Catalog search, filters, sorting, and pagination
+- Loading, error, and empty states
+- API client layer for backend communication
+- Backend integration for agencies, agency types, and agency news
+- Backend-connected admin authentication flow
+- Admin page prepared for backend create/update/delete operations
 
-This is **not yet a fully functional product version**.  
-Search, filters, pagination, real API integration, loading states, and error handling will be implemented later.
+This is an active front-end implementation. Some features are still frontend-only or partially integrated.
+
+Important current limitations:
+
+- Admin authentication depends on the backend auth cookie and correct Render/CORS configuration.
+- Real admin credentials must be managed on the backend side and must not be committed to the frontend repository.
+- Agency news exists only for agencies that have backend news records.
+- Related agencies were removed from the institution page because the backend related-agencies endpoint is not currently mapped.
+- The frontend Render deployment must use `VITE_API_URL` to connect to the deployed backend.
+- The backend Render deployment must use `FRONTEND_URL` to allow the deployed frontend origin.
+
+---
+
+## Branch Information
+
+The main development branch is:
+
+```text
+develop
+```
+
+The current feature work for the API client, admin auth, catalog updates, institution page updates, admin page updates, and frontend deployment fixes is done on a feature branch created from `develop`.
+
+Example feature branch naming:
+
+```text
+feature/SA-29-api-client-web
+```
+
+Pull requests should target:
+
+```text
+develop
+```
+
+Before creating a pull request, make sure the branch is based on the latest `develop`.
 
 ---
 
@@ -36,40 +79,73 @@ Search, filters, pagination, real API integration, loading states, and error han
 ```text
 apps/web/
 ├── public/
-│   └── icons.svg
+│   ├── icons.svg
+│   └── ReadmeImgs/
+│       └── svg-sprite-preview.html
 ├── src/
+│   ├── api/
+│   │   ├── client.ts
+│   │   ├── agencies.ts
+│   │   ├── agencyTypes.ts
+│   │   └── auth.ts
+│   ├── auth/
+│   │   ├── AdminAuthContext.tsx
+│   │   ├── adminAuthStore.ts
+│   │   └── useAdminAuth.ts
 │   ├── components/
+│   │   ├── catalog/
+│   │   │   ├── CatalogFilters.tsx
+│   │   │   ├── CatalogToolbar.tsx
+│   │   │   ├── InstitutionCard.tsx
+│   │   │   ├── InstitutionList.tsx
+│   │   │   └── Pagination.tsx
+│   │   ├── home/
+│   │   │   ├── AboutSection.tsx
+│   │   │   ├── CategoriesSection.tsx
+│   │   │   ├── HeroSection.tsx
+│   │   │   └── StatsSection.tsx
 │   │   ├── layout/
 │   │   │   ├── Header.tsx
 │   │   │   ├── Header.module.css
 │   │   │   ├── Footer.tsx
 │   │   │   ├── Footer.module.css
 │   │   │   └── PageContainer.tsx
-│   │   ├── ui/
-│   │   │   └── Icon.tsx
-│   │   └── catalog/
-│   │   │   ├── CatalogFilters.tsx
-│   │   │   ├── CatalogToolbar.tsx
-│   │   │   ├── InstitutionCard.tsx
-│   │   │   ├── InstitutionList.tsx
-│   │   │   └── Pagination.tsx
-│   ├── data/
-│   │   └── mockInstitutions.ts
+│   │   └── ui/
+│   │       ├── EmptyState.tsx
+│   │       ├── ErrorState.tsx
+│   │       ├── Icon.tsx
+│   │       └── LoadingState.tsx
+│   ├── hooks/
+│   │   └── useDebounce.ts
 │   ├── pages/
-│   │   ├── HomePage.tsx
+│   │   ├── AdminPage.tsx
 │   │   ├── CatalogPage.tsx
-│   │   └── InstitutionPage.tsx
+│   │   ├── HomePage.tsx
+│   │   ├── InstitutionPage.tsx
+│   │   └── LoginPage.tsx
 │   ├── routes/
-│   │   └── AppRoutes.tsx
+│   │   ├── AppRoutes.tsx
+│   │   └── ProtectedAdminRoute.tsx
 │   ├── styles/
+│   │   ├── AdminPage.module.css
+│   │   ├── CatalogFilters.module.css
+│   │   ├── CatalogPage.module.css
+│   │   ├── EmptyState.module.css
+│   │   ├── ErrorState.module.css
+│   │   ├── InstitutionList.module.css
+│   │   ├── InstitutionPage.module.css
+│   │   ├── LoadingState.module.css
+│   │   ├── LoginPage.module.css
+│   │   ├── Pagination.module.css
 │   │   └── global.css
 │   ├── types/
+│   │   ├── agency.ts
+│   │   ├── api.ts
 │   │   └── institution.ts
 │   ├── App.tsx
 │   └── main.tsx
 ├── index.html
 ├── package.json
-├── ...
 └── vite.config.ts
 ```
 
@@ -77,13 +153,17 @@ apps/web/
 
 ## Pages
 
-The application currently has 3 main pages:
+The application currently has these main routes:
 
 ```text
 /                  Home page
 /catalog           Catalog page
 /institutions/:id  Institution details page
+/login             Admin login page
+/admin             Protected admin page
 ```
+
+---
 
 ### 1. Home Page
 
@@ -97,7 +177,7 @@ Purpose:
 
 The Home page is the landing page for the platform.
 
-Layout sections:
+Main sections:
 
 - Hero section
 - Search block
@@ -105,7 +185,20 @@ Layout sections:
 - Main institution categories
 - About platform section
 
-This page should be splitted into sections (since now it it just one file for the filling of the page) and later it will be connected to real statistics and real category data.
+Home sections are located in:
+
+```text
+src/components/home
+```
+
+Current components:
+
+```text
+HeroSection.tsx
+StatsSection.tsx
+CategoriesSection.tsx
+AboutSection.tsx
+```
 
 ---
 
@@ -119,18 +212,28 @@ src/pages/CatalogPage.tsx
 
 Purpose:
 
-The Catalog page displays a list of state institutions.
+The Catalog page displays a list of state authorities.
 
-Layout sections:
+Main functionality:
 
-- Page title
-- Filter sidebar
-- Search input
-- Institution list
-- Pagination placeholder
+- Loads agencies from the backend API
+- Loads agency types from the backend API
+- Search by institution name
+- Filter by agency type
+- Sort agencies
+- Paginate agency results
+- Display loading, error, and empty states
+- Navigate to an institution details page when an institution card is clicked
 
-This page currently uses mock data.  
-Later it should fetch real institutions from the backend API.
+Related components:
+
+```text
+src/components/catalog/CatalogFilters.tsx
+src/components/catalog/CatalogToolbar.tsx
+src/components/catalog/InstitutionCard.tsx
+src/components/catalog/InstitutionList.tsx
+src/components/catalog/Pagination.tsx
+```
 
 ---
 
@@ -146,15 +249,6 @@ Purpose:
 
 The Institution page displays detailed information about one selected institution.
 
-Layout sections:
-
-- Back link
-- Institution title
-- Main information block
-- Management block
-- About institution section
-- Related institutions section
-
 The institution ID is taken from the route:
 
 ```text
@@ -164,18 +258,129 @@ The institution ID is taken from the route:
 Example:
 
 ```text
-/institutions/1
+/institutions/244
 ```
 
-In the page component, the ID can be accessed using `useParams` from `react-router-dom`.
+Main sections:
 
-Example:
+- Back link
+- Institution title and category tag
+- Main information block
+- Leadership block
+- Latest news section
+- Description section
 
-```tsx
-import { useParams } from "react-router-dom";
+Backend data used:
 
-const { id } = useParams();
+```text
+GET /api/agencies/:id
+GET /api/agencies/:id/news
 ```
+
+News notes:
+
+- News exists only for agencies that have backend news records.
+- The news endpoint supports pagination.
+- The backend returns news sorted by latest date by default.
+- The UI shows 3 latest news items on the institution page.
+- The news date is displayed in the format `HH:mm DD.MM.YYYY`.
+
+The related agencies section was removed because the backend related-agencies endpoint is not currently available.
+
+---
+
+### 4. Login Page
+
+File:
+
+```text
+src/pages/LoginPage.tsx
+```
+
+Route:
+
+```text
+/login
+```
+
+Purpose:
+
+The Login page allows an admin user to authenticate through the backend and access the protected Admin page.
+
+The login form sends credentials to the backend authentication endpoint:
+
+```text
+POST /api/auth/login
+```
+
+Logout is handled through:
+
+```text
+POST /api/auth/logout
+```
+
+Important:
+
+- Admin credentials must not be stored in the frontend README.
+- Admin credentials must not be committed to the repository.
+- Admin credentials are managed on the backend side.
+- The frontend only sends the login request and relies on the backend authentication cookie.
+
+---
+
+### 5. Admin Page
+
+File:
+
+```text
+src/pages/AdminPage.tsx
+```
+
+Route:
+
+```text
+/admin
+```
+
+Purpose:
+
+The Admin page is protected by the admin auth guard and is intended for managing agency records.
+
+The protected route is handled by:
+
+```text
+src/routes/ProtectedAdminRoute.tsx
+```
+
+Admin-related files:
+
+```text
+src/pages/AdminPage.tsx
+src/pages/LoginPage.tsx
+src/routes/ProtectedAdminRoute.tsx
+src/auth/AdminAuthContext.tsx
+src/auth/adminAuthStore.ts
+src/auth/useAdminAuth.ts
+src/api/auth.ts
+```
+
+Admin-only backend operations include:
+
+```text
+POST   /api/agencies
+PUT    /api/agencies/:id
+DELETE /api/agencies/:id
+```
+
+These backend routes require an authenticated `ADMIN` user.
+
+Current status:
+
+- Admin page loads successfully.
+- Admin login uses the backend auth endpoint.
+- Login/logout is handled through the backend API.
+- Admin page is prepared for backend create/update/delete operations.
+- Correct Render/CORS configuration is required for deployed admin auth to work.
 
 ---
 
@@ -189,13 +394,16 @@ Routes are defined in:
 src/routes/AppRoutes.tsx
 ```
 
-Example:
+Current route structure:
 
 ```tsx
 import { Routes, Route } from "react-router-dom";
 import { HomePage } from "../pages/HomePage";
 import { CatalogPage } from "../pages/CatalogPage";
 import { InstitutionPage } from "../pages/InstitutionPage";
+import { LoginPage } from "../pages/LoginPage";
+import { AdminPage } from "../pages/AdminPage";
+import { ProtectedAdminRoute } from "./ProtectedAdminRoute";
 
 export function AppRoutes() {
   return (
@@ -203,6 +411,11 @@ export function AppRoutes() {
       <Route path="/" element={<HomePage />} />
       <Route path="/catalog" element={<CatalogPage />} />
       <Route path="/institutions/:id" element={<InstitutionPage />} />
+      <Route path="/login" element={<LoginPage />} />
+
+      <Route element={<ProtectedAdminRoute />}>
+        <Route path="/admin" element={<AdminPage />} />
+      </Route>
     </Routes>
   );
 }
@@ -212,6 +425,211 @@ Routes are rendered inside:
 
 ```text
 src/App.tsx
+```
+
+---
+
+## API Client
+
+The frontend API client is located in:
+
+```text
+src/api/client.ts
+```
+
+The client uses Axios.
+
+Current API client pattern:
+
+```ts
+import axios from "axios";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
+
+export const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+```
+
+The `withCredentials: true` option is needed because backend authentication uses an HTTP-only cookie. This allows the browser to include backend auth cookies in admin login/logout and admin-protected requests.
+
+---
+
+## Environment Keys
+
+The frontend/backend setup uses two important environment values:
+
+```text
+VITE_API_URL
+FRONTEND_URL
+```
+
+They are used in different places.
+
+```text
+VITE_API_URL = used by the frontend
+FRONTEND_URL = used by the backend
+```
+
+---
+
+### `VITE_API_URL`
+
+The frontend supports a Vite environment key:
+
+```text
+VITE_API_URL
+```
+
+This key tells the deployed frontend where the backend API is located.
+
+### Why this key is needed
+
+During local development, the app can use the Vite dev-server proxy with:
+
+```text
+/api
+```
+
+However, the Vite proxy only works locally with:
+
+```bash
+npm run dev
+```
+
+After deployment, the built frontend cannot use the Vite dev proxy. Without `VITE_API_URL`, the deployed frontend may incorrectly call its own frontend Render domain:
+
+```text
+https://state-authorities-app-1.onrender.com/api/...
+```
+
+The real backend API is deployed separately, so the production frontend must call the backend Render URL directly.
+
+### Render frontend environment variable
+
+In the frontend Render service, add:
+
+```text
+VITE_API_URL=https://state-authorities-app.onrender.com/api
+```
+
+After adding or changing this variable, redeploy the frontend service because Vite environment variables are injected at build time.
+
+### Local development
+
+For local development, this variable is optional.
+
+If `VITE_API_URL` is not set, the app falls back to:
+
+```text
+/api
+```
+
+This allows local development to keep using the Vite proxy from `vite.config.ts`.
+
+Optional local `.env` example:
+
+```text
+VITE_API_URL=https://state-authorities-app.onrender.com/api
+```
+
+Do not commit real `.env` files if they contain sensitive values.
+
+---
+
+### `FRONTEND_URL`
+
+`FRONTEND_URL` is used by the backend.
+
+It tells the backend which frontend origin is allowed to access it through CORS.
+
+This is especially important for admin login and admin-protected requests because backend authentication uses an HTTP-only cookie. The browser will only send and receive that cookie correctly if the backend allows the frontend origin and credentials.
+
+Backend Render environment variable:
+
+```text
+FRONTEND_URL=https://state-authorities-app-1.onrender.com
+```
+
+For local backend development, the backend `.env` should allow:
+
+```text
+FRONTEND_URL=http://localhost:5173
+```
+
+In short:
+
+```text
+VITE_API_URL  = where the frontend sends API requests
+FRONTEND_URL  = which frontend origin the backend allows
+```
+
+Example setup:
+
+```text
+Frontend local URL: http://localhost:5173
+Backend local URL:  http://localhost:3000/api
+
+Frontend Render URL: https://state-authorities-app-1.onrender.com
+Backend Render API:  https://state-authorities-app.onrender.com/api
+```
+
+---
+
+## Backend API Usage
+
+API-related functions are located in:
+
+```text
+src/api
+```
+
+Current API files:
+
+```text
+client.ts
+agencies.ts
+agencyTypes.ts
+auth.ts
+```
+
+Current backend endpoints used by the frontend:
+
+```text
+GET    /api/agencies
+GET    /api/agencies/:id
+GET    /api/agencies/:id/news
+GET    /api/agency-types
+POST   /api/auth/login
+POST   /api/auth/logout
+POST   /api/agencies
+PUT    /api/agencies/:id
+DELETE /api/agencies/:id
+```
+
+Public examples:
+
+```text
+GET /api/agencies?page=1&limit=6
+GET /api/agencies?type=ministerstvo
+GET /api/agencies?search=цифрової
+GET /api/agencies/244
+GET /api/agencies/244/news?page=1&limit=3
+GET /api/agency-types
+```
+
+Admin examples:
+
+```text
+POST   /api/auth/login
+POST   /api/auth/logout
+POST   /api/agencies
+PUT    /api/agencies/:id
+DELETE /api/agencies/:id
 ```
 
 ---
@@ -228,12 +646,13 @@ The main component groups are:
 
 ```text
 components/
+├── catalog/
+├── home/
 ├── layout/
-├── ui/
-└── catalog/
+└── ui/
 ```
 
-You can add there also "home" and "institutions"
+---
 
 ### `components/layout`
 
@@ -262,13 +681,10 @@ The header contains:
 - Logo
 - Link to Home page
 - Link to Catalog page
+- Admin link
+- Login/logout button
 - SVG icons from the sprite file
-
-Header styles are stored separately in:
-
-```text
-src/components/layout/Header.module.css
-```
+- Active and hover navigation states
 
 #### Footer
 
@@ -282,14 +698,7 @@ The footer contains:
 
 - Logo
 - General platform description
-- Project information
-- Contact placeholder
-
-Footer styles are stored separately in:
-
-```text
-src/components/layout/Footer.module.css
-```
+- Project information links
 
 #### PageContainer
 
@@ -301,41 +710,30 @@ src/components/layout/PageContainer.tsx
 
 This component keeps page content aligned to the same maximum width.
 
-Example:
-
-```tsx
-import type { ReactNode } from "react";
-
-type PageContainerProps = {
-  children: ReactNode;
-};
-
-export function PageContainer({ children }: PageContainerProps) {
-  return <div className="page-container">{children}</div>;
-}
-```
-
 ---
 
 ### `components/ui`
 
 Contains small reusable UI components.
 
-Current component:
+Current components:
 
 ```text
 Icon.tsx
+LoadingState.tsx
+ErrorState.tsx
+EmptyState.tsx
 ```
 
 The `Icon` component is used to render icons from the SVG sprite.
 
 ---
 
-### `components/home (To be done)`
+### `components/home`
 
-This folder is intended for Home page sections.
+Contains Home page section components.
 
-Suggested components:
+Current components:
 
 ```text
 HeroSection.tsx
@@ -344,15 +742,13 @@ CategoriesSection.tsx
 AboutSection.tsx
 ```
 
-The Home page should later be refactored so that each large section is moved into its own component.
-
 ---
 
 ### `components/catalog`
 
-This folder is intended for Catalog page components.
+Contains Catalog page components.
 
-Suggested components:
+Current components:
 
 ```text
 CatalogFilters.tsx
@@ -362,35 +758,13 @@ InstitutionList.tsx
 Pagination.tsx
 ```
 
-Recommended responsibility:
+Responsibility:
 
-- `CatalogFilters.tsx` — filter sidebar layout
-- `CatalogToolbar.tsx` — search input and result count
-- `InstitutionCard.tsx` — one institution card
+- `CatalogFilters.tsx` — filter sidebar, search input, category select, sorting select
+- `CatalogToolbar.tsx` — result count
+- `InstitutionCard.tsx` — one clickable institution card
 - `InstitutionList.tsx` — list of institution cards
-- `Pagination.tsx` — pagination layout
-
----
-
-### `components/institution (To be done)`
-
-This folder is intended for Institution details page components.
-
-Suggested components:
-
-```text
-InstitutionHeader.tsx
-InstitutionInfoCard.tsx
-InstitutionManagementCard.tsx
-RelatedInstitutions.tsx
-```
-
-Recommended responsibility:
-
-- `InstitutionHeader.tsx` — page title and short description
-- `InstitutionInfoCard.tsx` — main institution information
-- `InstitutionManagementCard.tsx` — management/person in charge
-- `RelatedInstitutions.tsx` — related or subordinate institutions
+- `Pagination.tsx` — pagination controls
 
 ---
 
@@ -407,6 +781,7 @@ src/styles/global.css
 Examples of what belongs in `global.css`:
 
 - CSS reset
+- CSS variables
 - `body` styles
 - Base typography
 - Base link styles
@@ -421,13 +796,38 @@ Component-specific styles should not be placed in `global.css`.
 For example:
 
 ```text
-Header styles  → Header.module.css
-Footer styles  → Footer.module.css
-Catalog styles → Catalog component modules
-Home styles    → Home component modules
+Header styles        → Header.module.css
+Footer styles        → Footer.module.css
+Catalog page styles  → CatalogPage.module.css
+Institution styles   → InstitutionPage.module.css
+Home styles          → Home component modules
 ```
 
-This keeps the styles easier to maintain and avoids conflicts between pages.
+---
+
+## CSS Variables
+
+Shared design tokens are stored in:
+
+```text
+src/styles/global.css
+```
+
+Current important variables:
+
+```css
+:root {
+  --fon-2: #eeeeee;
+  --fon-1: #ffffff;
+  --kdou-primary: #031126;
+  --kdou-background: #ffffff;
+  --kdou-secondary: #eeffff;
+  --kdou-accent: #289999;
+  --kdou-inactive: #a1a1a1;
+  --kdou-destructive: #900000;
+  --font-family: "Inter", sans-serif;
+}
+```
 
 ---
 
@@ -471,29 +871,63 @@ This file is an SVG sprite. It contains multiple icons defined as SVG symbols.
 Examples of available icons:
 
 ```text
-Home
-Catalog
-Search
-Filter
-Institutions
-Regions
-Workers
-Worker
-Website
-CabMin
-Education
-Court
-LeftArrow
-RightMenu
+Address
+ArrowRight
 BottomMenu
+CabMin
+Catalog
+Court
+Date
+Delete
+Description
+Education
+Email
+Filter
 Frame
+Home
+Institutions
+LawEnfAgencies
+LeftArrow
+LeftMenu
+Look
+Modify
+News
+Official-symbol
+Phone
+Regions
+RegAdmin
+RightMenu
+Search
+StateEnterpr
+Website
+Worker
+Workers
 ```
 
-The sprite file contains the following SVG icons:
+---
 
-```md
-![Sprite Images](./ReadmeImgs/Sprite-svg.png)
+## Icons Preview HTML
+
+Available icons are shown in an HTML preview file instead of an image.
+
+The preview file is located in the same README images folder:
+
+```text
+./ReadmeImgs/svg-sprite-preview.html
 ```
+
+Open this file in a browser to see all available SVG symbols and test icon color/size behavior.
+
+```text
+apps/web/ReadmeImgs/svg-sprite-preview.html
+```
+
+The HTML preview is useful because:
+
+- It shows all current icons from `icons.svg`
+- It allows checking icons at different sizes
+- It allows testing icon colors
+- It confirms that icons using `currentColor` can be styled through CSS
 
 ---
 
@@ -536,33 +970,13 @@ export function Icon({ name, size = 20, className }: IconProps) {
 Usage example:
 
 ```tsx
-<Icon name="Home" size={18} />
-<Icon name="Catalog" size={18} />
+<Icon name="Home" size={28} />
+<Icon name="Catalog" size={28} />
 <Icon name="Search" size={20} />
-```
-
----
-
-## Example: Icons in Header
-
-Icons are already used in the header.
-
-File:
-
-```text
-src/components/layout/Header.tsx
-```
-
----
-
-## Example: Icons in Footer
-
-The footer uses the same logo icon as the header.
-
-File:
-
-```text
-src/components/layout/Footer.tsx
+<Icon name="ArrowRight" size={24} />
+<Icon name="Modify" size={20} />
+<Icon name="Look" size={20} />
+<Icon name="Delete" size={20} />
 ```
 
 ---
@@ -574,101 +988,32 @@ The icons use `currentColor`, so their color can be changed through CSS.
 Example:
 
 ```css
-.navLink svg {
-  color: #777777;
-}
-
-.navLink:hover svg {
-  color: #111111;
-}
-```
-
-You can also change the color of the parent element:
-
-```css
 .navLink {
-  color: #777777;
+  color: #ffffff;
 }
 
 .navLink:hover {
-  color: #111111;
+  color: var(--kdou-accent);
 }
 ```
 
-Because the SVG uses `currentColor`, the icon will inherit the text color.
+Because the SVG uses `currentColor`, the icon inherits the text color from the parent element.
 
----
+Example for admin action icons:
 
-## Mock Data
+```css
+.editButton {
+  color: var(--kdou-accent);
+}
 
-Mock data is currently used instead of backend API data.
+.viewButton {
+  color: var(--kdou-accent);
+}
 
-Mock data is located in:
-
-```text
-src/data/mockInstitutions.ts
+.deleteButton {
+  color: var(--kdou-destructive);
+}
 ```
-
-Institution types are located in:
-
-```text
-src/types/institution.ts
-```
-
-### Why Mock Data Is Used Now
-
-Mock data is used because the current task is focused on the layout only.
-
-Using mock data allows the FE team to:
-
-- Build the UI before backend integration is finished
-- Match the Figma layout faster
-- Work without depending on a running backend server
-- Prepare reusable components
-- Test routing and page structure
-- Split work between multiple FE developers
-
-### What Mock Data Will Be Replaced With
-
-Later, mock data should be replaced with real data from the backend API.
-
-Expected replacement:
-
-```text
-mockInstitutions.ts → API service calls
-```
-
-Possible future API layer:
-
-```text
-src/api/institutions.ts
-```
-
-Example future structure:
-
-```text
-src/
-├── api/
-│   └── institutions.ts
-├── data/
-│   └── mockInstitutions.ts
-```
-
-Later, `mockInstitutions` should be removed from page components and replaced with functions like:
-
-```ts
-getInstitutions();
-getInstitutionById(id);
-```
-
-Example:
-
-```tsx
-const institutions = await getInstitutions();
-```
-
-The Catalog page will eventually fetch a list of institutions from the backend.  
-The Institution page will eventually fetch one institution by ID.
 
 ---
 
@@ -718,6 +1063,38 @@ npm run preview
 
 ---
 
+## Deployment Notes
+
+The frontend and backend are deployed as separate Render services.
+
+Frontend Render URL example:
+
+```text
+https://state-authorities-app-1.onrender.com
+```
+
+Backend Render URL example:
+
+```text
+https://state-authorities-app.onrender.com/api
+```
+
+The frontend Render service must include this environment variable:
+
+```text
+VITE_API_URL=https://state-authorities-app.onrender.com/api
+```
+
+The backend Render service must include this environment variable:
+
+```text
+FRONTEND_URL=https://state-authorities-app-1.onrender.com
+```
+
+After adding or changing environment variables, redeploy the affected Render service.
+
+---
+
 ## Git Workflow
 
 Create a feature branch from `develop`:
@@ -726,6 +1103,12 @@ Create a feature branch from `develop`:
 git checkout develop
 git pull origin develop
 git checkout -b feature/SA-<ID>-<short-name>
+```
+
+Example:
+
+```bash
+git checkout -b feature/SA-29-api-client-web
 ```
 
 Before committing, check the build:
@@ -741,7 +1124,7 @@ Commit from the repository root:
 cd ../..
 git status
 git add apps/web
-git commit -m "feat: add web basic layout"
+git commit -m "feat: update web API client and institution pages"
 git push origin feature/SA-<ID>-<short-name>
 ```
 
@@ -753,168 +1136,57 @@ develop
 
 ---
 
-## Next Steps for the Front-End Team
+## Front-End Checklist Before PR
 
-The current implementation is the layout foundation.  
-The next FE tasks can be split between developers as follows.
+Before opening a PR, check:
 
-### 1. Refactor Pages Into Components
-
-Move large page sections from `pages/` into dedicated components.
-
-Suggested split:
-
-```text
-HomePage.tsx
-→ HeroSection.tsx
-→ StatsSection.tsx
-→ CategoriesSection.tsx
-→ AboutSection.tsx
-
-CatalogPage.tsx
-→ CatalogFilters.tsx
-→ CatalogToolbar.tsx
-→ InstitutionList.tsx
-→ InstitutionCard.tsx
-→ Pagination.tsx
-
-InstitutionPage.tsx
-→ InstitutionHeader.tsx
-→ InstitutionInfoCard.tsx
-→ InstitutionManagementCard.tsx
-→ RelatedInstitutions.tsx
+```bash
+cd apps/web
+npm run lint
+npm run build
 ```
 
-Goal:
+Checklist:
 
-- Keep pages simple
-- Make components reusable
-- Make work easier to divide between developers
-
----
-
-### 2. Match the Figma Design More Closely
-
-Current styles are basic layout styles.
-
-Next steps:
-
-- Update spacing
-- Update font sizes
-- Update colors
-- Update card styles
-- Update buttons
-- Update icons
-- Add responsive behavior according to Figma
-
-Global styles should be updated carefully.
-
-Only shared design tokens and base styles should stay in `global.css`.
-
-Component-specific styles should go into CSS modules.
-
----
-
-### 3. Add Loading, Error, and Empty States
-
-After API integration, each data-driven page should handle:
-
-- Loading state
-- Error state
-- Empty state
-- No search results state
-
-Example:
-
-```text
-Loading institutions...
-Could not load institutions.
-No institutions found.
-```
-
----
-
-### 4. Implement Search and Filters
-
-The current search and filters are static placeholders.
-
-Future tasks:
-
-- Connect search input to state
-- Filter by category
-- Filter by region
-- Reset filters
-- Sync filters with URL query parameters if needed
-
----
-
-### 5. Implement Pagination
-
-Current pagination is only a visual placeholder.
-
-Future tasks:
-
-- Connect pagination to real data
-- Add current page state
-- Handle previous/next buttons
-- Decide whether pagination is frontend-side or backend-side
-
----
-
-### 7. Improve Accessibility
-
-Future tasks:
-
-- Add proper button labels
-- Add accessible form labels
-- Add active navigation states
-- Ensure keyboard navigation works
-- Check color contrast
-- Add `aria-label` where needed
-
----
-
-### 8. Connect Shared UI Package If Needed
-
-The repository has a shared UI ownership area:
-
-```text
-/packages/ui
-```
-
-If the team decides to create reusable design-system components, shared components such as buttons, cards, inputs, and icons can later be moved there.
-
-For now, simple components can stay inside:
-
-```text
-/apps/web/src/components
-```
+- Branch is based on `develop`
+- PR targets `develop`
+- Build passes
+- Lint passes
+- No `.env` secrets are committed
+- `VITE_API_URL` is documented if deployment behavior changed
+- `FRONTEND_URL` is documented if backend CORS/auth behavior changed
+- UI was checked locally
+- Icons were checked in the HTML sprite preview if new icons were added
 
 ---
 
 ## Development Notes
 
-This front-end currently contains layout only.
-
 Implemented:
 
-- Basic routing
+- Page routing
 - Header
 - Footer
-- Home page layout
-- Catalog page layout
-- Institution details page layout
-- Mock data
+- Home page
+- Catalog page
+- Institution details page
+- Login page
+- Protected Admin page
+- Backend login/logout integration for admin authentication
+- API client with `VITE_API_URL` support
+- API client credential support through `withCredentials: true`
+- Backend API integration for agencies
+- Backend API integration for agency types
+- Backend API integration for agency news
+- Admin page prepared for backend create/update/delete operations
+- Catalog search/filter/sort/pagination
+- Loading, error, and empty states
 - SVG sprite icon usage
-- Initial component and style organization
+- HTML preview for all available SVG icons
 
-Not implemented yet:
+Partially implemented or future work:
 
-- Real backend API integration
-- Real search logic
-- Real filtering
-- Pagination logic
-- Loading states
-- Error states
-- Authentication
-- Admin functionality
+- Complete real admin dashboard create/update/delete UI
+- Add backend related-agencies endpoint if this feature returns
+- Improve tests
+- Continue accessibility improvements
