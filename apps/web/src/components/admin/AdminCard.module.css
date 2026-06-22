@@ -1,0 +1,179 @@
+.adminCard {
+  display: grid;
+  grid-template-columns: 1fr 220px 48px;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: #ffffff;
+  border: 2px solid #a1a1aa;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tagBadge {
+  width: fit-content;
+  padding: 4px 8px;
+  border: 2px solid #a1a1a1;
+  border-radius: 5px;
+  color: #a1a1a1;
+  background-color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #a1a1a1;
+  word-break: break-word;
+}
+
+.cardMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #a1a1a1;
+}
+
+.metaIcon {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: #a1a1aa;
+  transition: color 0.2s ease;
+}
+
+.actionBtn:hover {
+  color: #475569;
+}
+
+.adminCard:hover,
+.adminCard:focus-within {
+  border-color: #031126;
+}
+
+.adminCard:hover .cardTitle,
+.adminCard:focus-within .cardTitle {
+  color: #031126;
+}
+
+.adminCard:hover .tagBadge,
+.adminCard:focus-within .tagBadge {
+  color: #289999;
+  border-color: #289999;
+  background-color: #eefeff;
+}
+
+.adminCard:hover .metaItem,
+.adminCard:focus-within .metaItem {
+  color: #031126;
+}
+
+.adminCard:hover .metaItem svg,
+.adminCard:focus-within .metaItem svg {
+  color: #289999;
+}
+
+.cardRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  width: 220px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+
+  width: 48px;
+}
+
+.view:hover,
+.view:focus-visible,
+.edit:hover,
+.edit:focus-visible {
+  color: #289999;
+}
+
+.delete:hover,
+.delete:focus-visible {
+  color: #900000;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.topActions {
+  display: flex;
+  gap: 8px;
+}
+
+.websiteLink {
+  color: inherit;
+  text-decoration: none;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.websiteLink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+  .adminCard {
+    grid-template-columns: 1fr;
+  }
+
+  .cardRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .actions {
+    flex-direction: row;
+  }
+}
