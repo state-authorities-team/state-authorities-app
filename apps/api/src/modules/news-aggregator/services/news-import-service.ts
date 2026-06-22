@@ -69,9 +69,7 @@ export class NewsImportService {
     );
 
     const upsertedCount = await this.newsDataService.upsertManyNews(freshNewsItems, agencyId);
-    logger.info(
-      `Pipeline finished for agency ${agencyId}. Upserted records count: ${upsertedCount}`,
-    );
+    logger.debug(`Pipeline finished for agency ${agencyId}. New records: ${upsertedCount}`);
     return upsertedCount;
   }
 
