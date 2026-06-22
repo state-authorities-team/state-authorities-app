@@ -1,0 +1,151 @@
+.filtersPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: #ffffff;
+  border: 2px solid #031126;
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.filtersHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.filtersHeader svg {
+  width: 36px;
+  height: 36px;
+  color: #289999;
+}
+
+.filterTitle {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  color: #031126;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toolbarBtn {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #eefeff;
+  border: 2px solid #031126;
+  border-radius: 5px;
+  color: #031126;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toolbarBtn:hover,
+.toolbarBtn:focus-visible {
+  background: #289999;
+  color: #ffffff;
+}
+
+.toolbarBtn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.input::placeholder {
+  color: #a1a1a1;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.labelTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #031126;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input,
+.select {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 2px solid #a1a1a1;
+  border-radius: 5px;
+  background: #ffffff;
+  font-size: 16px;
+  color: #031126;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.input:hover,
+.select:hover {
+  border-color: #031126;
+}
+
+.input:focus,
+.select:focus {
+  border-color: #031126;
+}
+
+.input {
+  padding-right: 40px;
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  color: #a1a1a1;
+  transition: color 0.2s ease;
+  pointer-events: none;
+}
+
+.inputWrapper:hover .searchIcon,
+.input:focus + .searchIcon {
+  color: #031126;
+}
+
+.resetButton {
+  width: 100%;
+  height: 40px;
+  border: 2px solid #900000;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #900000;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resetButton:hover,
+.resetButton:focus-visible {
+  background: #900000;
+  color: #ffffff;
+}
