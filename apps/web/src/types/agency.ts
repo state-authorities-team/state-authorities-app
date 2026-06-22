@@ -69,3 +69,15 @@ export type AgencyPayload = {
   website?: string | null;
   region?: string | null;
 };
+
+export type AgencyCsvImportResult = {
+  totalRows: number;
+  imported: number;
+  skipped: number;
+};
+
+export type AgencyCsvImportResponse = {
+  success: boolean;
+  message: string;
+  data: AgencyCsvImportResult;
+};

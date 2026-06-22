@@ -1,6 +1,7 @@
 import { apiClient } from "./client";
 import type {
   Agency,
+  AgencyCsvImportResponse,
   AgencyNewsItem,
   AgencyNewsResponse,
   AgencyPayload,
@@ -90,10 +91,6 @@ export const getAgencies = async (
     });
 
     if (response.data?.success && Array.isArray(response.data.data)) {
-      if (response.data.data.length === 0 && !params?.type && !params?.search) {
-        return createMockResponse(mockAgenciesFallback);
-      }
-
       return response.data;
     }
 
@@ -189,4 +186,53 @@ export async function updateAgency(
 
 export async function deleteAgency(id: number): Promise<void> {
   await apiClient.delete(`/agencies/${id}`);
+}
+
+function getCsvFileName(contentDisposition?: string) {
+  if (!contentDisposition) {
+    return `agencies-${new Date().toISOString()}.csv`;
+  }
+
+  const match = contentDisposition.match(/filename="?([^"]+)"?/);
+
+  return match?.[1] || `agencies-${new Date().toISOString()}.csv`;
+}
+
+export async function exportAgenciesCsv(): Promise<void> {
+  const response = await apiClient.get<Blob>("/agencies/export", {
+    responseType: "blob",
+  });
+
+  const fileName = getCsvFileName(response.headers["content-disposition"]);
+  const url = window.URL.createObjectURL(response.data);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+
+  document.body.appendChild(link);
+  link.click();
+
+  link.remove();
+  window.URL.revokeObjectURL(url);
+}
+
+export async function importAgenciesCsv(
+  file: File,
+): Promise<AgencyCsvImportResponse> {
+  const formData = new FormData();
+
+  formData.append("file", file);
+
+  const response = await apiClient.post<AgencyCsvImportResponse>(
+    "/agencies/import-csv",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  );
+
+  return response.data;
 }

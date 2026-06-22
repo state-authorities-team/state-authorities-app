@@ -11,6 +11,12 @@ type AdminToolbarProps = {
   onTypeChange: (value: string) => void;
   onSortChange: (value: string) => void;
   onResetFilters: () => void;
+  onAddInstitution: () => void;
+  onImportCsv: () => void;
+  onExportCsv: () => void;
+  isImporting: boolean;
+  isExporting: boolean;
+  isMutating: boolean;
 };
 
 export function AdminToolbar({
@@ -22,6 +28,12 @@ export function AdminToolbar({
   onTypeChange,
   onSortChange,
   onResetFilters,
+  onAddInstitution,
+  onImportCsv,
+  onExportCsv,
+  isImporting,
+  isExporting,
+  isMutating,
 }: AdminToolbarProps) {
   return (
     <div className={styles.filtersPanel}>
@@ -31,19 +43,34 @@ export function AdminToolbar({
       </div>
 
       <div className={styles.actions}>
-        <button className={styles.toolbarBtn}>
+        <button
+          type="button"
+          className={styles.toolbarBtn}
+          onClick={onAddInstitution}
+          disabled={isMutating}
+        >
           <Icon name="Plus" />
-          Додати установу
+          {isMutating ? "Додавання..." : "Додати установу"}
         </button>
 
-        <button className={styles.toolbarBtn}>
+        <button
+          type="button"
+          className={styles.toolbarBtn}
+          onClick={onImportCsv}
+          disabled={isImporting}
+        >
           <Icon name="Upload" />
-          Імпорт CSV
+          {isImporting ? "Імпорт..." : "Імпорт CSV"}
         </button>
 
-        <button className={styles.toolbarBtn}>
+        <button
+          type="button"
+          className={styles.toolbarBtn}
+          onClick={onExportCsv}
+          disabled={isExporting}
+        >
           <Icon name="Download" />
-          Експорт CSV
+          {isExporting ? "Експорт..." : "Експорт CSV"}
         </button>
       </div>
 
