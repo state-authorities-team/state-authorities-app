@@ -1,6 +1,7 @@
 import type { Agency } from "../../types/agency";
 import { Icon } from "../ui/Icon";
 import styles from "./AdminCard.module.css";
+import { Link } from "react-router-dom";
 
 type AdminCardProps = {
   institution: Agency;
@@ -47,19 +48,29 @@ export function AdminCard({ institution }: AdminCardProps) {
         </div>
 
         <div className={styles.actions}>
-          <div className={styles.topActions}>
-            <button className={`${styles.actionBtn} ${styles.view}`}>
-              <Icon name="eye" />
+            <Link
+                to={`/institutions/${institution.id}`}
+                className={`${styles.actionBtn} ${styles.view}`}
+                aria-label={`Переглянути ${institution.name}`}
+            >
+                <Icon name="Look" />
+            </Link>
+
+            <button
+                type="button"
+                className={`${styles.actionBtn} ${styles.edit}`}
+                aria-label={`Редагувати ${institution.name}`}
+            >
+                <Icon name="Modify" />
             </button>
 
-            <button className={`${styles.actionBtn} ${styles.edit}`}>
-              <Icon name="edit" />
+            <button
+                type="button"
+                className={`${styles.actionBtn} ${styles.delete}`}
+                aria-label={`Видалити ${institution.name}`}
+            >
+                <Icon name="Delete" />
             </button>
-          </div>
-
-          <button className={`${styles.actionBtn} ${styles.delete}`}>
-            <Icon name="trash" />
-          </button>
         </div>
       </div>
     </article>
