@@ -33,9 +33,12 @@ This front-end currently includes:
 - API client layer for backend communication
 - Backend integration for agencies, agency types, and agency news
 - Backend-connected admin authentication flow
-- Admin page prepared for backend create/update/delete operations
+- Admin agency management UI
+- Admin create, read, update, and delete operations
+- Admin CSV import and export actions
+- Custom admin modal windows for add/edit/view, delete confirmation, and import/export results
 
-This is an active front-end implementation. Some features are still frontend-only or partially integrated.
+This is an active front-end implementation connected to the backend API.
 
 Important current limitations:
 
@@ -45,6 +48,7 @@ Important current limitations:
 - Related agencies were removed from the institution page because the backend related-agencies endpoint is not currently mapped.
 - The frontend Render deployment must use `VITE_API_URL` to connect to the deployed backend.
 - The backend Render deployment must use `FRONTEND_URL` to allow the deployed frontend origin.
+- CSV import depends on valid CSV column names and agency type names that exist in the backend database.
 
 ---
 
@@ -93,6 +97,19 @@ apps/web/
 │   │   ├── adminAuthStore.ts
 │   │   └── useAdminAuth.ts
 │   ├── components/
+│   │   ├── admin/
+│   │   │   ├── AdminAgencyForm.tsx
+│   │   │   ├── AdminAgencyForm.module.css
+│   │   │   ├── AdminCard.tsx
+│   │   │   ├── AdminCard.module.css
+│   │   │   ├── AdminConfirmDialog.tsx
+│   │   │   ├── AdminConfirmDialog.module.css
+│   │   │   ├── AdminHero.tsx
+│   │   │   ├── AdminHero.module.css
+│   │   │   ├── AdminResultDialog.tsx
+│   │   │   ├── AdminResultDialog.module.css
+│   │   │   ├── AdminToolbar.tsx
+│   │   │   └── AdminToolbar.module.css
 │   │   ├── catalog/
 │   │   │   ├── CatalogFilters.tsx
 │   │   │   ├── CatalogToolbar.tsx
@@ -344,7 +361,7 @@ Route:
 
 Purpose:
 
-The Admin page is protected by the admin auth guard and is intended for managing agency records.
+The Admin page is protected by the admin auth guard and is used for managing agency records.
 
 The protected route is handled by:
 
@@ -362,6 +379,13 @@ src/auth/AdminAuthContext.tsx
 src/auth/adminAuthStore.ts
 src/auth/useAdminAuth.ts
 src/api/auth.ts
+src/api/agencies.ts
+src/components/admin/AdminToolbar.tsx
+src/components/admin/AdminCard.tsx
+src/components/admin/AdminHero.tsx
+src/components/admin/AdminAgencyForm.tsx
+src/components/admin/AdminConfirmDialog.tsx
+src/components/admin/AdminResultDialog.tsx
 ```
 
 Admin-only backend operations include:
@@ -370,17 +394,28 @@ Admin-only backend operations include:
 POST   /api/agencies
 PUT    /api/agencies/:id
 DELETE /api/agencies/:id
+POST   /api/agencies/import-csv
+GET    /api/agencies/export
 ```
 
 These backend routes require an authenticated `ADMIN` user.
 
-Current status:
+Current admin functionality:
 
-- Admin page loads successfully.
-- Admin login uses the backend auth endpoint.
-- Login/logout is handled through the backend API.
-- Admin page is prepared for backend create/update/delete operations.
-- Correct Render/CORS configuration is required for deployed admin auth to work.
+- Admin page loads backend agency data.
+- Admin login/logout uses the backend authentication endpoints.
+- Admin authentication is handled through an HTTP-only backend cookie.
+- Admin can add new agencies.
+- Admin can view agency details in a read-only modal.
+- Admin can edit existing agencies.
+- Admin can delete agencies through a custom confirmation modal.
+- Admin can import agencies from a CSV file.
+- Admin can export agencies to a CSV file.
+- Import/export errors are displayed through custom modal windows.
+- Import results show total rows, imported rows, and skipped rows.
+- Modal windows lock background page scrolling while open.
+
+Correct Render/CORS configuration is required for deployed admin authentication to work.
 
 ---
 
@@ -609,6 +644,8 @@ POST   /api/auth/logout
 POST   /api/agencies
 PUT    /api/agencies/:id
 DELETE /api/agencies/:id
+POST   /api/agencies/import-csv
+GET    /api/agencies/export
 ```
 
 Public examples:
@@ -630,6 +667,8 @@ POST   /api/auth/logout
 POST   /api/agencies
 PUT    /api/agencies/:id
 DELETE /api/agencies/:id
+POST   /api/agencies/import-csv
+GET    /api/agencies/export
 ```
 
 ---
@@ -765,6 +804,30 @@ Responsibility:
 - `InstitutionCard.tsx` — one clickable institution card
 - `InstitutionList.tsx` — list of institution cards
 - `Pagination.tsx` — pagination controls
+
+### `components/admin`
+
+Contains Admin page components used for agency management.
+
+Current components:
+
+```text
+AdminHero.tsx
+AdminToolbar.tsx
+AdminCard.tsx
+AdminAgencyForm.tsx
+AdminConfirmDialog.tsx
+AdminResultDialog.tsx
+```
+
+Responsibility:
+
+- `AdminHero.tsx` — admin page title and total agency counter
+- `AdminToolbar.tsx` — admin search, filter, sort, add, import, and export controls
+- `AdminCard.tsx` — one admin agency card with view, edit, and delete actions
+- `AdminAgencyForm.tsx` — add/edit form and read-only agency view modal
+- `AdminConfirmDialog.tsx` — custom confirmation modal for delete actions
+- `AdminResultDialog.tsx` — custom result modal for CSV import/export errors and import summaries
 
 ---
 
