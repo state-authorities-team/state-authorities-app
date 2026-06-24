@@ -1,0 +1,18 @@
+import express from "express";
+import { uploadCsvMiddleware } from "../configs/multer-config.js";
+import * as agencyTypeController from "../controllers/agency-type-controller.js";
+import { checkRoleMiddleware, requireAuthMiddleware } from "../middlewares/auth-middleware.js";
+
+const agencyTypeRouter = express.Router();
+
+agencyTypeRouter.get("/", agencyTypeController.getAll);
+agencyTypeRouter.get("/export", agencyTypeController.exportCsv);
+agencyTypeRouter.post(
+  "/import-csv",
+  requireAuthMiddleware,
+  checkRoleMiddleware(["ADMIN"]),
+  uploadCsvMiddleware.single("file"),
+  agencyTypeController.importFromCsv,
+);
+
+export default agencyTypeRouter;

@@ -1,0 +1,10 @@
+* @Alona11t
+
+/apps/api/** @state-authorities-team/backend @Alona11t
+/apps/web/** @state-authorities-team/frontend @Alona11t
+/apps/bff/** @state-authorities-team/backend @state-authorities-team/frontend @Alona11t
+/packages/shared-types/** @state-authorities-team/backend @state-authorities-team/frontend @Alona11t
+/packages/ui/** @state-authorities-team/frontend @Stas-Steshenko
+/infra/** @Alona11t
+/.github/workflows/** @Alona11t
+/docs/** @state-authorities-team/pm

@@ -1,0 +1,1010 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "State Authorities API",
+    "description": "Core backend service for managing state authorities profiles and autonomous news aggregation.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/api/health": {
+      "get": {
+        "tags": ["System Monitor"],
+        "summary": "Check system health and database connectivity",
+        "description": "Performs a check of the server status and tests the active database connection.",
+        "responses": {
+          "200": {
+            "description": "System is healthy and database is connected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "status": { "type": "string", "example": "UP" },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-06-16T19:00:00.000Z"
+                    },
+                    "uptime": { "type": "number", "example": 124.5 },
+                    "services": {
+                      "type": "object",
+                      "properties": {
+                        "database": { "type": "string", "example": "HEALTHY" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database connection is unhealthy or server is down",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "status": { "type": "string", "example": "DOWN" },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-06-16T19:00:00.000Z"
+                    },
+                    "uptime": { "type": "number", "example": 124.5 },
+                    "services": {
+                      "type": "object",
+                      "properties": {
+                        "database": { "type": "string", "example": "UNHEALTHY" }
+                      }
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Can't reach database server on localhost:5432"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": ["Authorization"],
+        "summary": "Register a new user account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "example": "1" },
+                        "email": { "type": "string", "format": "email", "example": "admin@gov.ua" },
+                        "role": { "type": "string", "example": "user" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": { "type": "string", "example": "Validation failed" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Authorization"],
+        "summary": "Sign in and receive session cookie",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful authentication. Returns secure HTTP-Only cookie",
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string",
+                  "example": "token=eingHgnO...; Path=/; HttpOnly; Secure; SameSite=lax"
+                },
+                "description": "Secure session JSON Web Token"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer", "example": "1" },
+                        "email": { "type": "string", "format": "email", "example": "admin@gov.ua" },
+                        "role": { "type": "string", "example": "user" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": { "type": "string", "example": "Validation failed" },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "field": { "type": "string", "example": "email" },
+                        "error": { "type": "string", "example": "Invalid email address" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credential provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": { "type": "string", "example": "Invalid email or password" }
+                  }
+                }
+              }
+            }
+          },
+
+          "500": {
+            "description": "JWT Secret is not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": { "type": "string", "example": "JWT_SECRET is not configured" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": ["Authorization"],
+        "summary": "Log out from the system and clear session cookie",
+        "description": "Clears the secure HTTP-Only authentication cookie by setting its max age to 0",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully logged out. Browser will clear the token cookie.",
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string",
+                  "example": "token=; Path=/; Expires=; MAX-AGE=0; HttpOnly; Secure; SameSite=lax"
+                },
+                "description": "Instruction for the browser to wipe the secure token cookie."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Logout completed" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error during session clearance"
+          }
+        }
+      }
+    },
+    "/api/refresh": {
+      "post": {
+        "tags": ["KMU Parser"],
+        "summary": "Force manual execution of the full kmu scraping loop",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync pipeline completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "syncedCount": { "type": "integer", "example": 20 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unathorized - Missing or broken token cookie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": { "type": "string", "example": "Unauthorized" }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN privileges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": {
+                      "type": "string",
+                      "example": "Access denied. You do not have the required permissions."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate Limited - KMU pipeline already is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "message": {
+                      "type": "string",
+                      "example": "KMU import pipeline is already running. Please try again later"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agencies": {
+      "get": {
+        "tags": ["Agencies"],
+        "summary": "Get a paginated list of state agencies",
+        "description": "Returns a list of agencies with optional query filters and pagination info",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1, "minimum": 1 },
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 20, "minimum": 1, "maximum": 100 },
+            "description": "Number of agencies per page"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Slug of the agency type to filter by"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Search term matching agency name, shortName, or description"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved paginated agencies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "count": { "type": "integer", "example": 1 },
+                    "total": { "type": "integer", "example": 10 },
+                    "totalPages": { "type": "integer", "example": 5 },
+                    "currentPage": { "type": "integer", "example": 1 },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Agency" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Agencies"],
+        "summary": "Create a new agency profile",
+        "security": [{ "cookieAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "typeId"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Міністерство цифрової трансформації України"
+                  },
+                  "typeId": { "type": "integer", "example": 2 },
+                  "shortName": { "type": "string", "example": "Мінцифра" },
+                  "headName": { "type": "string", "example": "Федоров Михайло Альбертович" },
+                  "headTitle": { "type": "string", "example": "Віце-прем'єр-міністр" },
+                  "description": {
+                    "type": "string",
+                    "example": "Центральний орган виконавчої влади..."
+                  },
+                  "address": { "type": "string", "example": "вул. Ділова, 24" },
+                  "phone": { "type": "string", "example": "+38 (044) 206-79-01" },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "hello@thedigital.gov.ua"
+                  },
+                  "website": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://thedigital.gov.ua"
+                  },
+                  "region": { "type": "string", "example": "Київ" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Agency profile successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/Agency" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN role"
+          },
+          "404": {
+            "description": "Agency type not found"
+          },
+          "409": {
+            "description": "Agency name already exists"
+          }
+        }
+      }
+    },
+    "/api/agencies/export": {
+      "get": {
+        "tags": ["Agencies"],
+        "summary": "Export all agencies to a CSV file",
+        "responses": {
+          "200": {
+            "description": "A CSV file containing agency records",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agencies/{id}": {
+      "get": {
+        "tags": ["Agencies"],
+        "summary": "Get agency profile by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "Agency ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agency profile details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/Agency" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID parameter format"
+          },
+          "404": {
+            "description": "Agency not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Agencies"],
+        "summary": "Update an agency profile",
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "Agency ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Міністерство цифрової трансформації України"
+                  },
+                  "typeId": { "type": "integer", "example": 2 },
+                  "shortName": { "type": "string", "example": "Мінцифра" },
+                  "headName": { "type": "string", "example": "Федоров Михайло Альбертович" },
+                  "headTitle": { "type": "string", "example": "Віце-прем'єр-міністр" },
+                  "description": { "type": "string", "example": "Опис..." },
+                  "address": { "type": "string", "example": "вул. Ділова, 24" },
+                  "phone": { "type": "string", "example": "+38 (044) 206-79-01" },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "hello@thedigital.gov.ua"
+                  },
+                  "website": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://thedigital.gov.ua"
+                  },
+                  "region": { "type": "string", "example": "Київ" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agency profile successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/Agency" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed"
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN role"
+          },
+          "404": {
+            "description": "Agency or Agency type not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Agencies"],
+        "summary": "Delete an agency profile",
+        "security": [{ "cookieAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "Agency ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agency profile successfully deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "type": "object", "nullable": true, "example": null }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN role"
+          },
+          "404": {
+            "description": "Agency not found"
+          }
+        }
+      }
+    },
+    "/api/agencies/import-csv": {
+      "post": {
+        "tags": ["Agencies"],
+        "summary": "Import agencies from a CSV file",
+        "security": [{ "cookieAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "CSV file containing agency records to import/update"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CSV processing completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": {
+                      "type": "string",
+                      "example": "CSV file was processed successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "totalRows": { "type": "integer", "example": 10 },
+                        "imported": { "type": "integer", "example": 8 },
+                        "skipped": { "type": "integer", "example": 2 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Missing file or not a text/csv file"
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN role"
+          }
+        }
+      }
+    },
+    "/api/agencies/{id}/news": {
+      "get": {
+        "tags": ["Agencies", "News"],
+        "summary": "Get news feed for a specific agency",
+        "description": "Returns a paginated list of news articles aggregated for this agency, ordered by publish date descending.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "Agency ID"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1, "minimum": 1 },
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10, "minimum": 1 },
+            "description": "Number of news articles per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved paginated news list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "count": { "type": "integer", "example": 2 },
+                    "total": { "type": "integer", "example": 10 },
+                    "totalPages": { "type": "integer", "example": 5 },
+                    "currentPage": { "type": "integer", "example": 1 },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/News" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID parameter format"
+          },
+          "404": {
+            "description": "Agency not found"
+          }
+        }
+      }
+    },
+    "/api/agency-types": {
+      "get": {
+        "tags": ["Agency Types"],
+        "summary": "Get all agency categories",
+        "description": "Returns a list of all agency types/categories, wrapping the array in a paginated style response with total count equal to dataset length",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved agency types list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "count": { "type": "integer", "example": 3 },
+                    "total": { "type": "integer", "example": 3 },
+                    "totalPages": { "type": "integer", "example": 1 },
+                    "currentPage": { "type": "integer", "example": 1 },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/AgencyType" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agency-types/export": {
+      "get": {
+        "tags": ["Agency Types"],
+        "summary": "Export all agency categories to a CSV file",
+        "responses": {
+          "200": {
+            "description": "A CSV file containing agency type records",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agency-types/import-csv": {
+      "post": {
+        "tags": ["Agency Types"],
+        "summary": "Import agency categories from a CSV file",
+        "security": [{ "cookieAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "CSV file containing agency types to import"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CSV processing completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": {
+                      "type": "string",
+                      "example": "CSV file was imported successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "totalRows": { "type": "integer", "example": 10 },
+                        "imported": { "type": "integer", "example": 8 },
+                        "skipped": { "type": "integer", "example": 2 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Missing file or not a text/csv file"
+          },
+          "401": {
+            "description": "Unauthorized - Missing or invalid token"
+          },
+          "403": {
+            "description": "Forbidden - Requires ADMIN role"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "token",
+        "description": "Secure HTTP-Only JWT authentication token stored in cookies."
+      }
+    },
+    "schemas": {
+      "RegisterInput": {
+        "type": "object",
+        "required": ["email", "password", "confirmPassword"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "admin@gov.ua" },
+          "password": { "type": "string", "minLength": 6, "example": "securePassword123" },
+          "confirmPassword": {
+            "type": "string",
+            "minLength": 6,
+            "example": "securePassword123"
+          }
+        }
+      },
+      "LoginInput": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "admin@gov.ua" },
+          "password": { "type": "string", "minLength": 6, "example": "securePassword123" }
+        }
+      },
+      "AgencyType": {
+        "type": "object",
+        "required": ["id", "name", "slug", "createdAt"],
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "Міністерство" },
+          "slug": { "type": "string", "example": "ministerstvo" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-16T12:00:00.000Z"
+          }
+        }
+      },
+      "Agency": {
+        "type": "object",
+        "required": ["id", "name", "typeId", "createdAt", "updatedAt"],
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "Міністерство цифрової трансформації України" },
+          "shortName": { "type": "string", "nullable": true, "example": "Мінцифра" },
+          "typeId": { "type": "integer", "example": 2 },
+          "headName": {
+            "type": "string",
+            "nullable": true,
+            "example": "Федоров Михайло Альбертович"
+          },
+          "headTitle": { "type": "string", "nullable": true, "example": "Віце-прем'єр-міністр" },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Центральний орган виконавчої влади..."
+          },
+          "address": { "type": "string", "nullable": true, "example": "вул. Ділова, 24, м. Київ" },
+          "phone": { "type": "string", "nullable": true, "example": "+38 (044) 206-79-01" },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "example": "hello@thedigital.gov.ua"
+          },
+          "website": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://thedigital.gov.ua"
+          },
+          "region": { "type": "string", "nullable": true, "example": "Київ" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-16T12:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-16T12:00:00.000Z"
+          },
+          "agencyType": { "$ref": "#/components/schemas/AgencyType" }
+        }
+      },
+      "News": {
+        "type": "object",
+        "required": ["id", "title", "url", "agencyId", "createdAt"],
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "title": { "type": "string", "example": "Мінцифра запускає новий сервіс у Дії" },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Короткий опис новини про запуск сервісу."
+          },
+          "content": {
+            "type": "string",
+            "nullable": true,
+            "example": "Повний текст новини про запуск сервісу..."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://thedigital.gov.ua/news/diya-new-service"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-06-16T10:00:00.000Z"
+          },
+          "agencyId": { "type": "integer", "example": 1 },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-16T10:05:00.000Z"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+import type { LaunchOptions } from "puppeteer";
+
+export const puppeteerConfig: LaunchOptions = {
+  headless: true,
+  acceptInsecureCerts: true,
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+  ],
+  timeout: 30000,
+};

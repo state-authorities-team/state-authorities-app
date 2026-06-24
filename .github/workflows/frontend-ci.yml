@@ -1,0 +1,51 @@
+name: Frontend CI
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - "apps/web/**"
+      - "packages/ui/**"
+      - "packages/shared-types/**"
+      - ".github/workflows/frontend-ci.yml"
+  push:
+    branches: [develop]
+    paths:
+      - "apps/web/**"
+      - "packages/ui/**"
+      - "packages/shared-types/**"
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            apps/web/package-lock.json
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Typecheck
+        run: npm run typecheck --if-present
+
+      - name: Test
+        run: npm test -- --runInBand --passWithNoTests
+
+      - name: Build
+        run: npm run build

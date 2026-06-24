@@ -1,0 +1,141 @@
+.hero {
+  background: var(--kdou-primary);
+  padding: 48px 0;
+}
+
+.heroContent {
+  width: 100%;
+  max-width: 708px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 100%;
+  color: var(--fon-1);
+}
+
+.description {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--fon-1);
+}
+
+.searchPanel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 72px;
+
+  padding: 20px;
+
+  background: transparent;
+  border: 3px solid var(--kdou-inactive);
+  border-radius: 10px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.searchPanel:hover {
+  border-color: #009ca6;
+}
+
+.searchPanel:focus-within {
+  border-color: #009ca6;
+  box-shadow: 0 0 0 3px rgb(0 156 166 / 15%);
+}
+
+.searchPanel:hover .searchButton,
+.searchPanel:focus-within .searchButton {
+  color: #009ca6;
+}
+
+.searchPanel:hover .searchIcon,
+.searchPanel:focus-within .searchIcon {
+  color: #009ca6;
+  stroke: #009ca6;
+  fill: #009ca6;
+}
+
+.input {
+  flex: 1;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--fon-1);
+}
+
+.input::placeholder {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--kdou-inactive);
+}
+
+.input:focus::placeholder {
+  color: transparent;
+}
+
+.searchButton {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: none;
+  background: transparent;
+
+  color: var(--kdou-inactive);
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.searchButton:hover {
+  color: var(--fon-1);
+}
+
+.searchIcon {
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 32px 0;
+  }
+
+  .title {
+    font-size: 36px;
+  }
+
+  .description {
+    font-size: 18px;
+  }
+
+  .searchPanel {
+    height: 60px;
+    padding: 16px;
+  }
+
+  .input,
+  .input::placeholder {
+    font-size: 16px;
+  }
+}

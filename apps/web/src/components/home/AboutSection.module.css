@@ -1,0 +1,56 @@
+.section {
+  padding-bottom: 20px;
+  background: var(--kdou-background);
+}
+
+.card {
+  padding: 20px;
+  background: var(--kdou-background);
+  border: 2px solid var(--kdou-primary);
+  border-radius: 10px;
+}
+
+.title {
+  margin: 0 0 20px;
+
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+
+  color: var(--kdou-primary);
+}
+
+.description {
+  margin: 0 0 8px;
+
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+
+  color: var(--kdou-primary);
+}
+
+.subtitle {
+  margin: 0 0 8px;
+
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+
+  color: var(--kdou-primary);
+}
+
+.list {
+  margin: 0;
+  padding-left: 24px;
+
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+
+  color: var(--kdou-primary);
+}
+
+.list li + li {
+  margin-top: 4px;
+}

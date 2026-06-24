@@ -1,0 +1,337 @@
+.headerBlock {
+  background: var(--kdou-primary);
+  color: var(--fon-1);
+  padding: 40px 106px 24px;
+  margin-inline: -106px;
+  border-bottom: 2px solid var(--fon-1);
+}
+
+.title {
+  margin: 0 0 24px;
+  font-size: 40px;
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--fon-1);
+}
+
+.headerBlock :global(.catalog-toolbar) {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.headerBlock :global(.catalog-toolbar span) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 34px;
+  padding: 4px 8px;
+
+  border: 2px solid var(--kdou-accent);
+  border-radius: 5px;
+  background: transparent;
+
+  color: var(--kdou-accent);
+  font-size: 24px;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.catalogLayout {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+  min-height: 520px;
+  padding-block: 20px;
+}
+
+/* Right content */
+.catalogContent {
+  flex: 1;
+  min-width: 0;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Institution card */
+.catalogContent :global(.institution-card) {
+  width: 100%;
+  min-height: 96px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+
+  padding: 20px;
+  border: 2px solid #999999;
+  border-radius: 8px;
+  background: var(--fon-1);
+  box-sizing: border-box;
+
+  cursor: pointer;
+}
+
+.catalogContent :global(.institution-card):hover {
+  border-color: var(--kdou-primary);
+}
+
+.catalogContent :global(.institution-card):focus-visible {
+  outline: 3px solid var(--kdou-accent);
+  outline-offset: 4px;
+}
+
+/* Left card content */
+.catalogContent :global(.card-left-content) {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.catalogContent :global(.tags-row) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.catalogContent :global(.tag-item) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 3px 8px;
+  border: 2px solid #b8b8b8;
+  border-radius: 4px;
+
+  background: var(--fon-1);
+  color: #999999;
+
+  font-size: 12px;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.catalogContent :global(.type-tag) {
+  border-color: var(--kdou-accent);
+  color: var(--kdou-accent);
+}
+
+.catalogContent :global(.region-tag) {
+  border-color: #b8b8b8;
+  color: #999999;
+}
+
+.catalogContent :global(.title-section) {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.catalogContent :global(.institution-card) h2 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--kdou-primary);
+}
+
+.catalogContent :global(.institution-card) p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 600;
+  color: #777777;
+}
+
+/* Right meta content */
+.catalogContent :global(.card-right-content) {
+  width: 240px;
+  min-width: 240px;
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.catalogContent :global(.right-meta-item),
+.catalogContent :global(.meta-link) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #777777;
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.catalogContent :global(.meta-link):hover,
+.catalogContent :global(.meta-link):focus-visible {
+  color: var(--kdou-accent);
+  text-decoration: underline;
+}
+
+.catalogContent :global(.card-right-content) svg {
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+/* Pagination */
+.catalogContent :global(.pagination) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+  margin-top: 8px;
+}
+
+.catalogContent :global(.pagination) button {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 8px;
+
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #999999;
+
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.catalogContent :global(.pagination) button:hover,
+.catalogContent :global(.pagination) button:focus-visible {
+  color: var(--kdou-primary);
+  border-color: var(--kdou-primary);
+}
+
+.catalogContent :global(.pagination) button:global(.active) {
+  color: var(--kdou-primary);
+  border-color: var(--kdou-primary);
+  background: #e9ffff;
+}
+
+/* Loading overlay */
+.loadingOverlay {
+  opacity: 0.55;
+  filter: blur(1px);
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Empty / error layout */
+.catalogContent :global(.empty-state),
+.catalogContent :global(.error-state) {
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.catalogContent :global(.empty-state) h2,
+.catalogContent :global(.empty-state) p,
+.catalogContent :global(.error-state) h2,
+.catalogContent :global(.error-state) p {
+  color: #b00000;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Fallback if ErrorState / EmptyState do not expose classes */
+
+.centerMessage {
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: #b00000;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+@media (max-width: 1200px) {
+  .headerBlock {
+    padding-inline: 40px;
+    margin-inline: -40px;
+  }
+
+  .catalogContent :global(.card-right-content) {
+    width: 210px;
+    min-width: 210px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .catalogLayout {
+    flex-direction: column;
+  }
+
+  .sidebarFilters,
+  .catalogContent {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .catalogContent :global(.institution-card) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .catalogContent :global(.card-right-content) {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerBlock {
+    padding: 28px 20px 20px;
+    margin-inline: -20px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .catalogLayout {
+    gap: 16px;
+  }
+
+  .sidebarFilters {
+    padding: 16px;
+  }
+
+  .catalogContent :global(.institution-card) {
+    padding: 14px 16px;
+  }
+
+  .catalogContent :global(.institution-card) h2 {
+    font-size: 18px;
+  }
+
+  .catalogContent :global(.pagination) {
+    gap: 12px;
+  }
+
+  .catalogContent :global(.pagination) button {
+    min-width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
+}

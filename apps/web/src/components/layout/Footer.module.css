@@ -1,0 +1,179 @@
+.siteFooter {
+  background: var(--kdou-primary);
+  color: var(--fon-1);
+  padding: 20px 0;
+  box-sizing: border-box;
+}
+
+.footerTop {
+  min-height: 120px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40px;
+  padding-bottom: 10px;
+}
+
+.brandColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.footerLogo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--fon-1);
+  text-decoration: none;
+}
+
+.logoIcon {
+  width: 78px;
+  height: 78px;
+  border: 2px solid var(--fon-1);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.logoIcon svg {
+  width: 38px;
+  height: 63px;
+  color: currentColor;
+}
+
+.logoText {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--fon-1);
+}
+
+.description {
+  width: 416px;
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 600;
+  color: var(--fon-1);
+}
+
+.linksColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 212px;
+}
+
+.columnTitle {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--fon-1);
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.linkList a {
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--fon-1);
+  text-decoration: none;
+}
+
+.footerLogo:hover,
+.footerLogo:focus-visible,
+.linkList a:hover,
+.linkList a:focus-visible {
+  color: var(--kdou-accent);
+}
+
+.footerLogo:hover .logoIcon,
+.footerLogo:focus-visible .logoIcon {
+  border-color: var(--kdou-accent);
+}
+
+.footerLogo:hover .logoText,
+.footerLogo:focus-visible .logoText {
+  color: var(--kdou-accent);
+}
+
+.footerLogo:focus-visible,
+.linkList a:focus-visible {
+  outline: 2px solid var(--kdou-accent);
+  outline-offset: 4px;
+}
+
+.bottomBar {
+  border-top: 3px solid var(--fon-1);
+  padding-top: 10px;
+  text-align: center;
+}
+
+.bottomBar p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fon-1);
+}
+
+@media (max-width: 1024px) {
+  .siteFooter {
+    padding-inline: 40px;
+  }
+
+  .footerTop {
+    gap: 32px;
+  }
+
+  .logoText {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .siteFooter {
+    padding: 16px 20px;
+  }
+
+  .footerFrame {
+    padding: 16px;
+  }
+
+  .footerTop {
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .logoIcon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .logoIcon svg {
+    width: 28px;
+    height: 46px;
+  }
+
+  .logoText {
+    font-size: 22px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .linkList a {
+    font-size: 14px;
+  }
+}

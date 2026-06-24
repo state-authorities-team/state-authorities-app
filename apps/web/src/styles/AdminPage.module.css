@@ -1,0 +1,36 @@
+.adminPage {
+  background-color: #ffffff;
+  min-height: 100vh;
+}
+
+.catalogLayout {
+  display: grid;
+  grid-template-columns: 292px 1fr;
+  gap: 32px;
+  align-items: start;
+
+  padding: 20px 0;
+}
+
+.catalogContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.sidebarBlock {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
+@media (max-width: 1024px) {
+  .catalogLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebarBlock {
+    position: static;
+  }
+}

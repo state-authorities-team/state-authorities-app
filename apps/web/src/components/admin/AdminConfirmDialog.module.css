@@ -1,0 +1,79 @@
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(3, 17, 38, 0.7);
+}
+
+.dialog {
+    width: min(480px, 100%);
+    padding: 28px;
+    border: 2px solid #031126;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 24px 60px rgba(3, 17, 38, 0.25);
+}
+
+.title {
+    margin: 0 0 12px;
+    color: #031126;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.message {
+    margin: 0;
+    color: #031126;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.cancelButton,
+.deleteButton {
+    min-width: 120px;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.cancelButton {
+    border: 2px solid #031126;
+    background: #ffffff;
+    color: #031126;
+}
+
+.cancelButton:hover {
+    background: #eefeff;
+    border-color: #289999;
+    color: #289999;
+}
+
+.deleteButton {
+    border: 2px solid #900000;
+    background: #900000;
+    color: #ffffff;
+}
+
+.deleteButton:hover {
+    background: #ffffff;
+    color: #900000;
+}
+
+.cancelButton:disabled,
+.deleteButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
