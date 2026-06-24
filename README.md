@@ -108,8 +108,9 @@ npm install
 Start development environments:
 
 ```bash
-# Run API (defaults to http://localhost:5000)
+# Run API (defaults to http://localhost:3000)
 cd apps/api
+npm run parse:kmu
 npm run dev
 
 # Run Web Client (defaults to http://localhost:5173)
