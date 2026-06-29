@@ -8,7 +8,7 @@ export function HeroSection() {
       <PageContainer>
         <div className={styles.heroContent}>
           <h1 className={styles.title}>
-            Національний каталог державних органів України
+            Каталог державних органів України
           </h1>
 
           <p className={styles.description}>
